@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Technical Buyer Enablement</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - ENABLEMENT DETAIL IN SHELL
+           Training/Learning content within library
+           ======================================== */
+        
+        :root {
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-accent: #047857;
+            
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            --sidebar-width: 220px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* Header */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+            text-decoration: none;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title { font-weight: 700; font-size: 14px; color: white; }
+        .header-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); }
+        
+        .header-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .breadcrumb-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; }
+        .breadcrumb-link:hover { color: white; }
+        .breadcrumb-sep { color: rgba(255,255,255,0.3); font-size: 14px; }
+        .breadcrumb-current { color: white; font-weight: 500; font-size: 14px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 240px;
+        }
+        
+        .header-search:hover { background: rgba(255,255,255,0.12); }
+        .header-search svg { width: 16px; height: 16px; color: rgba(255,255,255,0.5); }
+        .header-search span { font-size: 13px; color: rgba(255,255,255,0.5); flex: 1; }
+        .header-search kbd { font-size: 11px; padding: 3px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; color: rgba(255,255,255,0.5); font-family: inherit; }
+        
+        /* App Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section { margin-bottom: 20px; }
+        .nav-section-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 8px 10px 6px; }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: var(--enablement-light); color: var(--enablement-accent); font-weight: 500; }
+        
+        .nav-item-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        
+        .nav-item[data-board="coe"] .nav-item-dot { background: var(--coe-primary); }
+        .nav-item[data-board="content"] .nav-item-dot { background: var(--content-primary); }
+        .nav-item[data-board="enablement"] .nav-item-dot { background: var(--enablement-primary); }
+        .nav-item[data-board="product"] .nav-item-dot { background: #3B82F6; }
+        .nav-item[data-board="competitive"] .nav-item-dot { background: #EF4444; }
+        .nav-item[data-board="sales"] .nav-item-dot { background: #0EA5E9; }
+        
+        .nav-item-label { flex: 1; }
+        .nav-item-count { font-size: 11px; color: var(--text-muted); background: var(--bg-page); padding: 2px 8px; border-radius: 10px; }
+        .nav-item-icon { width: 20px; text-align: center; font-size: 14px; }
+        
+        /* Main */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            background: var(--card-bg);
+        }
+        
+        /* Resource Detail */
+        .resource-detail {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 32px 48px;
+        }
+        
+        /* Header */
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .resource-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+            border: none;
+        }
+        
+        .action-btn.primary { background: var(--enablement-primary); color: white; }
+        .action-btn.primary:hover { background: #059669; }
+        .action-btn.secondary { background: transparent; color: var(--text-secondary); padding: 10px; }
+        .action-btn.secondary:hover { background: var(--bg-page); }
+        .action-btn svg { width: 18px; height: 18px; }
+        
+        /* Meta line */
+        .resource-meta-line {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .meta-line-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .meta-line-item svg { width: 14px; height: 14px; }
+        
+        .meta-line-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        
+        .meta-line-item a:hover {
+            color: var(--enablement-primary);
+        }
+        
+        /* Video Section */
+        .video-section {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .video-container {
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+        
+        .video-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .video-play-btn {
+            width: 72px;
+            height: 72px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .video-placeholder:hover .video-play-btn {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .video-play-btn svg { width: 32px; height: 32px; margin-left: 4px; }
+        .video-label { font-size: 14px; opacity: 0.8; }
+        
+        /* Materials List */
+        .materials-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .materials-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .material-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg-page);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .material-item:hover { background: var(--enablement-light); }
+        
+        .material-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .material-icon.video { background: #FEE2E2; color: #DC2626; }
+        .material-icon.slides { background: #FEF3C7; color: #D97706; }
+        .material-icon.transcript { background: #E0E7FF; color: #4F46E5; }
+        
+        .material-icon svg { width: 18px; height: 18px; }
+        
+        .material-info { flex: 1; min-width: 0; }
+        .material-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .material-subtitle { font-size: 11px; color: var(--text-muted); }
+        
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .section-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 4px;
+        }
+        
+        .section-toggle:hover { background: var(--bg-page); }
+        .section-toggle svg { width: 18px; height: 18px; transition: transform 0.2s ease; }
+        .content-section.collapsed .section-toggle svg { transform: rotate(-90deg); }
+        .content-section.collapsed .section-content { display: none; }
+        
+        /* Takeaways */
+        .takeaways-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .takeaway-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-page);
+            border-radius: 8px;
+        }
+        
+        .takeaway-check {
+            width: 20px;
+            height: 20px;
+            background: var(--enablement-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .takeaway-check svg { width: 10px; height: 10px; color: white; }
+        .takeaway-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        
+        /* How To */
+        .howto-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .howto-item {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .howto-number {
+            width: 28px;
+            height: 28px;
+            background: var(--enablement-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        
+        .howto-content { flex: 1; }
+        .howto-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+        .howto-content p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        
+        /* Tips */
+        .tips-section {
+            background: #F0FDF4;
+            border-radius: 12px;
+            padding: 20px 24px;
+        }
+        
+        .tips-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--enablement-accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tips-header svg { width: 18px; height: 18px; }
+        
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .tip-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .tip-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--enablement-primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .tip-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        /* Resource Meta Grid */
+        .resource-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--card-border);
+        }
+        
+        .meta-item { display: flex; flex-direction: column; gap: 6px; }
+        .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .meta-value { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+        
+        .hub-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .hub-badge.enablement { background: var(--enablement-light); color: var(--enablement-accent); }
+        .hub-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--enablement-primary); }
+        
+        .meta-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .meta-tag { background: var(--bg-page); padding: 4px 10px; border-radius: 4px; font-size: 12px; color: var(--text-secondary); }
+        
+        /* Toast */
+        .copy-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .copy-toast svg { width: 18px; height: 18px; color: #10B981; }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .resource-meta-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 900px) {
+            .video-section { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .resource-detail { padding: 24px; }
+            .resource-header { flex-direction: column; gap: 16px; }
+            .resource-meta-grid { grid-template-columns: 1fr; }
+            .resource-meta-line { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <a href="#" class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </a>
+        
+        <nav class="header-breadcrumb">
+            <a href="#" class="breadcrumb-link">Library</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="#" class="breadcrumb-link">Enablement</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Technical Buyer Enablement (CIO/CTO)</span>
+        </nav>
+        
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search content...</span>
+            <kbd>⌘K</kbd>
+        </div>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span class="nav-item-label">Home</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Boards</div>
+                
+                <a href="#" class="nav-item" data-board="coe">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CoE</span>
+                    <span class="nav-item-count">89</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="content">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Content Types</span>
+                    <span class="nav-item-count">127</span>
+                </a>
+                
+                <a href="#" class="nav-item active" data-board="enablement">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Enablement</span>
+                    <span class="nav-item-count">143</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="product">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Product</span>
+                    <span class="nav-item-count">85</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="competitive">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Competitive</span>
+                    <span class="nav-item-count">34</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="sales">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Sales</span>
+                    <span class="nav-item-count">156</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <div class="resource-detail">
+                <!-- Header -->
+                <div class="resource-header">
+                    <h1 class="resource-title">Technical Buyer Enablement (CIO/CTO)</h1>
+                    <div class="resource-actions">
+                        <button class="action-btn secondary" title="More options">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="19" cy="12" r="1"></circle>
+                                <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
+                        </button>
+                        <button class="action-btn primary" onclick="copyShareLink()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Share
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Meta Line -->
+                <div class="resource-meta-line">
+                    <div class="meta-line-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Gina Vivar, Steve West, Andy D'Amato</span>
+                    </div>
+                    <div class="meta-line-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>47 min</span>
+                    </div>
+                    <div class="meta-line-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>Oct 15, 2025</span>
+                    </div>
+                </div>
+                
+                <!-- Video Section -->
+                <div class="video-section">
+                    <div class="video-container">
+                        <div class="video-placeholder">
+                            <div class="video-play-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </div>
+                            <span class="video-label">Click to watch</span>
+                        </div>
+                    </div>
+                    
+                    <div class="materials-list">
+                        <div class="materials-title">Session Materials</div>
+                        
+                        <div class="material-item" onclick="copyLink('https://zoom.us/rec/xxx')">
+                            <div class="material-icon video">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+                                </svg>
+                            </div>
+                            <div class="material-info">
+                                <div class="material-title">Watch Recording</div>
+                                <div class="material-subtitle">Full session video</div>
+                            </div>
+                        </div>
+                        
+                        <div class="material-item" onclick="copyLink('https://docs.google.com/presentation/d/xxx')">
+                            <div class="material-icon slides">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                    <path d="M8 21h8"/><path d="M12 17v4"/>
+                                </svg>
+                            </div>
+                            <div class="material-info">
+                                <div class="material-title">Presentation Slides</div>
+                                <div class="material-subtitle">Download deck</div>
+                            </div>
+                        </div>
+                        
+                        <div class="material-item" onclick="copyLink('https://docs.google.com/document/d/xxx')">
+                            <div class="material-icon transcript">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="8" y1="13" x2="16" y2="13"/>
+                                    <line x1="8" y1="17" x2="14" y2="17"/>
+                                </svg>
+                            </div>
+                            <div class="material-info">
+                                <div class="material-title">Transcript</div>
+                                <div class="material-subtitle">Full session notes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Takeaways -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Key Takeaways</h2>
+                        <div class="section-toggle" onclick="this.closest('.content-section').classList.toggle('collapsed')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="takeaways-list">
+                            <div class="takeaway-item">
+                                <div class="takeaway-check">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="takeaway-text">CIOs and CTOs are now actively interested in meeting vendors due to AI being a top initiative globally - customer service is one of the primary AI use cases they consider</div>
+                            </div>
+                            
+                            <div class="takeaway-item">
+                                <div class="takeaway-check">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="takeaway-text">CIOs prioritize operational efficiency, vendor consolidation, and "if it ain't broke don't fix it" mentality - lead with simplicity and total cost of ownership</div>
+                            </div>
+                            
+                            <div class="takeaway-item">
+                                <div class="takeaway-check">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="takeaway-text">CTOs focus on engineering impact, APIs, and architecture - they need substantive proof over marketing fluff and often ask "should we build this ourselves?"</div>
+                            </div>
+                            
+                            <div class="takeaway-item">
+                                <div class="takeaway-check">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="takeaway-text">You have 3-5 minutes to prove you understand their specific world - identify what's "on fire" for them and show how Gladly can help</div>
+                            </div>
+                            
+                            <div class="takeaway-item">
+                                <div class="takeaway-check">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="takeaway-text">Never go to these meetings alone - bring an SC or product person for technical credibility, and leadership for strategic accounts</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- How To -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">How To</h2>
+                        <div class="section-toggle" onclick="this.closest('.content-section').classList.toggle('collapsed')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <div class="howto-list">
+                            <div class="howto-item">
+                                <div class="howto-number">1</div>
+                                <div class="howto-content">
+                                    <h4>Why Technical Buyers Matter Now More Than Ever</h4>
+                                    <p>The entire attitude and willingness of C-suite executives to meet with vendors has changed completely. With AI becoming a top initiative globally, customer service is now one of the primary use cases executives consider.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="howto-item">
+                                <div class="howto-number">2</div>
+                                <div class="howto-content">
+                                    <h4>The Competitive Threat: Sierra Is Already There</h4>
+                                    <p>Sierra is using their CEO's connections to connect with executive-level contacts and initiate pilots. They position themselves as "conversational AI across the enterprise" and walk into first meetings with fully baked demos.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="howto-item">
+                                <div class="howto-number">3</div>
+                                <div class="howto-content">
+                                    <h4>Understanding CIO vs CTO Personas</h4>
+                                    <p>CIOs care about operational efficiency and vendor consolidation. CTOs care about engineering impact and are constantly asking "should we build this ourselves?"</p>
+                                </div>
+                            </div>
+                            
+                            <div class="howto-item">
+                                <div class="howto-number">4</div>
+                                <div class="howto-content">
+                                    <h4>Meeting Preparation and Execution</h4>
+                                    <p>Before the meeting: Research their tech stack, prep your team, customize your deck. During: Listen to their language and mirror it back, pivot if engagement is low.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tips -->
+                <div class="tips-section">
+                    <div class="tips-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        Tips & Best Practices
+                    </div>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span class="tip-text">Identify the CIO/CTO at your top 5 accounts and reach out to establish relationships</span>
+                        </div>
+                        <div class="tip-item">
+                            <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span class="tip-text">Prepare 30-60 minutes minimum before technical buyer meetings</span>
+                        </div>
+                        <div class="tip-item">
+                            <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span class="tip-text">Build your meeting team: rep + SC/product person + leadership for strategic accounts</span>
+                        </div>
+                        <div class="tip-item">
+                            <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span class="tip-text">Create custom Gladly demos to show prospects their specific use cases</span>
+                        </div>
+                        <div class="tip-item">
+                            <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span class="tip-text">Start multi-threading in open opportunities early in the deal cycle</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Meta Grid -->
+                <div class="resource-meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Hub</span>
+                        <span class="hub-badge enablement">
+                            <span class="hub-badge-dot"></span>
+                            Enablement
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Format</span>
+                        <span class="meta-value">Training</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Duration</span>
+                        <span class="meta-value">47 min</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Views</span>
+                        <span class="meta-value">234</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Tags</span>
+                        <div class="meta-tags">
+                            <span class="meta-tag">sales</span>
+                            <span class="meta-tag">enterprise</span>
+                            <span class="meta-tag">technical</span>
+                            <span class="meta-tag">cio</span>
+                            <span class="meta-tag">cto</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast -->
+    <div class="copy-toast" id="copyToast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Link copied to clipboard
+    </div>
+    
+    <script>
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+        
+        function copyShareLink() {
+            copyLink('https://gtm.gladly.com/asset/technical-buyer-enablement-xK8mN2pQ');
+        }
+    </script>
+</body>
+</html>

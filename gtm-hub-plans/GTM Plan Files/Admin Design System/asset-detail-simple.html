@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Zendesk Sidekick Battle Card</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - SIMPLE ASSET DETAIL
+           For decks, battlecards, documents
+           ======================================== */
+        
+        :root {
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-hover: #F5F3FF;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-accent: #047857;
+            
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            --sidebar-width: 240px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* Header */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+            text-decoration: none;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title { font-weight: 700; font-size: 14px; color: white; }
+        .header-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); }
+        
+        .header-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .breadcrumb-link {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-link:hover { color: white; }
+        
+        .breadcrumb-sep {
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+        }
+        
+        .breadcrumb-current {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--content-primary);
+        }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 280px;
+        }
+        
+        .header-search:hover { background: rgba(255,255,255,0.12); }
+        .header-search svg { width: 16px; height: 16px; color: rgba(255,255,255,0.5); }
+        .header-search span { font-size: 13px; color: rgba(255,255,255,0.5); flex: 1; }
+        .header-search kbd { font-size: 11px; padding: 3px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; color: rgba(255,255,255,0.5); font-family: inherit; }
+        
+        /* App Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section { margin-bottom: 20px; }
+        
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: var(--content-light); color: var(--content-accent); font-weight: 500; }
+        
+        .nav-item-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .nav-item[data-board="coe"] .nav-item-dot { background: var(--coe-primary); }
+        .nav-item[data-board="content"] .nav-item-dot { background: var(--content-primary); }
+        .nav-item[data-board="enablement"] .nav-item-dot { background: var(--enablement-primary); }
+        .nav-item[data-board="product"] .nav-item-dot { background: #3B82F6; }
+        .nav-item[data-board="competitive"] .nav-item-dot { background: #EF4444; }
+        .nav-item[data-board="sales"] .nav-item-dot { background: #0EA5E9; }
+        
+        .nav-item-label { flex: 1; }
+        .nav-item-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-page);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .nav-item-icon { width: 20px; text-align: center; font-size: 14px; }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 28px 48px;
+            max-width: 900px;
+        }
+        
+        /* Asset Header */
+        .asset-header {
+            margin-bottom: 24px;
+        }
+        
+        .asset-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .hub-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        
+        .hub-badge.content {
+            background: var(--content-light);
+            color: var(--content-accent);
+        }
+        
+        .hub-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--content-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .share-btn:hover {
+            background: #7C3AED;
+        }
+        
+        .share-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .asset-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        
+        .asset-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Shareable Link */
+        .shareable-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            margin-bottom: 28px;
+        }
+        
+        .shareable-link svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+        
+        .shareable-link a {
+            flex: 1;
+            font-size: 13px;
+            color: var(--content-primary);
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .shareable-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .copy-btn {
+            padding: 8px 12px;
+            background: #F3F4F6;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .copy-btn:hover {
+            background: #E5E7EB;
+            color: var(--text-primary);
+        }
+        
+        .copy-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* Preview Container */
+        .preview-container {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .preview-carousel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 400px;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .carousel-nav.prev { left: 20px; }
+        .carousel-nav.next { right: 20px; }
+        
+        .carousel-nav:hover {
+            background: #F9FAFB;
+        }
+        
+        .carousel-nav svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-primary);
+        }
+        
+        .preview-slide {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: white;
+        }
+        
+        .preview-placeholder-logo {
+            width: 64px;
+            height: 64px;
+            background: var(--enablement-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            margin: 0 auto 24px;
+        }
+        
+        .preview-placeholder h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .preview-placeholder-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .preview-placeholder-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .slide-counter {
+            text-align: center;
+            padding: 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--card-border);
+        }
+        
+        /* File Info */
+        .file-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .file-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .file-name svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+        
+        .file-size {
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: #F3F4F6;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+        }
+        
+        .download-btn:hover {
+            background: #E5E7EB;
+        }
+        
+        .download-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Quick Links */
+        .quick-links {
+            margin-bottom: 28px;
+        }
+        
+        .quick-links-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+        
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .quick-link-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .quick-link-item:hover {
+            border-color: var(--content-primary);
+            background: var(--content-hover);
+        }
+        
+        .quick-link-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quick-link-icon.slides { background: #FEF3C7; color: #B45309; }
+        .quick-link-icon.pdf { background: #FEE2E2; color: #B91C1C; }
+        .quick-link-icon.link { background: var(--content-light); color: var(--content-accent); }
+        
+        .quick-link-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+        
+        .quick-link-info {
+            flex: 1;
+        }
+        
+        .quick-link-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        
+        .quick-link-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .quick-link-copy {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border-radius: 6px;
+        }
+        
+        .quick-link-item:hover .quick-link-copy {
+            background: white;
+            color: var(--content-primary);
+        }
+        
+        .quick-link-copy svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Metadata Grid */
+        .resource-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .meta-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        
+        .meta-value {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .hub-badge-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        
+        .hub-badge-sm.content {
+            background: var(--content-light);
+            color: var(--content-accent);
+        }
+        
+        .hub-badge-sm .hub-badge-dot {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .meta-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: #F3F4F6;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        
+        /* Full width for tags row */
+        .meta-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Toast */
+        .copy-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: #111827;
+            color: white;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+        }
+        
+        .copy-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .copy-toast svg {
+            width: 18px;
+            height: 18px;
+            color: var(--enablement-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <a href="/" class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </a>
+        
+        <nav class="header-breadcrumb">
+            <a href="/library" class="breadcrumb-link">Library</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="/competitive" class="breadcrumb-link">Competitive</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">
+                <span class="breadcrumb-icon">⚔️</span>
+                Zendesk Sidekick Battle Card
+            </span>
+        </nav>
+        
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search content...</span>
+            <kbd>⌘K</kbd>
+        </div>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <a href="/" class="nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span class="nav-item-label">Home</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Boards</div>
+                <a href="/coe" class="nav-item" data-board="coe">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CoE</span>
+                    <span class="nav-item-count">89</span>
+                </a>
+                <a href="/content" class="nav-item" data-board="content">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Content Types</span>
+                    <span class="nav-item-count">127</span>
+                </a>
+                <a href="/enablement" class="nav-item" data-board="enablement">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Enablement</span>
+                    <span class="nav-item-count">143</span>
+                </a>
+                <a href="/product" class="nav-item" data-board="product">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Product</span>
+                    <span class="nav-item-count">85</span>
+                </a>
+                <a href="/competitive" class="nav-item active" data-board="competitive">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Competitive</span>
+                    <span class="nav-item-count">34</span>
+                </a>
+                <a href="/sales" class="nav-item" data-board="sales">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Sales</span>
+                    <span class="nav-item-count">156</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Asset Header -->
+            <div class="asset-header">
+                <div class="asset-header-top">
+                    <span class="hub-badge content">
+                        <span class="hub-badge-dot"></span>
+                        Content
+                    </span>
+                    <button class="share-btn" onclick="copyShareLink()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share
+                    </button>
+                </div>
+                <h1 class="asset-title">Zendesk Sidekick Battle Card</h1>
+                <p class="asset-description">Competitive battle card comparing Gladly Sidekick against Zendesk's AI offerings. Includes positioning, key differentiators, objection handling, and talk tracks for sales conversations.</p>
+            </div>
+            
+            <!-- Shareable Link -->
+            <div class="shareable-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <a href="#">https://gtm.gladly.com/asset/zendesk-sidekick-battle-card</a>
+                <button class="copy-btn" onclick="copyShareLink()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                </button>
+            </div>
+            
+            <!-- Preview -->
+            <div class="preview-container">
+                <div class="preview-carousel">
+                    <button class="carousel-nav prev">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    
+                    <div class="preview-slide">
+                        <div class="preview-placeholder">
+                            <div class="preview-placeholder-logo">G+</div>
+                            <h3>Zendesk Sidekick<br>Battle Card</h3>
+                            <div class="preview-placeholder-icons">
+                                <div class="preview-placeholder-icon">⚔️</div>
+                                <div class="preview-placeholder-icon">💡</div>
+                                <div class="preview-placeholder-icon">✅</div>
+                                <div class="preview-placeholder-icon">🎯</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-nav next">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <div class="slide-counter">1 of 4 pages</div>
+            </div>
+            
+            <!-- File Info -->
+            <div class="file-info">
+                <div class="file-name">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span>Zendesk_Sidekick_Battle_Card_2024.pdf</span>
+                    <span class="file-size">2.4 MB</span>
+                </div>
+                <a href="#" class="download-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download
+                </a>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="quick-links">
+                <div class="quick-links-title">Quick Links</div>
+                <div class="quick-links-grid">
+                    <div class="quick-link-item" onclick="copyLink('https://docs.google.com/presentation/d/xxx')">
+                        <div class="quick-link-icon slides">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8"/><path d="M12 17v4"/>
+                            </svg>
+                        </div>
+                        <div class="quick-link-info">
+                            <div class="quick-link-title">Google Slides</div>
+                            <div class="quick-link-subtitle">Editable version</div>
+                        </div>
+                        <div class="quick-link-copy">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-link-item" onclick="copyLink('https://drive.google.com/file/d/xxx')">
+                        <div class="quick-link-icon pdf">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <div class="quick-link-info">
+                            <div class="quick-link-title">PDF Download</div>
+                            <div class="quick-link-subtitle">Print-ready</div>
+                        </div>
+                        <div class="quick-link-copy">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-link-item" onclick="copyLink('https://gtm.gladly.com/s/zendesk-bc?ref=user123')">
+                        <div class="quick-link-icon link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </div>
+                        <div class="quick-link-info">
+                            <div class="quick-link-title">Trackable Link</div>
+                            <div class="quick-link-subtitle">Your share URL</div>
+                        </div>
+                        <div class="quick-link-copy">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Metadata -->
+            <div class="resource-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Hub</span>
+                    <span class="hub-badge-sm content">
+                        <span class="hub-badge-dot"></span>
+                        Content
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Format</span>
+                    <span class="meta-value">PDF</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Type</span>
+                    <span class="meta-value">Battlecard</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Updated</span>
+                    <span class="meta-value">Dec 18, 2024</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Views</span>
+                    <span class="meta-value">456</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Shares</span>
+                    <span class="meta-value">89</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Owner</span>
+                    <span class="meta-value">PMM Team</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Board</span>
+                    <span class="meta-value">Competitive</span>
+                </div>
+                <div class="meta-item full-width">
+                    <span class="meta-label">Tags</span>
+                    <div class="meta-tags">
+                        <span class="meta-tag">sales</span>
+                        <span class="meta-tag">zendesk</span>
+                        <span class="meta-tag">sidekick</span>
+                        <span class="meta-tag">competitive</span>
+                        <span class="meta-tag">battlecard</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast -->
+    <div class="copy-toast" id="copyToast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Link copied to clipboard
+    </div>
+    
+    <script>
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+        
+        function copyShareLink() {
+            copyLink('https://gtm.gladly.com/asset/zendesk-sidekick-battle-card');
+        }
+    </script>
+</body>
+</html>

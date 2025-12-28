@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Manage Tags</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY ADMIN - TAG MANAGEMENT
+           Dock.us style board/tag organization
+           ======================================== */
+        
+        :root {
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-accent: #047857;
+            
+            --product-primary: #3B82F6;
+            --product-light: #DBEAFE;
+            --competitive-primary: #EF4444;
+            --competitive-light: #FEE2E2;
+            --sales-primary: #0EA5E9;
+            --sales-light: #E0F2FE;
+            --csm-primary: #8B5CF6;
+            --csm-light: #EDE9FE;
+            
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            --sidebar-width: 220px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* Header */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+            text-decoration: none;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title { font-weight: 700; font-size: 14px; color: white; }
+        .header-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .header-nav-item {
+            padding: 6px 12px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        
+        .header-nav-item:hover { color: white; background: rgba(255,255,255,0.1); }
+        .header-nav-item.active { color: white; background: rgba(255,255,255,0.15); font-weight: 500; }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 240px;
+        }
+        
+        .header-search:hover { background: rgba(255,255,255,0.12); }
+        .header-search svg { width: 16px; height: 16px; color: rgba(255,255,255,0.5); }
+        .header-search span { font-size: 13px; color: rgba(255,255,255,0.5); flex: 1; }
+        .header-search kbd { font-size: 11px; padding: 3px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; color: rgba(255,255,255,0.5); font-family: inherit; }
+        
+        /* App Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section { margin-bottom: 24px; }
+        
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: var(--content-light); color: var(--content-accent); font-weight: 500; }
+        
+        .nav-item-icon { width: 20px; text-align: center; font-size: 14px; }
+        .nav-item-label { flex: 1; }
+        .nav-item-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-page);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .nav-item-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .nav-item[data-board="coe"] .nav-item-dot { background: var(--coe-primary); }
+        .nav-item[data-board="content"] .nav-item-dot { background: var(--content-primary); }
+        .nav-item[data-board="enablement"] .nav-item-dot { background: var(--enablement-primary); }
+        .nav-item[data-board="product"] .nav-item-dot { background: #3B82F6; }
+        .nav-item[data-board="competitive"] .nav-item-dot { background: #EF4444; }
+        .nav-item[data-board="sales"] .nav-item-dot { background: #0EA5E9; }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 28px 32px;
+        }
+        
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* Tabs */
+        .page-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0;
+        }
+        
+        .page-tab {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+        
+        .page-tab:hover {
+            color: var(--text-primary);
+        }
+        
+        .page-tab.active {
+            color: var(--content-primary);
+            border-bottom-color: var(--content-primary);
+        }
+        
+        /* Tag Manager Layout */
+        .tag-manager {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 28px;
+        }
+        
+        /* Suggested Tags Panel */
+        .suggested-tags {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+        }
+        
+        .panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .panel-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .suggested-tag-list {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .suggested-tag-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .suggested-tag-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggested-tag-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            cursor: pointer;
+        }
+        
+        .suggested-tag-name {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .suggested-tag-add {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+        }
+        
+        .suggested-tag-add:hover {
+            background: #F3F4F6;
+            color: var(--content-primary);
+        }
+        
+        .suggested-tag-add svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Active Boards Panel */
+        .active-boards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .active-boards-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .active-boards-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        
+        /* Board Card */
+        .board-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .board-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+        }
+        
+        .board-card-header.coe { background: var(--coe-light); }
+        .board-card-header.content { background: var(--content-light); }
+        .board-card-header.enablement { background: var(--enablement-light); }
+        .board-card-header.product { background: var(--product-light); }
+        .board-card-header.competitive { background: var(--competitive-light); }
+        .board-card-header.sales { background: var(--sales-light); }
+        .board-card-header.csm { background: var(--csm-light); }
+        
+        .board-card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .board-card-header.coe .board-card-title { color: var(--coe-accent); }
+        .board-card-header.content .board-card-title { color: var(--content-accent); }
+        .board-card-header.enablement .board-card-title { color: var(--enablement-accent); }
+        .board-card-header.product .board-card-title { color: #1D4ED8; }
+        .board-card-header.competitive .board-card-title { color: #B91C1C; }
+        .board-card-header.sales .board-card-title { color: #0369A1; }
+        .board-card-header.csm .board-card-title { color: #6D28D9; }
+        
+        .board-card-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .board-card-header.coe .board-card-dot { background: var(--coe-primary); }
+        .board-card-header.content .board-card-dot { background: var(--content-primary); }
+        .board-card-header.enablement .board-card-dot { background: var(--enablement-primary); }
+        .board-card-header.product .board-card-dot { background: var(--product-primary); }
+        .board-card-header.competitive .board-card-dot { background: var(--competitive-primary); }
+        .board-card-header.sales .board-card-dot { background: var(--sales-primary); }
+        .board-card-header.csm .board-card-dot { background: var(--csm-primary); }
+        
+        .board-card-edit {
+            font-size: 13px;
+            color: var(--content-primary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        
+        .board-card-edit:hover {
+            text-decoration: underline;
+        }
+        
+        .board-card-tags {
+            padding: 16px 20px;
+        }
+        
+        .board-tag-item {
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .board-tag-item:last-child {
+            border-bottom: none;
+        }
+        
+        .board-tag-remove {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        
+        .board-tag-item:hover .board-tag-remove {
+            opacity: 1;
+        }
+        
+        .board-tag-remove:hover {
+            background: #FEE2E2;
+            color: #EF4444;
+        }
+        
+        .board-tag-remove svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .board-card-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-top: 1px solid #F3F4F6;
+        }
+        
+        .add-tag-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+        
+        .add-tag-input:focus {
+            outline: none;
+            border-color: var(--content-primary);
+        }
+        
+        .add-tag-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .add-existing-btn {
+            padding: 10px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: white;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .add-existing-btn:hover {
+            background: #F9FAFB;
+            color: var(--text-primary);
+        }
+        
+        .add-existing-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.hidden {
+            display: none;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .modal-close:hover {
+            background: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .modal-body {
+            display: grid;
+            grid-template-columns: 200px 1fr 220px;
+            gap: 24px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .modal-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--content-primary);
+            box-shadow: 0 0 0 3px rgba(140, 105, 240, 0.1);
+        }
+        
+        .modal-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-search svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+        
+        .modal-search input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .boards-checklist {
+            max-height: 320px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .board-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+            cursor: pointer;
+        }
+        
+        .board-checkbox-item:last-child {
+            border-bottom: none;
+        }
+        
+        .board-checkbox-item:hover {
+            background: #FAFAFA;
+            margin: 0 -8px;
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 6px;
+        }
+        
+        .board-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            cursor: pointer;
+        }
+        
+        .board-checkbox-icon {
+            font-size: 16px;
+        }
+        
+        .board-checkbox-name {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .selected-boards-section {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .selected-count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .selected-boards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .selected-board-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        
+        .selected-board-chip-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .selected-board-chip-icon {
+            font-size: 14px;
+        }
+        
+        .selected-board-remove {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .selected-board-remove:hover {
+            background: #FEE2E2;
+            color: #EF4444;
+        }
+        
+        .selected-board-remove svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-top: 1px solid var(--card-border);
+            background: #F9FAFB;
+        }
+        
+        .btn-delete {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            color: #EF4444;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            border-radius: 8px;
+        }
+        
+        .btn-delete:hover {
+            background: #FEE2E2;
+        }
+        
+        .btn-delete svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .modal-footer-right {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-cancel {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn-cancel:hover {
+            background: #F9FAFB;
+        }
+        
+        .btn-primary {
+            padding: 10px 20px;
+            background: var(--content-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn-primary:hover {
+            background: #7C3AED;
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <a href="/" class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </a>
+        
+        <nav class="header-nav">
+            <a href="/manage" class="header-nav-item active">Manage Library</a>
+        </nav>
+        
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search content...</span>
+            <kbd>⌘K</kbd>
+        </div>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Admin</div>
+                <a href="/manage" class="nav-item">
+                    <span class="nav-item-icon">📋</span>
+                    <span class="nav-item-label">Assets</span>
+                    <span class="nav-item-count">367</span>
+                </a>
+                <a href="/manage/tags" class="nav-item active">
+                    <span class="nav-item-icon">🏷️</span>
+                    <span class="nav-item-label">Tags</span>
+                </a>
+                <a href="/manage/boards" class="nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span class="nav-item-label">Boards</span>
+                </a>
+                <a href="/manage/analytics" class="nav-item">
+                    <span class="nav-item-icon">📈</span>
+                    <span class="nav-item-label">Analytics</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Library</div>
+                <a href="/" class="nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span class="nav-item-label">Home</span>
+                </a>
+                <a href="/library" class="nav-item">
+                    <span class="nav-item-icon">📚</span>
+                    <span class="nav-item-label">Browse</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Boards</div>
+                <a href="/coe" class="nav-item" data-board="coe">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CoE</span>
+                    <span class="nav-item-count">89</span>
+                </a>
+                <a href="/content" class="nav-item" data-board="content">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Content Types</span>
+                    <span class="nav-item-count">127</span>
+                </a>
+                <a href="/enablement" class="nav-item" data-board="enablement">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Enablement</span>
+                    <span class="nav-item-count">143</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <div class="page-header">
+                <h1 class="page-title">Manage Library</h1>
+                <p class="page-subtitle">Configure boards and tags for organizing your content.</p>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="page-tabs">
+                <button class="page-tab active">Boards</button>
+                <button class="page-tab">Tags</button>
+            </div>
+            
+            <!-- Tag Manager Layout -->
+            <div class="tag-manager">
+                <!-- Suggested Tags -->
+                <div class="suggested-tags">
+                    <div class="panel-title">Suggested Tags</div>
+                    <div class="panel-desc">Tags that can be added to boards as subgroups.</div>
+                    
+                    <div class="suggested-tag-list">
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox">
+                            <span class="suggested-tag-name">Products</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox">
+                            <span class="suggested-tag-name">Legal</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox">
+                            <span class="suggested-tag-name">Customer Assets</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox">
+                            <span class="suggested-tag-name">Partnerships</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox" checked>
+                            <span class="suggested-tag-name">Integrations</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox" checked>
+                            <span class="suggested-tag-name">Solutions</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox" checked>
+                            <span class="suggested-tag-name">Use Cases</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="suggested-tag-item">
+                            <input type="checkbox" class="suggested-tag-checkbox" checked>
+                            <span class="suggested-tag-name">Personas</span>
+                            <button class="suggested-tag-add">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Active Boards -->
+                <div class="active-boards">
+                    <div class="active-boards-header">
+                        <div class="active-boards-title">Active Boards and Tags</div>
+                    </div>
+                    
+                    <!-- CoE Board -->
+                    <div class="board-card">
+                        <div class="board-card-header coe">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                CoE
+                            </div>
+                            <button class="board-card-edit" onclick="openModal()">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">
+                                BVA
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                EBR
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                QBR
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                Meeting Examples
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                Best Practices
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                Templates
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="board-tag-item">
+                                Process
+                                <span class="board-tag-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Types Board -->
+                    <div class="board-card">
+                        <div class="board-card-header content">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                Content Types
+                            </div>
+                            <button class="board-card-edit">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">Decks</div>
+                            <div class="board-tag-item">One-pagers</div>
+                            <div class="board-tag-item">Case Studies</div>
+                            <div class="board-tag-item">Videos</div>
+                            <div class="board-tag-item">Battlecards</div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Enablement Board -->
+                    <div class="board-card">
+                        <div class="board-card-header enablement">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                Enablement
+                            </div>
+                            <button class="board-card-edit">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">Training</div>
+                            <div class="board-tag-item">Certifications</div>
+                            <div class="board-tag-item">Onboarding</div>
+                            <div class="board-tag-item">Learning Paths</div>
+                            <div class="board-tag-item">Workshops</div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Board -->
+                    <div class="board-card">
+                        <div class="board-card-header product">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                Product
+                            </div>
+                            <button class="board-card-edit">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">Release Notes</div>
+                            <div class="board-tag-item">Roadmap</div>
+                            <div class="board-tag-item">Feature Briefs</div>
+                            <div class="board-tag-item">Technical Docs</div>
+                            <div class="board-tag-item">API</div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Competitive Board -->
+                    <div class="board-card">
+                        <div class="board-card-header competitive">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                Competitive
+                            </div>
+                            <button class="board-card-edit">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">Battlecards</div>
+                            <div class="board-tag-item">Win/Loss</div>
+                            <div class="board-tag-item">Competitor Analysis</div>
+                            <div class="board-tag-item">Pricing</div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sales Board -->
+                    <div class="board-card">
+                        <div class="board-card-header sales">
+                            <div class="board-card-title">
+                                <span class="board-card-dot"></span>
+                                Sales
+                            </div>
+                            <button class="board-card-edit">Edit</button>
+                        </div>
+                        <div class="board-card-tags">
+                            <div class="board-tag-item">Proposals</div>
+                            <div class="board-tag-item">Discovery</div>
+                            <div class="board-tag-item">Objection Handling</div>
+                            <div class="board-tag-item">Pricing</div>
+                            <div class="board-tag-item">Negotiation</div>
+                        </div>
+                        <div class="board-card-actions">
+                            <input type="text" class="add-tag-input" placeholder="+ Add new tag">
+                            <button class="add-existing-btn">
+                                Add existing
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Edit Tag Modal -->
+    <div class="modal-overlay hidden" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Tag</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Details Section -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Details</div>
+                    <label style="font-size: 13px; color: #6B7280; margin-bottom: 8px; display: block;">Name</label>
+                    <input type="text" class="modal-input" value="Competitive Intel">
+                </div>
+                
+                <!-- Organisation Boards Section -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Organisation Boards</div>
+                    <div class="modal-search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="boards-checklist">
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">💼</span>
+                            <span class="board-checkbox-name">Sales</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">📦</span>
+                            <span class="board-checkbox-name">Product</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">📊</span>
+                            <span class="board-checkbox-name">Case Studies</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox" checked>
+                            <span class="board-checkbox-icon">⚔️</span>
+                            <span class="board-checkbox-name">Competition</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">📄</span>
+                            <span class="board-checkbox-name">Content Types</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">👥</span>
+                            <span class="board-checkbox-name">Personas</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">🎯</span>
+                            <span class="board-checkbox-name">Use Cases</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">🤝</span>
+                            <span class="board-checkbox-name">Post-Sales</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">🏭</span>
+                            <span class="board-checkbox-name">Industries</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">📣</span>
+                            <span class="board-checkbox-name">Marketing Content</span>
+                        </label>
+                        <label class="board-checkbox-item">
+                            <input type="checkbox" class="board-checkbox">
+                            <span class="board-checkbox-icon">💡</span>
+                            <span class="board-checkbox-name">Solutions</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Selected Boards Section -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Selected Boards</div>
+                    <div class="selected-boards-section">
+                        <div class="selected-count">Selected Boards (1)</div>
+                        <div class="selected-boards-list">
+                            <div class="selected-board-chip">
+                                <div class="selected-board-chip-left">
+                                    <span class="selected-board-chip-icon">⚔️</span>
+                                    Competition
+                                </div>
+                                <span class="selected-board-remove">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Delete
+                </button>
+                <div class="modal-footer-right">
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

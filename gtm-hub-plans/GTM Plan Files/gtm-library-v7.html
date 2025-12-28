@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY v7
+           v6 Card Design + v5 Navigation
+           ======================================== */
+        
+        :root {
+            /* Hub Colors */
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-hover: #FFFBEB;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-hover: #F5F3FF;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-hover: #ECFDF5;
+            --enablement-accent: #047857;
+            
+            /* Board Colors */
+            --product-primary: #3B82F6;
+            --competitive-primary: #EF4444;
+            --sales-primary: #0EA5E9;
+            --csm-primary: #8B5CF6;
+            --sc-primary: #EC4899;
+            --demo-primary: #06B6D4;
+            --proof-primary: #84CC16;
+            
+            /* Neutral */
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            /* Card */
+            --card-radius: 12px;
+            --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.1);
+            
+            /* Layout */
+            --sidebar-width: 240px;
+            --filter-width: 220px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* ========================================
+           GLOBAL HEADER
+        ======================================== */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .header-subtitle {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .header-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .breadcrumb-link {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-link:hover { color: white; }
+        
+        .breadcrumb-sep {
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+        }
+        
+        .breadcrumb-current {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 280px;
+        }
+        
+        .header-search:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        .header-search svg {
+            width: 16px;
+            height: 16px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .header-search span {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            flex: 1;
+        }
+        
+        .header-search kbd {
+            font-size: 11px;
+            padding: 3px 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            color: rgba(255,255,255,0.5);
+            font-family: inherit;
+        }
+        
+        /* ========================================
+           APP LAYOUT
+        ======================================== */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* ========================================
+           SIDEBAR - v5 Style with Boards
+        ======================================== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section {
+            margin-bottom: 20px;
+        }
+        
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        
+        .nav-item.active {
+            font-weight: 500;
+        }
+        
+        /* Board-specific active states */
+        .nav-item.active[data-board="coe"] { background: var(--coe-light); color: var(--coe-accent); }
+        .nav-item.active[data-board="content"] { background: var(--content-light); color: var(--content-accent); }
+        .nav-item.active[data-board="enablement"] { background: var(--enablement-light); color: var(--enablement-accent); }
+        .nav-item.active[data-board="product"] { background: #DBEAFE; color: #1D4ED8; }
+        .nav-item.active[data-board="competitive"] { background: #FEE2E2; color: #B91C1C; }
+        .nav-item.active[data-board="sales"] { background: #E0F2FE; color: #0369A1; }
+        .nav-item.active[data-board="csm"] { background: #EDE9FE; color: #6D28D9; }
+        .nav-item.active[data-board="sc"] { background: #FCE7F3; color: #BE185D; }
+        .nav-item.active[data-board="demo"] { background: #CFFAFE; color: #0E7490; }
+        .nav-item.active[data-board="proof"] { background: #ECFCCB; color: #4D7C0F; }
+        
+        .nav-item-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        /* Board dot colors */
+        .nav-item[data-board="coe"] .nav-item-dot { background: var(--coe-primary); }
+        .nav-item[data-board="content"] .nav-item-dot { background: var(--content-primary); }
+        .nav-item[data-board="enablement"] .nav-item-dot { background: var(--enablement-primary); }
+        .nav-item[data-board="product"] .nav-item-dot { background: var(--product-primary); }
+        .nav-item[data-board="competitive"] .nav-item-dot { background: var(--competitive-primary); }
+        .nav-item[data-board="sales"] .nav-item-dot { background: var(--sales-primary); }
+        .nav-item[data-board="csm"] .nav-item-dot { background: var(--csm-primary); }
+        .nav-item[data-board="sc"] .nav-item-dot { background: var(--sc-primary); }
+        .nav-item[data-board="demo"] .nav-item-dot { background: var(--demo-primary); }
+        .nav-item[data-board="proof"] .nav-item-dot { background: var(--proof-primary); }
+        
+        .nav-item-label { flex: 1; }
+        
+        .nav-item-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-page);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .nav-item-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* ========================================
+           MAIN
+        ======================================== */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+        }
+        
+        /* ========================================
+           FILTER SIDEBAR - v5 Style
+        ======================================== */
+        .filter-sidebar {
+            width: var(--filter-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            padding: 20px 16px;
+            overflow-y: auto;
+        }
+        
+        .filter-section {
+            margin-bottom: 28px;
+        }
+        
+        .filter-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .filter-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .filter-checkbox:hover { color: var(--content-primary); }
+        
+        .filter-group { margin-bottom: 4px; }
+        
+        .filter-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .filter-group-header:hover { color: var(--content-primary); }
+        
+        .filter-group-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group-icon {
+            font-size: 16px;
+        }
+        
+        .filter-group-chevron {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+        
+        .filter-group.expanded .filter-group-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .filter-group-items {
+            display: none;
+            padding-left: 28px;
+            padding-bottom: 8px;
+        }
+        
+        .filter-group.expanded .filter-group-items {
+            display: block;
+        }
+        
+        /* ========================================
+           CONTENT AREA
+        ======================================== */
+        .content-area {
+            flex: 1;
+            padding: 20px 28px;
+            overflow-y: auto;
+        }
+        
+        /* Tabs */
+        .view-tabs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-page);
+            padding: 4px;
+            border-radius: 8px;
+        }
+        
+        .tab {
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .tab:hover { color: var(--text-primary); }
+        
+        .tab.active {
+            background: var(--card-bg);
+            color: var(--content-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .view-options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sort-select {
+            padding: 7px 32px 7px 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            background: var(--card-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+            cursor: pointer;
+            appearance: none;
+        }
+        
+        .view-btn {
+            padding: 7px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            font-size: 13px;
+            background: var(--card-bg);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .view-btn:hover {
+            background: #F3F4F6;
+        }
+        
+        /* Content Section */
+        .content-section {
+            margin-bottom: 28px;
+        }
+        
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        
+        /* ========================================
+           CARD GRID
+        ======================================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        
+        /* ========================================
+           LIBRARY CARD - v6 Design System
+        ======================================== */
+        .library-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .library-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        
+        .library-card__hub-bar {
+            height: 4px;
+        }
+        
+        .library-card__body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .library-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+        
+        .library-card__hub {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        
+        .library-card__format {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .library-card__format svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .library-card__title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .library-card__description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .library-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+        
+        .library-card__tag {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #F3F4F6;
+            color: var(--text-secondary);
+        }
+        
+        .library-card__footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #F3F4F6;
+        }
+        
+        .library-card__meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .library-card__link {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Hub Variants */
+        .library-card--coe .library-card__hub-bar { background: var(--coe-primary); }
+        .library-card--coe .library-card__hub { background: var(--coe-light); color: var(--coe-accent); }
+        .library-card--coe .library-card__link { color: var(--coe-primary); }
+        .library-card--coe:hover { border-color: var(--coe-primary); }
+        .library-card--coe:hover .library-card__body { background: var(--coe-hover); }
+        
+        .library-card--content .library-card__hub-bar { background: var(--content-primary); }
+        .library-card--content .library-card__hub { background: var(--content-light); color: var(--content-accent); }
+        .library-card--content .library-card__link { color: var(--content-primary); }
+        .library-card--content:hover { border-color: var(--content-primary); }
+        .library-card--content:hover .library-card__body { background: var(--content-hover); }
+        
+        .library-card--enablement .library-card__hub-bar { background: var(--enablement-primary); }
+        .library-card--enablement .library-card__hub { background: var(--enablement-light); color: var(--enablement-accent); }
+        .library-card--enablement .library-card__link { color: var(--enablement-primary); }
+        .library-card--enablement:hover { border-color: var(--enablement-primary); }
+        .library-card--enablement:hover .library-card__body { background: var(--enablement-hover); }
+        
+        /* Responsive */
+        @media (max-width: 1400px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1100px) { .card-grid { grid-template-columns: repeat(2, 1fr); } .filter-sidebar { width: 200px; } }
+        @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } .filter-sidebar { display: none; } .card-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <div class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </div>
+        
+        <nav class="header-breadcrumb">
+            <a href="#" class="breadcrumb-link">Library</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">
+                <span class="breadcrumb-icon" id="breadcrumbIcon" style="background: var(--coe-primary);">🏆</span>
+                <span id="breadcrumbTitle">CoE</span>
+            </span>
+        </nav>
+        
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search content...</span>
+            <kbd>⌘K</kbd>
+        </div>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar - v5 Style with Boards -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <a href="#" class="nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span class="nav-item-label">Home</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Boards</div>
+                
+                <a href="#" class="nav-item active" data-board="coe" onclick="switchBoard(event, 'coe')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CoE</span>
+                    <span class="nav-item-count">89</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="content" onclick="switchBoard(event, 'content')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Content Types</span>
+                    <span class="nav-item-count">127</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="enablement" onclick="switchBoard(event, 'enablement')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Enablement</span>
+                    <span class="nav-item-count">143</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="product" onclick="switchBoard(event, 'product')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Product</span>
+                    <span class="nav-item-count">85</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="competitive" onclick="switchBoard(event, 'competitive')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Competitive</span>
+                    <span class="nav-item-count">34</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="sales" onclick="switchBoard(event, 'sales')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Sales</span>
+                    <span class="nav-item-count">156</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="csm" onclick="switchBoard(event, 'csm')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CSM</span>
+                    <span class="nav-item-count">78</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="sc" onclick="switchBoard(event, 'sc')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">SC</span>
+                    <span class="nav-item-count">52</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="demo" onclick="switchBoard(event, 'demo')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Demo</span>
+                    <span class="nav-item-count">45</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-board="proof" onclick="switchBoard(event, 'proof')">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Proof Points</span>
+                    <span class="nav-item-count">67</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Filter Sidebar - v5 Style -->
+            <aside class="filter-sidebar">
+                <div class="filter-section" id="boardTagsSection">
+                    <div class="filter-section-title">Board's Tags</div>
+                    <label class="filter-checkbox"><input type="checkbox" checked> BVA</label>
+                    <label class="filter-checkbox"><input type="checkbox" checked> EBR</label>
+                    <label class="filter-checkbox"><input type="checkbox" checked> QBR</label>
+                    <label class="filter-checkbox"><input type="checkbox"> Meeting Examples</label>
+                    <label class="filter-checkbox"><input type="checkbox"> Best Practices</label>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-section-title">And filter by</div>
+                    
+                    <div class="filter-group expanded">
+                        <div class="filter-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="filter-group-left">
+                                <span class="filter-group-icon">💼</span>
+                                <span>Sales</span>
+                            </span>
+                            <svg class="filter-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="filter-group-items">
+                            <label class="filter-checkbox"><input type="checkbox"> AE Resources</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Discovery</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Demo Prep</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="filter-group-left">
+                                <span class="filter-group-icon">📊</span>
+                                <span>Case Studies</span>
+                            </span>
+                            <svg class="filter-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="filter-group-items">
+                            <label class="filter-checkbox"><input type="checkbox"> Retail</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Travel</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="filter-group-left">
+                                <span class="filter-group-icon">⚔️</span>
+                                <span>Competition</span>
+                            </span>
+                            <svg class="filter-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="filter-group-items">
+                            <label class="filter-checkbox"><input type="checkbox"> Zendesk</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Intercom</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="filter-group-left">
+                                <span class="filter-group-icon">📦</span>
+                                <span>Product</span>
+                            </span>
+                            <svg class="filter-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="filter-group-items">
+                            <label class="filter-checkbox"><input type="checkbox"> Sidekick</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Hero</label>
+                            <label class="filter-checkbox"><input type="checkbox"> Voice</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-group-header" onclick="this.parentElement.classList.toggle('expanded')">
+                            <span class="filter-group-left">
+                                <span class="filter-group-icon">🎯</span>
+                                <span>Post-Sales</span>
+                            </span>
+                            <svg class="filter-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="filter-group-items">
+                            <label class="filter-checkbox"><input type="checkbox"> Onboarding</label>
+                            <label class="filter-checkbox"><input type="checkbox"> QBR</label>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="view-tabs">
+                    <div class="tabs">
+                        <button class="tab active">Most Viewed</button>
+                        <button class="tab">Most Shared</button>
+                        <button class="tab">Recently Added</button>
+                    </div>
+                    <div class="view-options">
+                        <select class="sort-select">
+                            <option>Recently modified</option>
+                            <option>Alphabetical</option>
+                            <option>Most viewed</option>
+                        </select>
+                        <button class="view-btn">View</button>
+                    </div>
+                </div>
+                
+                <!-- BVA Section -->
+                <div class="content-section">
+                    <h3 class="section-title">BVA</h3>
+                    <div class="card-grid">
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <line x1="3" y1="9" x2="21" y2="9"/>
+                                            <line x1="3" y1="15" x2="21" y2="15"/>
+                                            <line x1="9" y1="3" x2="9" y2="21"/>
+                                            <line x1="15" y1="3" x2="15" y2="21"/>
+                                        </svg>
+                                        Sheet
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">BVA Calculator</h4>
+                                <p class="library-card__description">Business value assessment calculator for ROI modeling.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">sales</span>
+                                    <span class="library-card__tag">bva</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 112</span>
+                                        <span>🔗 34</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                            <path d="M8 21h8"/><path d="M12 17v4"/>
+                                            <path d="M7 8h4"/><path d="M7 11h6"/>
+                                        </svg>
+                                        Slides
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">BVA Presentation Template</h4>
+                                <p class="library-card__description">Standard deck for presenting BVA results to customers.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">sales</span>
+                                    <span class="library-card__tag">csm</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 89</span>
+                                        <span>🔗 23</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--enablement">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">Enablement</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                            <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+                                        </svg>
+                                        Video
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">BVA Training Session</h4>
+                                <p class="library-card__description">Complete training on running effective BVA conversations.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">sales</span>
+                                    <span class="library-card__tag">training</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>⏱ 45 min</span>
+                                    </div>
+                                    <span class="library-card__link">Watch →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                        </svg>
+                                        Guide
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">BVA Best Practices Guide</h4>
+                                <p class="library-card__description">Step-by-step guide for conducting value assessments.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">sales</span>
+                                    <span class="library-card__tag">best-practice</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 67</span>
+                                        <span>🔗 15</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- EBR Section -->
+                <div class="content-section">
+                    <h3 class="section-title">EBR</h3>
+                    <div class="card-grid">
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                            <path d="M8 21h8"/><path d="M12 17v4"/>
+                                            <path d="M7 8h4"/><path d="M7 11h6"/>
+                                        </svg>
+                                        Slides
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">EBR Template - Enterprise</h4>
+                                <p class="library-card__description">Executive business review deck for enterprise accounts.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">enterprise</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 78</span>
+                                        <span>🔗 19</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                            <path d="M8 21h8"/><path d="M12 17v4"/>
+                                            <path d="M7 8h4"/><path d="M7 11h6"/>
+                                        </svg>
+                                        Slides
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">EBR Meeting Example - Allbirds</h4>
+                                <p class="library-card__description">Real EBR presentation from successful Allbirds engagement.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">retail</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 56</span>
+                                        <span>🔗 12</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--content">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">Content</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="8" y1="13" x2="16" y2="13"/>
+                                            <line x1="8" y1="17" x2="14" y2="17"/>
+                                        </svg>
+                                        Document
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">EBR Agenda Template</h4>
+                                <p class="library-card__description">Standard agenda document for EBR preparation.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">template</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 45</span>
+                                        <span>🔗 8</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--enablement">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">Enablement</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                                            <path d="M6 12v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"/>
+                                        </svg>
+                                        Training
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">Running Effective EBRs</h4>
+                                <p class="library-card__description">Training on executive business review best practices.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">training</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>⏱ 30 min</span>
+                                    </div>
+                                    <span class="library-card__link">Watch →</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- QBR Section -->
+                <div class="content-section">
+                    <h3 class="section-title">QBR</h3>
+                    <div class="card-grid">
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                            <path d="M8 21h8"/><path d="M12 17v4"/>
+                                            <path d="M7 8h4"/><path d="M7 11h6"/>
+                                        </svg>
+                                        Slides
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">QBR Template - Enterprise</h4>
+                                <p class="library-card__description">Quarterly business review deck for enterprise accounts.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">qbr</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 134</span>
+                                        <span>🔗 45</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                            <path d="M8 21h8"/><path d="M12 17v4"/>
+                                            <path d="M7 8h4"/><path d="M7 11h6"/>
+                                        </svg>
+                                        Slides
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">QBR Template - Mid-Market</h4>
+                                <p class="library-card__description">Streamlined QBR deck for mid-market customers.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">mid-market</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 89</span>
+                                        <span>🔗 28</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--coe">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">CoE</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                            <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+                                        </svg>
+                                        Video
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">QBR Meeting Example - Bombas</h4>
+                                <p class="library-card__description">Recorded QBR showing best practice presentation flow.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">retail</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>⏱ 35 min</span>
+                                    </div>
+                                    <span class="library-card__link">Watch →</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="library-card library-card--content">
+                            <div class="library-card__hub-bar"></div>
+                            <div class="library-card__body">
+                                <div class="library-card__header">
+                                    <span class="library-card__hub">Content</span>
+                                    <span class="library-card__format">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <line x1="3" y1="9" x2="21" y2="9"/>
+                                            <line x1="3" y1="15" x2="21" y2="15"/>
+                                            <line x1="9" y1="3" x2="9" y2="21"/>
+                                            <line x1="15" y1="3" x2="15" y2="21"/>
+                                        </svg>
+                                        Sheet
+                                    </span>
+                                </div>
+                                <h4 class="library-card__title">QBR Metrics Tracker</h4>
+                                <p class="library-card__description">Spreadsheet for tracking quarterly metrics and KPIs.</p>
+                                <div class="library-card__tags">
+                                    <span class="library-card__tag">csm</span>
+                                    <span class="library-card__tag">tool</span>
+                                </div>
+                                <div class="library-card__footer">
+                                    <div class="library-card__meta">
+                                        <span>👁 67</span>
+                                        <span>🔗 15</span>
+                                    </div>
+                                    <span class="library-card__link">View →</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // Board configurations
+        const boards = {
+            coe: { name: 'CoE', icon: '🏆', color: '#F59E0B', tags: ['BVA', 'EBR', 'QBR', 'Meeting Examples', 'Best Practices'] },
+            content: { name: 'Content Types', icon: '📚', color: '#8C69F0', tags: ['Decks', 'One-Pagers', 'Templates', 'Battlecards', 'Videos', 'Tools'] },
+            enablement: { name: 'Enablement', icon: '🎓', color: '#10B981', tags: ['Sales Training', 'CS Training', 'Technical', 'Playbooks', 'Certifications'] },
+            product: { name: 'Product', icon: '📦', color: '#3B82F6', tags: ['Sidekick', 'Hero', 'Voice', 'App Platform', 'Email'] },
+            competitive: { name: 'Competitive', icon: '⚔️', color: '#EF4444', tags: ['Zendesk', 'Intercom', 'Ada', 'Sierra', 'Kustomer'] },
+            sales: { name: 'Sales', icon: '💼', color: '#0EA5E9', tags: ['Discovery', 'Demo Prep', 'Proposals', 'Objections', 'Closing'] },
+            csm: { name: 'CSM', icon: '🎯', color: '#8B5CF6', tags: ['Onboarding', 'Adoption', 'Renewals', 'Expansion', 'Health'] },
+            sc: { name: 'SC', icon: '🔧', color: '#EC4899', tags: ['Technical Docs', 'POC', 'Integration', 'Architecture'] },
+            demo: { name: 'Demo', icon: '🎬', color: '#06B6D4', tags: ['Demo Videos', 'Screenshots', 'Environments', 'Scripts'] },
+            proof: { name: 'Proof Points', icon: '📈', color: '#84CC16', tags: ['Case Studies', 'Quotes', 'Metrics', 'ROI Stories'] }
+        };
+        
+        function switchBoard(event, boardId) {
+            event.preventDefault();
+            const board = boards[boardId];
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-item[data-board]').forEach(item => item.classList.remove('active'));
+            document.querySelector(`.nav-item[data-board="${boardId}"]`).classList.add('active');
+            
+            // Update breadcrumb
+            const iconEl = document.getElementById('breadcrumbIcon');
+            iconEl.style.background = board.color;
+            iconEl.textContent = board.icon;
+            document.getElementById('breadcrumbTitle').textContent = board.name;
+            
+            // Update board's tags in filter sidebar
+            updateBoardTags(board.tags);
+        }
+        
+        function updateBoardTags(tags) {
+            const section = document.getElementById('boardTagsSection');
+            const checkboxes = tags.map((tag, i) => `
+                <label class="filter-checkbox">
+                    <input type="checkbox" ${i < 3 ? 'checked' : ''}> ${tag}
+                </label>
+            `).join('');
+            
+            section.innerHTML = `
+                <div class="filter-section-title">Board's Tags</div>
+                ${checkboxes}
+            `;
+        }
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

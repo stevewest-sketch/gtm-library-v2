@@ -1,26 +1,321 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Hub Colors */
+  --coe-primary: #F59E0B;
+  --coe-light: #FEF3C7;
+  --coe-hover: #FFFBEB;
+  --coe-accent: #B45309;
+
+  --content-primary: #8C69F0;
+  --content-light: #EDE9FE;
+  --content-hover: #F5F3FF;
+  --content-accent: #6D28D9;
+
+  --enablement-primary: #10B981;
+  --enablement-light: #D1FAE5;
+  --enablement-hover: #ECFDF5;
+  --enablement-accent: #047857;
+
+  /* Board Colors */
+  --product-primary: #3B82F6;
+  --competitive-primary: #EF4444;
+  --sales-primary: #0EA5E9;
+  --csm-primary: #8B5CF6;
+  --sc-primary: #EC4899;
+  --demo-primary: #06B6D4;
+  --proof-primary: #84CC16;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --filter-width: 220px;
+  --header-height: 56px;
+
+  /* Neutral */
+  --card-bg: #FFFFFF;
+  --card-border: #E5E7EB;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  --bg-page: #F9FAFB;
+  --bg-dark: #111827;
+
+  /* Card */
+  --card-radius: 12px;
+  --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.1);
+
+  /* Font */
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-page);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* App Layout */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+}
+
+/* Main content with both sidebars - v7 mock padding */
+.main-with-sidebars {
+  flex: 1;
+  margin-left: calc(var(--sidebar-width) + var(--filter-width));
+  padding: 20px 28px;
+  overflow-y: auto;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Main content with just nav sidebar - v7 mock padding */
+.main-with-sidebar {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 20px 28px;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Full-width content (no sidebar) */
+.main-full {
+  padding-top: var(--header-height);
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* View Tabs - v7 design */
+.view-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: #F9FAFB;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.tab {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4B5563;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab:hover {
+  color: #111827;
+}
+
+.tab.active {
+  background: #FFFFFF;
+  color: #8C69F0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Content Sections - v7 design */
+.content-section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #111827;
+}
+
+/* Card Grid - v7 design */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1400px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sort Select & View Options - v7 design */
+.view-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-select {
+  padding: 7px 32px 7px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  cursor: pointer;
+  appearance: none;
+}
+
+.view-btn {
+  padding: 7px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #FFFFFF;
+  cursor: pointer;
+  color: #4B5563;
+  transition: background 0.15s ease;
+}
+
+.view-btn:hover {
+  background: #F3F4F6;
+}
+
+/* Filter Sidebar Styles - v7 design */
+.filter-section {
+  margin-bottom: 28px;
+}
+
+.filter-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9CA3AF;
+  margin-bottom: 14px;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #111827;
+}
+
+.filter-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8C69F0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filter-checkbox:hover {
+  color: #8C69F0;
+}
+
+.filter-group {
+  margin-bottom: 4px;
+}
+
+.filter-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.filter-group-header:hover {
+  color: #8C69F0;
+}
+
+.filter-group-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group-icon {
+  font-size: 16px;
+}
+
+.filter-group-chevron {
+  width: 18px;
+  height: 18px;
+  color: #9CA3AF;
+  transition: transform 0.2s ease;
+}
+
+.filter-group.expanded .filter-group-chevron {
+  transform: rotate(180deg);
+}
+
+.filter-group-items {
+  display: none;
+  padding-left: 28px;
+  padding-bottom: 8px;
+}
+
+.filter-group.expanded .filter-group-items {
+  display: block;
 }

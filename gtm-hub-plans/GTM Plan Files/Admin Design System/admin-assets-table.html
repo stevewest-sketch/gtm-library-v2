@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Manage Assets</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY ADMIN - ASSETS TABLE
+           Matches frontend design system
+           ======================================== */
+        
+        :root {
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-accent: #047857;
+            
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            --sidebar-width: 220px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* ========================================
+           GLOBAL HEADER
+        ======================================== */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+            text-decoration: none;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title { font-weight: 700; font-size: 14px; color: white; }
+        .header-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .header-nav-item {
+            padding: 6px 12px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            border-radius: 6px;
+        }
+        
+        .header-nav-item:hover { color: white; background: rgba(255,255,255,0.1); }
+        .header-nav-item.active { color: white; background: rgba(255,255,255,0.15); font-weight: 500; }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 240px;
+        }
+        
+        .header-search:hover { background: rgba(255,255,255,0.12); }
+        .header-search svg { width: 16px; height: 16px; color: rgba(255,255,255,0.5); }
+        .header-search span { font-size: 13px; color: rgba(255,255,255,0.5); flex: 1; }
+        .header-search kbd { font-size: 11px; padding: 3px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; color: rgba(255,255,255,0.5); font-family: inherit; }
+        
+        /* ========================================
+           APP LAYOUT
+        ======================================== */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* ========================================
+           SIDEBAR
+        ======================================== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section { margin-bottom: 24px; }
+        
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: var(--content-light); color: var(--content-accent); font-weight: 500; }
+        
+        .nav-item-icon { width: 20px; text-align: center; font-size: 14px; }
+        .nav-item-label { flex: 1; }
+        .nav-item-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-page);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .nav-item-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .nav-item[data-board="coe"] .nav-item-dot { background: var(--coe-primary); }
+        .nav-item[data-board="content"] .nav-item-dot { background: var(--content-primary); }
+        .nav-item[data-board="enablement"] .nav-item-dot { background: var(--enablement-primary); }
+        .nav-item[data-board="product"] .nav-item-dot { background: #3B82F6; }
+        .nav-item[data-board="competitive"] .nav-item-dot { background: #EF4444; }
+        .nav-item[data-board="sales"] .nav-item-dot { background: #0EA5E9; }
+        .nav-item[data-board="csm"] .nav-item-dot { background: #8B5CF6; }
+        .nav-item[data-board="sc"] .nav-item-dot { background: #EC4899; }
+        .nav-item[data-board="demo"] .nav-item-dot { background: #06B6D4; }
+        .nav-item[data-board="proof"] .nav-item-dot { background: #84CC16; }
+        
+        /* ========================================
+           MAIN CONTENT
+        ======================================== */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 28px 32px;
+        }
+        
+        .page-header {
+            margin-bottom: 28px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* ========================================
+           FILTER BAR
+        ======================================== */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            flex: 1;
+            min-width: 240px;
+            max-width: 320px;
+        }
+        
+        .search-input svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+        
+        .search-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .search-input input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .filter-select {
+            padding: 10px 36px 10px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center;
+            cursor: pointer;
+            appearance: none;
+            color: var(--text-primary);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--content-primary);
+        }
+        
+        .filter-bar-spacer {
+            flex: 1;
+        }
+        
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--content-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn-primary:hover {
+            background: #7C3AED;
+        }
+        
+        /* ========================================
+           BULK ACTIONS BAR
+        ======================================== */
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            background: var(--content-primary);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bulk-count {
+            font-size: 14px;
+            font-weight: 500;
+            padding-right: 16px;
+            border-right: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .bulk-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .bulk-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .bulk-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .bulk-btn.danger {
+            background: rgba(239, 68, 68, 0.9);
+        }
+        
+        .bulk-btn.danger:hover {
+            background: #EF4444;
+        }
+        
+        .bulk-spacer { flex: 1; }
+        
+        .bulk-close {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .bulk-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* ========================================
+           TABLE
+        ======================================== */
+        .admin-table {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 48px 1fr 100px 140px 80px 100px 80px 56px;
+            padding: 14px 20px;
+            background: #F9FAFB;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+        }
+        
+        .table-header-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .table-header-cell.sortable {
+            cursor: pointer;
+        }
+        
+        .table-header-cell.sortable:hover {
+            color: var(--text-primary);
+        }
+        
+        .table-header-cell svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.5;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 48px 1fr 100px 140px 80px 100px 80px 56px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #F3F4F6;
+            align-items: center;
+            transition: background 0.15s ease;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row:hover {
+            background: #FAFAFA;
+        }
+        
+        .table-row.selected {
+            background: var(--content-light);
+        }
+        
+        .row-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            cursor: pointer;
+        }
+        
+        .row-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .hub-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .hub-dot.coe { background: var(--coe-primary); }
+        .hub-dot.content { background: var(--content-primary); }
+        .hub-dot.enablement { background: var(--enablement-primary); }
+        
+        .row-title-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .row-title-link:hover {
+            color: var(--content-primary);
+        }
+        
+        .hub-badge-sm {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .hub-badge-sm.coe { background: var(--coe-light); color: var(--coe-accent); }
+        .hub-badge-sm.content { background: var(--content-light); color: var(--content-accent); }
+        .hub-badge-sm.enablement { background: var(--enablement-light); color: var(--enablement-accent); }
+        
+        .board-chips {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .board-chip {
+            font-size: 10px;
+            padding: 3px 8px;
+            background: #F3F4F6;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        
+        .board-chip-more {
+            color: var(--text-muted);
+        }
+        
+        .tag-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .date-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .views-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        
+        .status-badge.published {
+            background: #D1FAE5;
+            color: #047857;
+        }
+        
+        .status-badge.draft {
+            background: #FEF3C7;
+            color: #B45309;
+        }
+        
+        .status-badge.archived {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+        
+        .row-actions {
+            position: relative;
+        }
+        
+        .actions-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        
+        .actions-btn:hover {
+            background: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .actions-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* ========================================
+           PAGINATION
+        ======================================== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-top: 1px solid var(--card-border);
+            background: #FAFAFA;
+        }
+        
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .pagination-btn:hover {
+            background: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .pagination-btn.active {
+            background: var(--content-primary);
+            color: white;
+            border-color: var(--content-primary);
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Actions Dropdown */
+        .actions-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            min-width: 160px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .actions-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .dropdown-item:hover {
+            background: #F9FAFB;
+        }
+        
+        .dropdown-item.danger {
+            color: #EF4444;
+        }
+        
+        .dropdown-item svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: #F3F4F6;
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <a href="/" class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </a>
+        
+        <nav class="header-nav">
+            <a href="/manage" class="header-nav-item active">Manage Library</a>
+        </nav>
+        
+        <div class="header-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search content...</span>
+            <kbd>⌘K</kbd>
+        </div>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Admin</div>
+                <a href="/manage" class="nav-item active">
+                    <span class="nav-item-icon">📋</span>
+                    <span class="nav-item-label">Assets</span>
+                    <span class="nav-item-count">367</span>
+                </a>
+                <a href="/manage/tags" class="nav-item">
+                    <span class="nav-item-icon">🏷️</span>
+                    <span class="nav-item-label">Tags</span>
+                </a>
+                <a href="/manage/boards" class="nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span class="nav-item-label">Boards</span>
+                </a>
+                <a href="/manage/analytics" class="nav-item">
+                    <span class="nav-item-icon">📈</span>
+                    <span class="nav-item-label">Analytics</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Library</div>
+                <a href="/" class="nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span class="nav-item-label">Home</span>
+                </a>
+                <a href="/library" class="nav-item">
+                    <span class="nav-item-icon">📚</span>
+                    <span class="nav-item-label">Browse</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Boards</div>
+                <a href="/coe" class="nav-item" data-board="coe">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">CoE</span>
+                    <span class="nav-item-count">89</span>
+                </a>
+                <a href="/content" class="nav-item" data-board="content">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Content Types</span>
+                    <span class="nav-item-count">127</span>
+                </a>
+                <a href="/enablement" class="nav-item" data-board="enablement">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Enablement</span>
+                    <span class="nav-item-count">143</span>
+                </a>
+                <a href="/product" class="nav-item" data-board="product">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Product</span>
+                    <span class="nav-item-count">85</span>
+                </a>
+                <a href="/competitive" class="nav-item" data-board="competitive">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Competitive</span>
+                    <span class="nav-item-count">34</span>
+                </a>
+                <a href="/sales" class="nav-item" data-board="sales">
+                    <span class="nav-item-dot"></span>
+                    <span class="nav-item-label">Sales</span>
+                    <span class="nav-item-count">156</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <div class="page-header">
+                <h1 class="page-title">Manage Assets</h1>
+                <p class="page-subtitle">View and manage all content across your library.</p>
+            </div>
+            
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="search-input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Search assets...">
+                </div>
+                
+                <select class="filter-select">
+                    <option value="">All Hubs</option>
+                    <option value="coe">🔶 CoE</option>
+                    <option value="content">🟣 Content</option>
+                    <option value="enablement">🟢 Enablement</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">All Boards</option>
+                    <option value="coe">CoE</option>
+                    <option value="content-types">Content Types</option>
+                    <option value="enablement">Enablement</option>
+                    <option value="product">Product</option>
+                    <option value="competitive">Competitive</option>
+                    <option value="sales">Sales</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">All Formats</option>
+                    <option value="slides">Slides</option>
+                    <option value="video">Video</option>
+                    <option value="training">Training</option>
+                    <option value="document">Document</option>
+                    <option value="pdf">PDF</option>
+                </select>
+                
+                <select class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="archived">Archived</option>
+                </select>
+                
+                <div class="filter-bar-spacer"></div>
+                
+                <button class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Asset
+                </button>
+            </div>
+            
+            <!-- Bulk Actions Bar (shown when items selected) -->
+            <div class="bulk-actions" id="bulkActions">
+                <span class="bulk-count">4 selected</span>
+                
+                <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Add to Board
+                </button>
+                
+                <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                    Add Tags
+                </button>
+                
+                <button class="bulk-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Edit
+                </button>
+                
+                <div class="bulk-spacer"></div>
+                
+                <button class="bulk-btn danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Delete
+                </button>
+                
+                <button class="bulk-close" onclick="document.getElementById('bulkActions').style.display='none'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Table -->
+            <div class="admin-table">
+                <div class="table-header">
+                    <div class="table-header-cell">
+                        <input type="checkbox" class="row-checkbox" id="selectAll">
+                    </div>
+                    <div class="table-header-cell sortable">
+                        Title
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="table-header-cell">Hub</div>
+                    <div class="table-header-cell">Boards</div>
+                    <div class="table-header-cell">Tags</div>
+                    <div class="table-header-cell sortable">
+                        Updated
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="table-header-cell sortable">
+                        Views
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="table-header-cell"></div>
+                </div>
+                
+                <!-- Row 1 -->
+                <div class="table-row">
+                    <div><input type="checkbox" class="row-checkbox"></div>
+                    <div class="row-title">
+                        <span class="hub-dot coe"></span>
+                        <a href="/manage/asset/bva-calculator" class="row-title-link">BVA Calculator 2024</a>
+                    </div>
+                    <div><span class="hub-badge-sm coe">CoE</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">CoE</span>
+                        <span class="board-chip">Sales</span>
+                    </div>
+                    <div class="tag-count">5 tags</div>
+                    <div class="date-text">Dec 20</div>
+                    <div class="views-text">234</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                        <div class="actions-dropdown">
+                            <button class="dropdown-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                Edit
+                            </button>
+                            <button class="dropdown-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Duplicate
+                            </button>
+                            <button class="dropdown-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                Archive
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item danger">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2 - Selected -->
+                <div class="table-row selected">
+                    <div><input type="checkbox" class="row-checkbox" checked></div>
+                    <div class="row-title">
+                        <span class="hub-dot content"></span>
+                        <a href="/manage/asset/zendesk-battle-card" class="row-title-link">Zendesk Sidekick Battle Card</a>
+                    </div>
+                    <div><span class="hub-badge-sm content">Content</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">Competitive</span>
+                    </div>
+                    <div class="tag-count">4 tags</div>
+                    <div class="date-text">Dec 18</div>
+                    <div class="views-text">456</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 3 - Selected -->
+                <div class="table-row selected">
+                    <div><input type="checkbox" class="row-checkbox" checked></div>
+                    <div class="row-title">
+                        <span class="hub-dot enablement"></span>
+                        <a href="/manage/asset/sidekick-refresher" class="row-title-link">Sidekick Standalone Refresher Training</a>
+                    </div>
+                    <div><span class="hub-badge-sm enablement">Enablement</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">Enablement</span>
+                        <span class="board-chip">Product</span>
+                    </div>
+                    <div class="tag-count">6 tags</div>
+                    <div class="date-text">Dec 15</div>
+                    <div class="views-text">189</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 4 -->
+                <div class="table-row">
+                    <div><input type="checkbox" class="row-checkbox"></div>
+                    <div class="row-title">
+                        <span class="hub-dot content"></span>
+                        <a href="/manage/asset/sierra-overview" class="row-title-link">Sierra Competitive Overview</a>
+                    </div>
+                    <div><span class="hub-badge-sm content">Content</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">Competitive</span>
+                    </div>
+                    <div class="tag-count">3 tags</div>
+                    <div class="date-text">Dec 14</div>
+                    <div class="views-text">312</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 5 - Selected -->
+                <div class="table-row selected">
+                    <div><input type="checkbox" class="row-checkbox" checked></div>
+                    <div class="row-title">
+                        <span class="hub-dot coe"></span>
+                        <a href="/manage/asset/qbr-template" class="row-title-link">QBR Template - Enterprise</a>
+                    </div>
+                    <div><span class="hub-badge-sm coe">CoE</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">CoE</span>
+                        <span class="board-chip">CSM</span>
+                    </div>
+                    <div class="tag-count">4 tags</div>
+                    <div class="date-text">Dec 12</div>
+                    <div class="views-text">178</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 6 - Selected -->
+                <div class="table-row selected">
+                    <div><input type="checkbox" class="row-checkbox" checked></div>
+                    <div class="row-title">
+                        <span class="hub-dot enablement"></span>
+                        <a href="/manage/asset/technical-buyer" class="row-title-link">Technical Buyer Enablement Training</a>
+                    </div>
+                    <div><span class="hub-badge-sm enablement">Enablement</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">Enablement</span>
+                        <span class="board-chip-more">+2</span>
+                    </div>
+                    <div class="tag-count">8 tags</div>
+                    <div class="date-text">Dec 10</div>
+                    <div class="views-text">267</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 7 -->
+                <div class="table-row">
+                    <div><input type="checkbox" class="row-checkbox"></div>
+                    <div class="row-title">
+                        <span class="hub-dot content"></span>
+                        <a href="/manage/asset/master-pitch" class="row-title-link">Master Pitch Deck 2024</a>
+                    </div>
+                    <div><span class="hub-badge-sm content">Content</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">Content</span>
+                        <span class="board-chip">Sales</span>
+                    </div>
+                    <div class="tag-count">5 tags</div>
+                    <div class="date-text">Dec 8</div>
+                    <div class="views-text">523</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Row 8 -->
+                <div class="table-row">
+                    <div><input type="checkbox" class="row-checkbox"></div>
+                    <div class="row-title">
+                        <span class="hub-dot coe"></span>
+                        <a href="/manage/asset/ebr-guide" class="row-title-link">EBR Best Practices Guide</a>
+                    </div>
+                    <div><span class="hub-badge-sm coe">CoE</span></div>
+                    <div class="board-chips">
+                        <span class="board-chip">CoE</span>
+                    </div>
+                    <div class="tag-count">3 tags</div>
+                    <div class="date-text">Dec 5</div>
+                    <div class="views-text">145</div>
+                    <div class="row-actions">
+                        <button class="actions-btn" onclick="toggleDropdown(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Showing 1-20 of 367 assets
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" disabled>← Previous</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn">...</button>
+                        <button class="pagination-btn">19</button>
+                        <button class="pagination-btn">Next →</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        function toggleDropdown(btn) {
+            // Close all other dropdowns
+            document.querySelectorAll('.actions-dropdown.show').forEach(d => {
+                if (d !== btn.nextElementSibling) d.classList.remove('show');
+            });
+            // Toggle this dropdown
+            const dropdown = btn.nextElementSibling;
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.row-actions')) {
+                document.querySelectorAll('.actions-dropdown.show').forEach(d => d.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>

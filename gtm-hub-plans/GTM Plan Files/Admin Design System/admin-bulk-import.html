@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Bulk Import</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY ADMIN - BULK CSV IMPORT
+           Multi-step import with AI generation
+           ======================================== */
+        
+        :root {
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-accent: #B45309;
+            
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-accent: #6D28D9;
+            
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-accent: #047857;
+            
+            --ai-primary: #6366F1;
+            --ai-light: #EEF2FF;
+            --ai-accent: #4338CA;
+            
+            --success: #10B981;
+            --success-light: #D1FAE5;
+            --error: #EF4444;
+            --error-light: #FEE2E2;
+            --warning: #F59E0B;
+            --warning-light: #FEF3C7;
+            
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-dark: #111827;
+            
+            --sidebar-width: 220px;
+            --header-height: 56px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        
+        /* Header */
+        .global-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            margin-right: 24px;
+            text-decoration: none;
+        }
+        
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: #10B981;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .header-title { font-weight: 700; font-size: 14px; color: white; }
+        .header-subtitle { font-size: 11px; color: rgba(255,255,255,0.5); }
+        
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            margin-right: auto;
+        }
+        
+        .header-back:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        /* App Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-height);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+        
+        .nav-section { margin-bottom: 24px; }
+        
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+        
+        .nav-item:hover { background: #F3F4F6; }
+        .nav-item.active { background: var(--content-light); color: var(--content-accent); font-weight: 500; }
+        
+        .nav-item-icon { width: 20px; text-align: center; font-size: 14px; }
+        .nav-item-label { flex: 1; }
+        .nav-item-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-page);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 28px 48px;
+            max-width: 900px;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* Steps Progress */
+        .steps-progress {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: #E5E7EB;
+            color: var(--text-muted);
+        }
+        
+        .step-indicator.active .step-number {
+            background: var(--content-primary);
+            color: white;
+        }
+        
+        .step-indicator.completed .step-number {
+            background: var(--success);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .step-indicator.active .step-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .step-indicator.completed .step-label {
+            color: var(--success);
+        }
+        
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #E5E7EB;
+            margin: 0 16px;
+        }
+        
+        .step-line.completed {
+            background: var(--success);
+        }
+        
+        /* Import Steps */
+        .import-step {
+            display: none;
+        }
+        
+        .import-step.active {
+            display: block;
+        }
+        
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--card-border);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--content-primary);
+            background: var(--content-light);
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--content-primary);
+            background: var(--content-light);
+        }
+        
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: var(--content-light);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .upload-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .upload-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--content-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .upload-btn:hover {
+            background: #7C3AED;
+        }
+        
+        .upload-input {
+            display: none;
+        }
+        
+        /* Template Downloads */
+        .template-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+        }
+        
+        .template-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .template-links {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .template-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-page);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
+        .template-link:hover {
+            background: #E5E7EB;
+            color: var(--text-primary);
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .preview-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .preview-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .preview-stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .preview-stat-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .preview-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .preview-table th,
+        .preview-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 13px;
+        }
+        
+        .preview-table th {
+            background: #FAFAFA;
+            font-weight: 600;
+            color: var(--text-secondary);
+            position: sticky;
+            top: 0;
+        }
+        
+        .preview-table tr:hover td {
+            background: #FAFAFA;
+        }
+        
+        .hub-badge-sm {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .hub-badge-sm.coe { background: var(--coe-light); color: var(--coe-accent); }
+        .hub-badge-sm.content { background: var(--content-light); color: var(--content-accent); }
+        .hub-badge-sm.enablement { background: var(--enablement-light); color: var(--enablement-accent); }
+        
+        .tag-chips {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .tag-chip-sm {
+            font-size: 10px;
+            padding: 2px 6px;
+            background: #F3F4F6;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        
+        .row-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        
+        .row-status.valid {
+            color: var(--success);
+        }
+        
+        .row-status.warning {
+            color: var(--warning);
+        }
+        
+        .row-status.error {
+            color: var(--error);
+        }
+        
+        /* Import Options */
+        .import-options {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .options-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-page);
+            border-radius: 8px;
+        }
+        
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            margin-top: 2px;
+        }
+        
+        .option-content {
+            flex: 1;
+        }
+        
+        .option-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .option-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .option-badge.ai {
+            background: var(--ai-light);
+            color: var(--ai-accent);
+        }
+        
+        .option-select {
+            padding: 10px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: white;
+            min-width: 200px;
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+        }
+        
+        .progress-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: var(--content-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .progress-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        .progress-bar-container {
+            max-width: 400px;
+            margin: 0 auto 16px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--content-primary) 0%, var(--ai-primary) 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .progress-log {
+            max-width: 500px;
+            margin: 24px auto 0;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 16px;
+            background: #FAFAFA;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            padding: 4px 0;
+            color: var(--text-secondary);
+        }
+        
+        .log-entry.success { color: var(--success); }
+        .log-entry.error { color: var(--error); }
+        .log-entry.ai { color: var(--ai-primary); }
+        
+        /* Results Section */
+        .results-section {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .results-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .results-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            background: var(--success-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .results-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .results-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .result-stat {
+            padding: 24px;
+            text-align: center;
+            border-right: 1px solid var(--card-border);
+        }
+        
+        .result-stat:last-child {
+            border-right: none;
+        }
+        
+        .result-stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .result-stat-number.success { color: var(--success); }
+        .result-stat-number.error { color: var(--error); }
+        .result-stat-number.warning { color: var(--warning); }
+        
+        .result-stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .results-errors {
+            padding: 24px;
+        }
+        
+        .errors-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--error);
+            margin-bottom: 12px;
+        }
+        
+        .errors-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .errors-table th,
+        .errors-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 13px;
+        }
+        
+        .errors-table th {
+            background: var(--error-light);
+            font-weight: 600;
+            color: var(--error);
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 24px;
+            border-top: 1px solid var(--card-border);
+            background: #FAFAFA;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--content-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+        }
+        
+        .btn-primary:hover {
+            background: #7C3AED;
+        }
+        
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-page);
+            color: var(--text-primary);
+        }
+        
+        /* Navigation */
+        .step-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--card-border);
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <header class="global-header">
+        <a href="/" class="header-brand">
+            <div class="header-logo">G+</div>
+            <div>
+                <div class="header-title">GTM Library</div>
+                <div class="header-subtitle">Revenue Enablement</div>
+            </div>
+        </a>
+        
+        <a href="/manage" class="header-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back to Assets
+        </a>
+    </header>
+    
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="nav-section">
+                <div class="nav-section-title">Admin</div>
+                <a href="/manage" class="nav-item">
+                    <span class="nav-item-icon">📋</span>
+                    <span class="nav-item-label">Assets</span>
+                    <span class="nav-item-count">367</span>
+                </a>
+                <a href="/manage/import" class="nav-item active">
+                    <span class="nav-item-icon">📥</span>
+                    <span class="nav-item-label">Bulk Import</span>
+                </a>
+                <a href="/manage/tags" class="nav-item">
+                    <span class="nav-item-icon">🏷️</span>
+                    <span class="nav-item-label">Tags</span>
+                </a>
+                <a href="/manage/boards" class="nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span class="nav-item-label">Boards</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <div class="page-header">
+                <h1 class="page-title">Bulk Import Assets</h1>
+                <p class="page-subtitle">Import multiple assets from a CSV file with optional AI enhancement</p>
+            </div>
+            
+            <!-- Steps Progress -->
+            <div class="steps-progress">
+                <div class="step-indicator active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Upload</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-indicator" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Preview</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-indicator" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Import</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-indicator" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Results</span>
+                </div>
+            </div>
+            
+            <!-- Step 1: Upload -->
+            <div class="import-step active" id="step1">
+                <div class="upload-zone" onclick="document.getElementById('csvInput').click()">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-title">Drop your CSV file here</div>
+                    <div class="upload-desc">or click to browse your files</div>
+                    <button class="upload-btn">
+                        📁 Select CSV File
+                    </button>
+                    <input type="file" class="upload-input" id="csvInput" accept=".csv">
+                </div>
+                
+                <div class="template-section">
+                    <div class="template-title">📋 Download CSV Templates</div>
+                    <div class="template-links">
+                        <a href="#" class="template-link">
+                            📥 Standard Template
+                        </a>
+                        <a href="#" class="template-link">
+                            📥 Enablement Template (with training fields)
+                        </a>
+                        <a href="#" class="template-link">
+                            📥 Minimal Template (URLs only)
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Preview & Configure -->
+            <div class="import-step" id="step2">
+                <div class="preview-section">
+                    <div class="preview-header">
+                        <div class="preview-info">
+                            <div class="preview-stat">
+                                <span class="preview-stat-label">File:</span>
+                                <span class="preview-stat-value">assets_import.csv</span>
+                            </div>
+                            <div class="preview-stat">
+                                <span class="preview-stat-label">Rows:</span>
+                                <span class="preview-stat-value">24</span>
+                            </div>
+                            <div class="preview-stat">
+                                <span class="preview-stat-label">Valid:</span>
+                                <span class="preview-stat-value" style="color: var(--success);">22</span>
+                            </div>
+                            <div class="preview-stat">
+                                <span class="preview-stat-label">Warnings:</span>
+                                <span class="preview-stat-value" style="color: var(--warning);">2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-table-container">
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th>Title</th>
+                                    <th style="width: 100px;">Hub</th>
+                                    <th style="width: 120px;">Boards</th>
+                                    <th style="width: 150px;">Tags</th>
+                                    <th style="width: 80px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Technical Buyer Enablement Training</td>
+                                    <td><span class="hub-badge-sm enablement">Enablement</span></td>
+                                    <td>Enablement, Sales</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">sales</span>
+                                            <span class="tag-chip-sm">enterprise</span>
+                                            <span class="tag-chip-sm">cio</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status valid">✓ Valid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Zendesk Sidekick Battle Card</td>
+                                    <td><span class="hub-badge-sm content">Content</span></td>
+                                    <td>Competitive</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">zendesk</span>
+                                            <span class="tag-chip-sm">sidekick</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status valid">✓ Valid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>BVA Calculator 2024</td>
+                                    <td><span class="hub-badge-sm coe">CoE</span></td>
+                                    <td>CoE, Sales</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">bva</span>
+                                            <span class="tag-chip-sm">calculator</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status valid">✓ Valid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Discovery Call Best Practices</td>
+                                    <td><span class="hub-badge-sm enablement">Enablement</span></td>
+                                    <td>Enablement</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">discovery</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status warning">⚠ Missing URL</span></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Sierra Competitive Deep Dive</td>
+                                    <td><span class="hub-badge-sm content">Content</span></td>
+                                    <td>Competitive</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">sierra</span>
+                                            <span class="tag-chip-sm">competitive</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status valid">✓ Valid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Master Pitch Deck Q4 2024</td>
+                                    <td><span class="hub-badge-sm content">Content</span></td>
+                                    <td>Content Types, Sales</td>
+                                    <td>
+                                        <div class="tag-chips">
+                                            <span class="tag-chip-sm">pitch</span>
+                                            <span class="tag-chip-sm">deck</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="row-status valid">✓ Valid</span></td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td></td>
+                                    <td><span class="hub-badge-sm content">Content</span></td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td><span class="row-status warning">⚠ Missing title</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="import-options">
+                    <div class="options-title">Import Options</div>
+                    <div class="option-group">
+                        <div class="option-item">
+                            <input type="checkbox" id="optAI" checked>
+                            <div class="option-content">
+                                <label class="option-label" for="optAI">
+                                    🔮 AI-Enhanced Import
+                                    <span class="option-badge ai">AI</span>
+                                </label>
+                                <div class="option-desc">Automatically generate missing titles, descriptions, and tags from URLs</div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="checkbox" id="optLearning" checked>
+                            <div class="option-content">
+                                <label class="option-label" for="optLearning">
+                                    📚 Generate Learning Content
+                                    <span class="option-badge ai">AI</span>
+                                </label>
+                                <div class="option-desc">Create takeaways, how-tos, and tips for Enablement items</div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="checkbox" id="optSkip" checked>
+                            <div class="option-content">
+                                <label class="option-label" for="optSkip">
+                                    🔄 Skip Duplicates
+                                </label>
+                                <div class="option-desc">Skip rows where the primary URL already exists in the library</div>
+                            </div>
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="checkbox" id="optPublish">
+                            <div class="option-content">
+                                <label class="option-label" for="optPublish">
+                                    Default Status:
+                                    <select class="option-select">
+                                        <option value="draft" selected>Draft (review before publishing)</option>
+                                        <option value="published">Published immediately</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Importing -->
+            <div class="import-step" id="step3">
+                <div class="progress-section">
+                    <div class="progress-icon">⚡</div>
+                    <div class="progress-title">Importing Assets...</div>
+                    <div class="progress-desc">Processing 24 rows with AI enhancement</div>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-text">16 of 24 rows processed</div>
+                    
+                    <div class="progress-log">
+                        <div class="log-entry success">✓ Row 1: Technical Buyer Enablement Training</div>
+                        <div class="log-entry ai">🔮 Row 1: Generated 5 takeaways, 3 how-tos</div>
+                        <div class="log-entry success">✓ Row 2: Zendesk Sidekick Battle Card</div>
+                        <div class="log-entry success">✓ Row 3: BVA Calculator 2024</div>
+                        <div class="log-entry error">✗ Row 4: Skipped - Missing primary URL</div>
+                        <div class="log-entry success">✓ Row 5: Sierra Competitive Deep Dive</div>
+                        <div class="log-entry success">✓ Row 6: Master Pitch Deck Q4 2024</div>
+                        <div class="log-entry error">✗ Row 7: Skipped - Missing title</div>
+                        <div class="log-entry success">✓ Row 8: QBR Template Enterprise</div>
+                        <div class="log-entry ai">🔮 Row 8: Generated description and tags</div>
+                        <div class="log-entry">⏳ Processing Row 17...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 4: Results -->
+            <div class="import-step" id="step4">
+                <div class="results-section">
+                    <div class="results-header">
+                        <div class="results-icon">✅</div>
+                        <div class="results-title">Import Complete!</div>
+                        <div class="results-subtitle">Successfully imported 22 assets to your library</div>
+                    </div>
+                    
+                    <div class="results-stats">
+                        <div class="result-stat">
+                            <div class="result-stat-number success">22</div>
+                            <div class="result-stat-label">Successful</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-number error">2</div>
+                            <div class="result-stat-label">Failed</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-number warning">0</div>
+                            <div class="result-stat-label">Skipped (Duplicates)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-errors">
+                        <div class="errors-title">⚠ Failed Rows (2)</div>
+                        <table class="errors-table">
+                            <thead>
+                                <tr>
+                                    <th>Row</th>
+                                    <th>Title</th>
+                                    <th>Error</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Discovery Call Best Practices</td>
+                                    <td>Missing required field: primary_link</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>—</td>
+                                    <td>Missing required field: title</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <a href="/manage" class="btn-primary">View All Assets</a>
+                        <button class="btn-secondary" onclick="resetImport()">Import Another File</button>
+                        <a href="#" class="btn-secondary">📥 Download Report</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step Navigation -->
+            <div class="step-nav">
+                <button class="btn-secondary" id="btnBack" onclick="prevStep()" style="visibility: hidden;">← Back</button>
+                <button class="btn-primary" id="btnNext" onclick="nextStep()">Continue →</button>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        function updateStepUI() {
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const stepNum = index + 1;
+                indicator.classList.remove('active', 'completed');
+                if (stepNum < currentStep) {
+                    indicator.classList.add('completed');
+                } else if (stepNum === currentStep) {
+                    indicator.classList.add('active');
+                }
+            });
+            
+            // Update step lines
+            document.querySelectorAll('.step-line').forEach((line, index) => {
+                line.classList.toggle('completed', index < currentStep - 1);
+            });
+            
+            // Update step content
+            document.querySelectorAll('.import-step').forEach((step, index) => {
+                step.classList.toggle('active', index + 1 === currentStep);
+            });
+            
+            // Update navigation buttons
+            const btnBack = document.getElementById('btnBack');
+            const btnNext = document.getElementById('btnNext');
+            
+            btnBack.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+            
+            if (currentStep === 3) {
+                btnNext.textContent = 'Importing...';
+                btnNext.disabled = true;
+            } else if (currentStep === 4) {
+                btnNext.style.display = 'none';
+                btnBack.style.display = 'none';
+            } else if (currentStep === 2) {
+                btnNext.textContent = 'Start Import →';
+            } else {
+                btnNext.textContent = 'Continue →';
+                btnNext.disabled = false;
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepUI();
+                
+                // Simulate import progress on step 3
+                if (currentStep === 3) {
+                    simulateImport();
+                }
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+        
+        function simulateImport() {
+            const progressFill = document.querySelector('.progress-fill');
+            const progressText = document.querySelector('.progress-text');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += 5;
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `${Math.floor(progress / 100 * 24)} of 24 rows processed`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        currentStep = 4;
+                        updateStepUI();
+                    }, 500);
+                }
+            }, 150);
+        }
+        
+        function resetImport() {
+            currentStep = 1;
+            updateStepUI();
+            document.getElementById('btnNext').style.display = 'inline-flex';
+            document.getElementById('btnBack').style.display = 'inline-flex';
+        }
+        
+        // File upload handler
+        document.getElementById('csvInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                // Auto-advance to preview step
+                currentStep = 2;
+                updateStepUI();
+            }
+        });
+        
+        // Drag and drop
+        const uploadZone = document.querySelector('.upload-zone');
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            currentStep = 2;
+            updateStepUI();
+        });
+    </script>
+</body>
+</html>
