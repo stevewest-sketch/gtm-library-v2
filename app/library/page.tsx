@@ -4,6 +4,9 @@ import { BOARDS } from '@/lib/constants/hubs';
 import { db, catalogEntries } from '@/lib/db';
 import { eq, desc } from 'drizzle-orm';
 
+// Force dynamic rendering to avoid database calls at build time
+export const dynamic = 'force-dynamic';
+
 // Fetch all published assets
 async function getAssets() {
   const assets = await db
