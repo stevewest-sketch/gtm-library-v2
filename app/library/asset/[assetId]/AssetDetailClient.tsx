@@ -2,28 +2,88 @@
 
 import { useState } from 'react';
 
-// Helper to get Google Drive/Slides embed URL for preview
-function getPreviewEmbedUrl(url: string): { embedUrl: string; type: 'gdrive' | 'gslides' | 'pdf' | null } {
-  if (!url) return { embedUrl: '', type: null };
+// Helper to get embed URL for various document/content types
+function getPreviewEmbedUrl(url: string): { embedUrl: string; type: 'gslides' | 'gdocs' | 'gsheets' | 'gdrive' | 'figma' | 'canva' | 'miro' | 'pdf' | null; label: string } {
+  if (!url) return { embedUrl: '', type: null, label: '' };
 
   // Google Slides
   const gslidesMatch = url.match(/docs\.google\.com\/presentation\/d\/([a-zA-Z0-9_-]+)/);
   if (gslidesMatch) {
-    return { embedUrl: `https://docs.google.com/presentation/d/${gslidesMatch[1]}/embed?start=false&loop=false&delayms=3000`, type: 'gslides' };
+    return {
+      embedUrl: `https://docs.google.com/presentation/d/${gslidesMatch[1]}/embed?start=false&loop=false&delayms=3000`,
+      type: 'gslides',
+      label: 'Google Slides'
+    };
   }
 
-  // Google Drive file
+  // Google Docs
+  const gdocsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+  if (gdocsMatch) {
+    return {
+      embedUrl: `https://docs.google.com/document/d/${gdocsMatch[1]}/preview`,
+      type: 'gdocs',
+      label: 'Google Docs'
+    };
+  }
+
+  // Google Sheets
+  const gsheetsMatch = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if (gsheetsMatch) {
+    return {
+      embedUrl: `https://docs.google.com/spreadsheets/d/${gsheetsMatch[1]}/preview`,
+      type: 'gsheets',
+      label: 'Google Sheets'
+    };
+  }
+
+  // Google Drive file (PDFs, images, etc.)
   const gdriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (gdriveMatch) {
-    return { embedUrl: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`, type: 'gdrive' };
+    return {
+      embedUrl: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`,
+      type: 'gdrive',
+      label: 'Google Drive'
+    };
+  }
+
+  // Figma
+  const figmaMatch = url.match(/figma\.com\/(file|proto|design)\/([a-zA-Z0-9]+)/);
+  if (figmaMatch) {
+    return {
+      embedUrl: `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`,
+      type: 'figma',
+      label: 'Figma'
+    };
+  }
+
+  // Canva
+  const canvaMatch = url.match(/canva\.com\/design\/([a-zA-Z0-9_-]+)/);
+  if (canvaMatch) {
+    // Canva embed format: add /view at end if not present
+    const embedUrl = url.includes('/view') ? url : `${url}/view?embed`;
+    return {
+      embedUrl,
+      type: 'canva',
+      label: 'Canva'
+    };
+  }
+
+  // Miro
+  const miroMatch = url.match(/miro\.com\/app\/board\/([a-zA-Z0-9_=-]+)/);
+  if (miroMatch) {
+    return {
+      embedUrl: `https://miro.com/app/live-embed/${miroMatch[1]}/`,
+      type: 'miro',
+      label: 'Miro'
+    };
   }
 
   // Direct PDF
   if (url.match(/\.pdf(\?|$)/i)) {
-    return { embedUrl: url, type: 'pdf' };
+    return { embedUrl: url, type: 'pdf', label: 'PDF Document' };
   }
 
-  return { embedUrl: '', type: null };
+  return { embedUrl: '', type: null, label: '' };
 }
 
 // Helper to convert video URLs to embeddable format
@@ -123,7 +183,7 @@ export function AssetDetailClient({
   const canEmbedVideo = videoEmbed.type !== null;
 
   // Get preview embed URL for documents/slides
-  const previewEmbed = asset.primaryLink ? getPreviewEmbedUrl(asset.primaryLink) : { embedUrl: '', type: null };
+  const previewEmbed = asset.primaryLink ? getPreviewEmbedUrl(asset.primaryLink) : { embedUrl: '', type: null, label: '' };
   const canPreview = previewEmbed.type !== null;
 
   // The copyable link should be the actual asset URL (primaryLink), not the internal website URL
@@ -320,7 +380,7 @@ export function AssetDetailClient({
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
-              {previewEmbed.type === 'gslides' ? 'Google Slides' : previewEmbed.type === 'gdrive' ? 'Google Drive' : 'Document'}
+              {previewEmbed.label || 'Document'}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <a
