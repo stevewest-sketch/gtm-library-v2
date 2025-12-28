@@ -4,6 +4,9 @@ import { BOARDS, type BoardId } from "@/lib/constants/hubs";
 import { db, catalogEntries, assetBoards, boards, boardTags, tags } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 
+// Force dynamic rendering to avoid database calls at build time
+export const dynamic = 'force-dynamic';
+
 interface BoardPageProps {
   params: Promise<{ boardId: string }>;
 }
@@ -153,9 +156,3 @@ export default async function BoardPage({ params }: BoardPageProps) {
   );
 }
 
-// Generate static params for all boards
-export function generateStaticParams() {
-  return Object.keys(BOARDS).map((boardId) => ({
-    boardId,
-  }));
-}

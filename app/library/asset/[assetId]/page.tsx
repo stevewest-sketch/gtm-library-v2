@@ -5,6 +5,9 @@ import { catalogEntries, assetBoards, boards, assetTags, tags } from "@/lib/db/s
 import { eq } from "drizzle-orm";
 import { AssetDetailClient } from "./AssetDetailClient";
 
+// Force dynamic rendering to avoid database calls at build time
+export const dynamic = 'force-dynamic';
+
 interface AssetPageProps {
   params: Promise<{ assetId: string }>;
 }
