@@ -138,7 +138,7 @@ export default async function BoardPage({ params }: BoardPageProps) {
         { label: 'Library', href: '/library' },
         { label: `${boardIcon} ${boardName}` },
       ]}
-      boardTags={boardTagsData}
+      showFilters={false}
     >
       <BoardPageWrapper
         boardId={boardId}
