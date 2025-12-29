@@ -227,3 +227,63 @@ export function getTypeBadge(type: string) {
 export function getHubColors(hub: string) {
   return HUB_COLORS[hub.toLowerCase()] || HUB_COLORS.content;
 }
+
+// ============================================
+// TINTED HEADER COLORS - For Option 2 card design
+// ============================================
+
+/**
+ * Get tinted header background and border colors based on type badge color
+ * Creates a gradient from light to lighter for the header background
+ */
+export function getTypeHeaderColors(typeBadge: { bg: string; color: string } | null) {
+  if (!typeBadge) {
+    return {
+      headerBg: 'linear-gradient(135deg, #F1F5F9 0%, #F8FAFC 100%)',
+      headerBorder: 'rgba(100, 116, 139, 0.12)',
+      badgeText: '#475569',
+    };
+  }
+
+  // Map common type colors to their header gradient/border colors
+  const colorMap: Record<string, { light: string; lighter: string; text: string }> = {
+    // Green (Product Training, Case Study, etc.)
+    '#10B981': { light: '#D1FAE5', lighter: '#ECFDF5', text: '#047857' },
+    // Teal (Meeting Asset)
+    '#14B8A6': { light: '#CCFBF1', lighter: '#F0FDFA', text: '#0F766E' },
+    // Purple (GTM Training, Deck, etc.)
+    '#8B5CF6': { light: '#EDE9FE', lighter: '#F5F3FF', text: '#6D28D9' },
+    '#8C69F0': { light: '#EDE9FE', lighter: '#F5F3FF', text: '#6D28D9' },
+    '#7C3AED': { light: '#EDE9FE', lighter: '#F5F3FF', text: '#6D28D9' },
+    // Indigo (Internal)
+    '#6366F1': { light: '#E0E7FF', lighter: '#EEF2FF', text: '#4338CA' },
+    // Red (Competitive, Battlecard)
+    '#EF4444': { light: '#FEE2E2', lighter: '#FEF2F2', text: '#B91C1C' },
+    // Amber/Orange (Customer Meeting, Benchmark, etc.)
+    '#F59E0B': { light: '#FEF3C7', lighter: '#FFFBEB', text: '#B45309' },
+    '#D97706': { light: '#FEF3C7', lighter: '#FFFBEB', text: '#B45309' },
+    // Blue (Dashboard, Demo, Guide, etc.)
+    '#3B82F6': { light: '#DBEAFE', lighter: '#EFF6FF', text: '#1D4ED8' },
+    '#2563EB': { light: '#DBEAFE', lighter: '#EFF6FF', text: '#1D4ED8' },
+    // Cyan (Calculator, Tool, etc.)
+    '#06B6D4': { light: '#CFFAFE', lighter: '#ECFEFF', text: '#0E7490' },
+    '#0891B2': { light: '#CFFAFE', lighter: '#ECFEFF', text: '#0E7490' },
+    // Pink (Messaging, Promo)
+    '#EC4899': { light: '#FCE7F3', lighter: '#FDF2F8', text: '#BE185D' },
+    '#DB2777': { light: '#FCE7F3', lighter: '#FDF2F8', text: '#BE185D' },
+    // Gray (Press)
+    '#64748B': { light: '#F1F5F9', lighter: '#F8FAFC', text: '#475569' },
+  };
+
+  const colors = colorMap[typeBadge.color] || {
+    light: typeBadge.bg,
+    lighter: typeBadge.bg + '80', // 50% opacity fallback
+    text: typeBadge.color,
+  };
+
+  return {
+    headerBg: `linear-gradient(135deg, ${colors.light} 0%, ${colors.lighter} 100%)`,
+    headerBorder: `${typeBadge.color}1F`, // 12% opacity
+    badgeText: colors.text,
+  };
+}
