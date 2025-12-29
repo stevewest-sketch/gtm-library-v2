@@ -81,11 +81,19 @@ export function BoardPageContent({
   // Count assets per tag (matching by both slug and name)
   const assetCountByTag = useMemo(() => {
     const counts: Record<string, number> = {};
+    // Debug: Log first asset's tags to see the data structure
+    if (assets.length > 0 && typeof window !== 'undefined') {
+      console.log('DEBUG: First asset tags:', assets[0].tags, 'Type:', typeof assets[0].tags, 'IsArray:', Array.isArray(assets[0].tags));
+      console.log('DEBUG: Board tags:', boardTagsFromAPI?.map(t => t.slug));
+    }
     boardTagsFromAPI?.forEach(boardTag => {
       counts[boardTag.slug] = assets.filter(asset =>
         asset.tags.some(assetTag => assetTagMatchesBoardTag(assetTag, boardTag))
       ).length;
     });
+    if (typeof window !== 'undefined') {
+      console.log('DEBUG: Tag counts:', counts);
+    }
     return counts;
   }, [assets, boardTagsFromAPI]);
 
