@@ -96,7 +96,7 @@ export function PageHeader() {
     >
       {/* Brand - Logo + Text */}
       <Link
-        href="/library"
+        href="/"
         className="flex items-center no-underline"
         style={{ gap: '12px' }}
       >
@@ -117,7 +117,7 @@ export function PageHeader() {
           G+
         </div>
         <span style={{ color: 'white', fontSize: '16px', fontWeight: 600 }}>
-          GTM Library
+          GTM Hub
         </span>
       </Link>
 
@@ -246,7 +246,7 @@ export function PageHeader() {
                 {results.tags.map((tag) => (
                   <Link
                     key={tag.id}
-                    href={`/library/tag/${tag.slug}`}
+                    href={`/tag/${tag.slug}`}
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchQuery('');
@@ -330,7 +330,7 @@ export function PageHeader() {
                 {results.assets.map((asset) => (
                   <Link
                     key={asset.id}
-                    href={`/library/asset/${asset.slug}`}
+                    href={`/asset/${asset.slug}`}
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchQuery('');
@@ -383,7 +383,7 @@ export function PageHeader() {
               </div>
             )}
 
-            {/* Boards Section - show at bottom if present */}
+            {/* Hubs Section - show at bottom if present */}
             {results.boards.length > 0 && (
               <div style={{ borderTop: results.tags.length > 0 || results.assets.length > 0 ? '1px solid #F1F5F9' : 'none' }}>
                 <div
@@ -396,12 +396,12 @@ export function PageHeader() {
                     color: '#94A3B8',
                   }}
                 >
-                  Boards
+                  Hubs
                 </div>
                 {results.boards.map((board) => (
                   <Link
                     key={board.id}
-                    href={`/library/board/${board.slug}`}
+                    href={`/hub/${board.slug}`}
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchQuery('');

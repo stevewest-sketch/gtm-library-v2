@@ -23,7 +23,7 @@ export function BoardButton({
 }: BoardButtonProps) {
   return (
     <Link
-      href={`/library/board/${slug}`}
+      href={`/hub/${slug}`}
       className="block rounded-xl border text-center transition-all duration-200 hover:-translate-y-0.5"
       style={{
         backgroundColor: lightColor,

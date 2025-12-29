@@ -1,7 +1,7 @@
 'use client';
 
-import { BoardPageContent } from './BoardPageContent';
-import { useFilterContext } from './LibraryLayout';
+import { HubPageContent } from './HubPageContent';
+import { useFilterContext } from './HubLayout';
 
 interface Asset {
   id: string;
@@ -27,29 +27,32 @@ interface TagData {
   displayName?: string | null;
 }
 
-interface BoardConfig {
+interface HubConfig {
   name: string;
   icon: string;
   color: string;
 }
 
-interface BoardPageWrapperProps {
-  boardId: string;
-  board: BoardConfig;
+interface HubPageWrapperProps {
+  hubId: string;
+  hub: HubConfig;
   assets: Asset[];
-  boardTags?: TagData[];
+  hubTags?: TagData[];
 }
 
-export function BoardPageWrapper({ boardId, board, assets, boardTags }: BoardPageWrapperProps) {
+export function HubPageWrapper({ hubId, hub, assets, hubTags }: HubPageWrapperProps) {
   const { selectedTags } = useFilterContext();
 
   return (
-    <BoardPageContent
-      boardId={boardId}
-      board={board}
+    <HubPageContent
+      hubId={hubId}
+      hub={hub}
       assets={assets}
       selectedTags={selectedTags}
-      boardTags={boardTags}
+      hubTags={hubTags}
     />
   );
 }
+
+// Legacy alias
+export const BoardPageWrapper = HubPageWrapper;

@@ -21,7 +21,7 @@ interface Asset {
   primaryLink?: string;
 }
 
-interface Board {
+interface Hub {
   id: string;
   slug: string;
   name: string;
@@ -33,9 +33,9 @@ interface Board {
   description?: string;
 }
 
-interface LibraryHomepageContentProps {
+interface HubHomepageContentProps {
   recentAssets: Asset[];
-  boards: Board[];
+  hubs: Hub[];
   totalItems: number;
   newThisWeek: number;
 }
@@ -48,7 +48,7 @@ const QUICK_ACCESS = [
     description: 'Training sessions, certifications, and learning paths',
     icon: '🎓',
     iconBg: '#D1FAE5',
-    href: '/library/board/enablement',
+    href: '/hub/enablement',
   },
   {
     id: 'competitive',
@@ -56,7 +56,7 @@ const QUICK_ACCESS = [
     description: 'Competitive intelligence and positioning',
     icon: '⚔️',
     iconBg: '#FEE2E2',
-    href: '/library/board/competitive',
+    href: '/hub/competitive',
   },
   {
     id: 'sales',
@@ -64,18 +64,18 @@ const QUICK_ACCESS = [
     description: 'Decks, templates, and discovery guides',
     icon: '📈',
     iconBg: '#E0F2FE',
-    href: '/library/board/sales',
+    href: '/hub/sales',
   },
 ];
 
-export function LibraryHomepageContent({
+export function HubHomepageContent({
   recentAssets,
-  boards,
+  hubs,
   totalItems,
   newThisWeek,
-}: LibraryHomepageContentProps) {
+}: HubHomepageContentProps) {
   const [quickHover, setQuickHover] = useState<string | null>(null);
-  const [boardHover, setBoardHover] = useState<string | null>(null);
+  const [hubHover, setHubHover] = useState<string | null>(null);
 
   // Show first 6 recent assets
   const displayedRecent = recentAssets.slice(0, 6);
@@ -117,7 +117,7 @@ export function LibraryHomepageContent({
                 marginBottom: '8px',
               }}
             >
-              Welcome to GTM Library
+              Welcome to GTM Hub
             </h1>
             <p
               style={{
@@ -134,10 +134,10 @@ export function LibraryHomepageContent({
             <div style={{ display: 'flex', gap: '32px' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontSize: '28px', fontWeight: 700, color: 'white' }}>
-                  {boards.length}
+                  {hubs.length}
                 </span>
                 <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>
-                  Boards
+                  Hubs
                 </span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -219,11 +219,11 @@ export function LibraryHomepageContent({
           </div>
         </section>
 
-        {/* Browse by Board Section */}
+        {/* Browse by Hub Section */}
         <section style={{ marginBottom: '32px' }}>
           <div style={{ marginBottom: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
-              Browse by Board
+              Browse by Hub
             </h3>
           </div>
           <div
@@ -233,15 +233,15 @@ export function LibraryHomepageContent({
               gap: '12px',
             }}
           >
-            {boards.map((board) => (
+            {hubs.map((hub) => (
               <Link
-                key={board.id}
-                href={`/library/board/${board.slug}`}
-                onMouseEnter={() => setBoardHover(board.id)}
-                onMouseLeave={() => setBoardHover(null)}
+                key={hub.id}
+                href={`/hub/${hub.slug}`}
+                onMouseEnter={() => setHubHover(hub.id)}
+                onMouseLeave={() => setHubHover(null)}
                 style={{
                   background: 'white',
-                  border: `1px solid ${boardHover === board.id ? '#8C69F0' : 'var(--card-border)'}`,
+                  border: `1px solid ${hubHover === hub.id ? '#8C69F0' : 'var(--card-border)'}`,
                   borderRadius: '12px',
                   padding: '16px',
                   display: 'flex',
@@ -249,7 +249,7 @@ export function LibraryHomepageContent({
                   gap: '12px',
                   textDecoration: 'none',
                   transition: 'all 0.15s ease',
-                  boxShadow: boardHover === board.id ? '0 4px 12px rgba(0, 0, 0, 0.06)' : 'none',
+                  boxShadow: hubHover === hub.id ? '0 4px 12px rgba(0, 0, 0, 0.06)' : 'none',
                 }}
               >
                 <div
@@ -261,18 +261,18 @@ export function LibraryHomepageContent({
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '18px',
-                    background: board.lightColor,
+                    background: hub.lightColor,
                     flexShrink: 0,
                   }}
                 >
-                  {board.icon}
+                  {hub.icon}
                 </div>
                 <div>
                   <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                    {board.name}
+                    {hub.name}
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                    {board.count} items
+                    {hub.count} items
                   </div>
                 </div>
               </Link>
@@ -288,7 +288,7 @@ export function LibraryHomepageContent({
             </h3>
           </div>
 
-          {/* Asset Card Grid - uses same AssetCard as board pages */}
+          {/* Asset Card Grid */}
           {displayedRecent.length > 0 ? (
             <div
               style={{
@@ -331,3 +331,6 @@ export function LibraryHomepageContent({
     </div>
   );
 }
+
+// Legacy alias
+export const LibraryHomepageContent = HubHomepageContent;

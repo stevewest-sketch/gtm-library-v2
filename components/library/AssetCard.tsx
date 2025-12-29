@@ -58,7 +58,7 @@ export function AssetCard({
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
-  const assetUrl = href || `/library/asset/${slug}`;
+  const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
@@ -267,7 +267,7 @@ export function CompactCard({
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
-  const assetUrl = href || `/library/asset/${slug}`;
+  const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
@@ -468,7 +468,7 @@ export function HeroCard({
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
-  const assetUrl = href || `/library/asset/${slug}`;
+  const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
@@ -659,7 +659,7 @@ export function AssetListItem({
   const formatConfig = getFormatConfig(format);
   const typeBadge = type ? getTypeBadge(type) : null;
 
-  const assetUrl = href || `/library/asset/${slug}`;
+  const assetUrl = href || `/asset/${slug}`;
 
   return (
     <Link

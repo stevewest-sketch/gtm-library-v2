@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { LibraryLayout } from "@/components/library";
+import { HubLayout } from "@/components/library";
 import { db } from "@/lib/db";
 import { catalogEntries, assetBoards, boards, assetTags, tags } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -40,7 +40,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
     notFound();
   }
 
-  // Get associated boards
+  // Get associated boards (now called hubs in UI)
   const assetBoardsData = await db
     .select({
       id: boards.id,
@@ -93,12 +93,12 @@ export default async function AssetPage({ params }: AssetPageProps) {
   const shareableLink = `https://gtm.gladly.com/asset/${asset.slug}`;
 
   return (
-    <LibraryLayout
+    <HubLayout
       showSidebar={true}
       showFilters={false}
       breadcrumbs={[
-        { label: 'Library', href: '/library' },
-        { label: hubName, href: `/library/board/${asset.hub}` },
+        { label: 'Home', href: '/' },
+        { label: hubName, href: `/hub/${asset.hub}` },
         { label: asset.title },
       ]}
     >
@@ -120,6 +120,6 @@ export default async function AssetPage({ params }: AssetPageProps) {
         assetBoardsData={assetBoardsData}
         assetTagsData={assetTagsData}
       />
-    </LibraryLayout>
+    </HubLayout>
   );
 }

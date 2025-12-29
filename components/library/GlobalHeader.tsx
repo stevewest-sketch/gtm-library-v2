@@ -19,7 +19,7 @@ export function GlobalHeader({}: GlobalHeaderProps) {
     >
       {/* Brand - Logo + Text */}
       <Link
-        href="/library"
+        href="/"
         className="flex items-center no-underline"
         style={{ gap: '12px' }}
       >
@@ -40,7 +40,7 @@ export function GlobalHeader({}: GlobalHeaderProps) {
           G+
         </div>
         <span style={{ color: 'white', fontSize: '16px', fontWeight: 600 }}>
-          GTM Library
+          GTM Hub
         </span>
       </Link>
 

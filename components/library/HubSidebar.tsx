@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-interface BoardFromAPI {
+interface HubFromAPI {
   id: string;
   slug: string;
   name: string;
@@ -17,48 +17,48 @@ interface BoardFromAPI {
   assetCount: number;
 }
 
-interface LibrarySidebarProps {
-  activeBoard?: string;
+interface HubSidebarProps {
+  activeHub?: string;
 }
 
-export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
+export function HubSidebar({ activeHub }: HubSidebarProps) {
   const pathname = usePathname();
-  const [boards, setBoards] = useState<BoardFromAPI[]>([]);
+  const [hubs, setHubs] = useState<HubFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch boards from API
+  // Fetch hubs from API
   useEffect(() => {
-    async function fetchBoards() {
+    async function fetchHubs() {
       try {
         const res = await fetch('/api/boards');
         if (res.ok) {
           const data = await res.json();
-          setBoards(data);
+          setHubs(data);
         }
       } catch (error) {
-        console.error('Failed to fetch boards:', error);
+        console.error('Failed to fetch hubs:', error);
       } finally {
         setLoading(false);
       }
     }
-    fetchBoards();
+    fetchHubs();
   }, []);
 
   // Check if we're on the home page
-  const isHomeActive = pathname === '/' || pathname === '/library';
+  const isHomeActive = pathname === '/';
 
-  // Determine active board from props or pathname
-  const currentBoard = activeBoard || pathname.match(/\/board\/([^/]+)/)?.[1];
+  // Determine active hub from props or pathname
+  const currentHub = activeHub || pathname.match(/\/hub\/([^/]+)/)?.[1];
 
-  // Map API boards to display format
-  const displayBoards = boards.map(b => ({
-    id: b.slug,
-    name: b.name,
-    icon: b.icon || '📁',
-    color: b.color,
-    lightColor: b.lightColor || '#F3F4F6',
-    accentColor: b.accentColor || '#4B5563',
-    count: b.assetCount,
+  // Map API hubs to display format
+  const displayHubs = hubs.map(h => ({
+    id: h.slug,
+    name: h.name,
+    icon: h.icon || '📁',
+    color: h.color,
+    lightColor: h.lightColor || '#F3F4F6',
+    accentColor: h.accentColor || '#4B5563',
+    count: h.assetCount,
   }));
 
   return (
@@ -74,11 +74,11 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
     >
       {/* Navigation Area */}
       <div style={{ flex: 1, overflow: 'auto', padding: '16px 12px' }}>
-      {/* Main Navigation - v7 exact: nav-section margin-bottom: 20px */}
+      {/* Main Navigation */}
       <div style={{ marginBottom: '20px' }}>
         {/* Home Link */}
         <Link
-          href="/library"
+          href="/"
           className="flex items-center gap-2.5 rounded-md text-[13px] no-underline transition-all"
           style={{
             padding: '9px 10px',
@@ -100,7 +100,7 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
         </Link>
       </div>
 
-      {/* Boards Section */}
+      {/* Hubs Section */}
       <div>
         <div
           style={{
@@ -112,7 +112,7 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
             padding: '8px 10px 6px',
           }}
         >
-          Boards
+          Hubs
         </div>
 
         <nav className="flex flex-col">
@@ -130,19 +130,19 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
               </div>
             ))
           ) : (
-            displayBoards.map((board) => {
-              const isActive = currentBoard === board.id;
+            displayHubs.map((hub) => {
+              const isActive = currentHub === hub.id;
               return (
                 <Link
-                  key={board.id}
-                  href={`/library/board/${board.id}`}
+                  key={hub.id}
+                  href={`/hub/${hub.id}`}
                   className="flex items-center gap-2.5 text-[13px] no-underline transition-all"
                   style={{
                     padding: '9px 10px',
                     margin: '2px 0',
                     borderRadius: '6px',
-                    color: isActive ? board.accentColor : 'var(--text-secondary)',
-                    backgroundColor: isActive ? board.lightColor : 'transparent',
+                    color: isActive ? hub.accentColor : 'var(--text-secondary)',
+                    backgroundColor: isActive ? hub.lightColor : 'transparent',
                     fontWeight: isActive ? 500 : 400,
                   }}
                   onMouseEnter={(e) => {
@@ -159,10 +159,10 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
                   {/* Colored Dot */}
                   <span
                     className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: board.color }}
+                    style={{ backgroundColor: hub.color }}
                   />
                   {/* Label */}
-                  <span className="flex-1">{board.name}</span>
+                  <span className="flex-1">{hub.name}</span>
                   {/* Count */}
                   <span
                     className="text-[11px] px-2 py-0.5 rounded-full"
@@ -171,7 +171,7 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
                       backgroundColor: 'var(--bg-page)',
                     }}
                   >
-                    {board.count}
+                    {hub.count}
                   </span>
                 </Link>
               );
@@ -183,3 +183,6 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
     </aside>
   );
 }
+
+// Legacy alias
+export const LibrarySidebar = HubSidebar;

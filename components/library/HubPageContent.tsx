@@ -33,61 +33,61 @@ interface TagData {
   displayName?: string | null;
 }
 
-interface BoardConfig {
+interface HubConfig {
   name: string;
   icon: string;
   color: string;
 }
 
-interface BoardPageContentProps {
-  boardId: string;
-  board: BoardConfig;
+interface HubPageContentProps {
+  hubId: string;
+  hub: HubConfig;
   assets: Asset[];
   selectedTags: string[];
-  boardTags?: TagData[];
+  hubTags?: TagData[];
   defaultView?: 'grid' | 'stack';
 }
 
-export function BoardPageContent({
-  board,
+export function HubPageContent({
+  hub,
   assets,
-  boardTags: boardTagsFromAPI,
+  hubTags: hubTagsFromAPI,
   defaultView = 'grid',
-}: BoardPageContentProps) {
+}: HubPageContentProps) {
   // Internal tag selection state - uses slugs as keys for consistency
   const [internalSelectedTags, setInternalSelectedTags] = useState<string[]>([]);
 
   // Get all board tag slugs for internal tracking
-  const boardTagSlugs = boardTagsFromAPI?.map(t => t.slug) || [];
+  const hubTagSlugs = hubTagsFromAPI?.map(t => t.slug) || [];
   
   // Display map: slug -> displayName (or name as fallback)
-  const boardTagDisplayMap = useMemo(() => {
+  const hubTagDisplayMap = useMemo(() => {
     const map: Record<string, string> = {};
-    boardTagsFromAPI?.forEach(t => {
+    hubTagsFromAPI?.forEach(t => {
       map[t.slug] = t.displayName || t.name;
     });
     return map;
-  }, [boardTagsFromAPI]);
+  }, [hubTagsFromAPI]);
 
   // Helper: Check if an asset tag matches a board tag (by slug OR name)
-  const assetTagMatchesBoardTag = (assetTag: string, boardTag: TagData): boolean => {
+  const assetTagMatchesBoardTag = (assetTag: string, hubTag: TagData): boolean => {
     const assetTagLower = assetTag.toLowerCase();
     return (
-      assetTagLower === boardTag.slug.toLowerCase() ||
-      assetTagLower === boardTag.name.toLowerCase()
+      assetTagLower === hubTag.slug.toLowerCase() ||
+      assetTagLower === hubTag.name.toLowerCase()
     );
   };
 
   // Count assets per tag (matching by both slug and name)
   const assetCountByTag = useMemo(() => {
     const counts: Record<string, number> = {};
-    boardTagsFromAPI?.forEach(boardTag => {
-      counts[boardTag.slug] = assets.filter(asset =>
-        asset.tags.some(assetTag => assetTagMatchesBoardTag(assetTag, boardTag))
+    hubTagsFromAPI?.forEach(hubTag => {
+      counts[hubTag.slug] = assets.filter(asset =>
+        asset.tags.some(assetTag => assetTagMatchesBoardTag(assetTag, hubTag))
       ).length;
     });
     return counts;
-  }, [assets, boardTagsFromAPI]);
+  }, [assets, hubTagsFromAPI]);
 
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'stack'>(defaultView);
@@ -107,7 +107,7 @@ export function BoardPageContent({
   };
 
   // Use internal selected tags, default to all if empty
-  const effectiveSelectedTags = internalSelectedTags.length > 0 ? internalSelectedTags : [...boardTagSlugs];
+  const effectiveSelectedTags = internalSelectedTags.length > 0 ? internalSelectedTags : [...hubTagSlugs];
 
   // Toggle a tag in the pills (uses slug)
   const toggleTag = (tagSlug: string) => {
@@ -133,12 +133,12 @@ export function BoardPageContent({
   // Group assets by their tags that match board tags (matching by both slug and name)
   const assetsByTag = useMemo(() => {
     const grouped: Record<string, Asset[]> = {};
-    boardTagsFromAPI?.forEach(boardTag => {
-      grouped[boardTag.slug] = [];
+    hubTagsFromAPI?.forEach(hubTag => {
+      grouped[hubTag.slug] = [];
     });
     assets.forEach(asset => {
       asset.tags.forEach(assetTag => {
-        const matchingBoardTag = boardTagsFromAPI?.find(bt => 
+        const matchingBoardTag = hubTagsFromAPI?.find(bt => 
           assetTagMatchesBoardTag(assetTag, bt)
         );
         if (matchingBoardTag && grouped[matchingBoardTag.slug]) {
@@ -149,7 +149,7 @@ export function BoardPageContent({
       });
     });
     return grouped;
-  }, [assets, boardTagsFromAPI]);
+  }, [assets, hubTagsFromAPI]);
 
   // Sort assets
   const sortAssets = (assetsToSort: Asset[]): Asset[] => {
@@ -164,7 +164,7 @@ export function BoardPageContent({
   };
 
   // Get visible sections based on selected tags (using slugs)
-  const visibleSlugs = boardTagSlugs.filter(slug => effectiveSelectedTags.includes(slug));
+  const visibleSlugs = hubTagSlugs.filter(slug => effectiveSelectedTags.includes(slug));
   const hasAnyAssets = assets.length > 0;
 
   return (
@@ -185,7 +185,7 @@ export function BoardPageContent({
         }}
       >
         {/* Horizontal Pills Navigation - Option A from design system */}
-        {boardTagSlugs.length > 0 && (
+        {hubTagSlugs.length > 0 && (
           <div
             style={{
               display: 'flex',
@@ -210,7 +210,7 @@ export function BoardPageContent({
               border: 'none',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
-              background: internalSelectedTags.length === 0 ? board.color : '#F1F5F9',
+              background: internalSelectedTags.length === 0 ? hub.color : '#F1F5F9',
               color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
             }}
           >
@@ -229,7 +229,7 @@ export function BoardPageContent({
           </button>
 
           {/* Tag pills - display name but track by slug */}
-          {boardTagsFromAPI?.map(tag => (
+          {hubTagsFromAPI?.map(tag => (
             <button
               key={tag.slug}
               onClick={() => toggleTag(tag.slug)}
@@ -244,11 +244,11 @@ export function BoardPageContent({
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
-                background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? board.color : '#F1F5F9',
+                background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? hub.color : '#F1F5F9',
                 color: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'white' : '#64748B',
               }}
             >
-              {boardTagDisplayMap[tag.slug]}
+              {hubTagDisplayMap[tag.slug]}
               <span
                 style={{
                   fontSize: '11px',
@@ -275,9 +275,9 @@ export function BoardPageContent({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px' }}>{board.icon}</span>
+            <span style={{ fontSize: '18px' }}>{hub.icon}</span>
             <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#0F172A', margin: 0 }}>
-              {board.name}
+              {hub.name}
             </h2>
             <span style={{ fontSize: '14px', color: '#64748B' }}>
               {assets.length} items
@@ -371,7 +371,7 @@ export function BoardPageContent({
                     marginBottom: '16px',
                   }}
                 >
-                  {boardTagDisplayMap[slug]}
+                  {hubTagDisplayMap[slug]}
                 </h3>
                 {viewMode === 'grid' ? (
                   (() => {
@@ -732,15 +732,15 @@ export function BoardPageContent({
             />
           </svg>
           <h3 className="text-lg font-medium mb-2" style={{ color: '#0F172A' }}>
-            No {board.name.toLowerCase()} resources yet
+            No {hub.name.toLowerCase()} resources yet
           </h3>
           <p className="mb-6 max-w-md mx-auto" style={{ color: '#64748B' }}>
-            Resources tagged with {board.name} will appear here.
+            Resources tagged with {hub.name} will appear here.
           </p>
           <a
             href="/admin/upload"
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors"
-            style={{ backgroundColor: board.color }}
+            style={{ backgroundColor: hub.color }}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -752,3 +752,6 @@ export function BoardPageContent({
     </>
   );
 }
+
+// Legacy alias
+export const BoardPageContent = HubPageContent;

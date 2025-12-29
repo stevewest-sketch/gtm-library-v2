@@ -2,7 +2,7 @@
 
 import { useState, Suspense, createContext, useContext } from 'react';
 import { PageHeader } from './PageHeader';
-import { LibrarySidebar } from './LibrarySidebar';
+import { HubSidebar } from './HubSidebar';
 import { FilterSidebar } from './FilterSidebar';
 
 // Context to share filter state with children
@@ -29,13 +29,13 @@ interface TagData {
   slug: string;
 }
 
-interface LibraryLayoutProps {
+interface HubLayoutProps {
   children: React.ReactNode;
-  activeBoard?: string;
+  activeHub?: string;
   breadcrumbs?: BreadcrumbItem[];
   showSidebar?: boolean;
   showFilters?: boolean;
-  boardTags?: TagData[];
+  hubTags?: TagData[];
 }
 
 function SidebarFallback() {
@@ -80,22 +80,15 @@ function FilterFallback() {
   );
 }
 
-export function LibraryLayout({
+export function HubLayout({
   children,
-  activeBoard,
+  activeHub,
   breadcrumbs,
   showSidebar = true,
   showFilters = true,
-  boardTags,
-}: LibraryLayoutProps) {
+  hubTags,
+}: HubLayoutProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  // Determine main content class based on what's shown
-  const getMainClass = () => {
-    if (!showSidebar) return 'main-full';
-    if (!showFilters) return 'main-with-sidebar';
-    return 'main-with-sidebars';
-  };
 
   return (
     <FilterContext.Provider value={{ selectedTags }}>
@@ -108,7 +101,7 @@ export function LibraryLayout({
         {/* Static Left Sidebar (starts below header) */}
         {showSidebar && (
           <Suspense fallback={<SidebarFallback />}>
-            <LibrarySidebar activeBoard={activeBoard} />
+            <HubSidebar activeHub={activeHub} />
           </Suspense>
         )}
 
@@ -125,8 +118,8 @@ export function LibraryLayout({
           {showSidebar && showFilters && (
             <Suspense fallback={<FilterFallback />}>
               <FilterSidebar
-                activeBoard={activeBoard}
-                boardTags={boardTags}
+                activeHub={activeHub}
+                hubTags={hubTags}
                 selectedTags={selectedTags}
                 onTagChange={setSelectedTags}
               />
@@ -148,3 +141,6 @@ export function LibraryLayout({
     </FilterContext.Provider>
   );
 }
+
+// Legacy alias
+export const LibraryLayout = HubLayout;

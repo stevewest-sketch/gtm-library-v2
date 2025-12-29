@@ -42,7 +42,7 @@ export function TagResultsContent({
   const router = useRouter();
 
   const handleClearTag = () => {
-    router.push('/library');
+    router.push('/');
   };
 
   return (
@@ -132,7 +132,7 @@ export function TagResultsContent({
             {relatedTags.map((relatedTag) => (
               <Link
                 key={relatedTag.id}
-                href={`/library/tag/${relatedTag.slug}`}
+                href={`/tag/${relatedTag.slug}`}
                 style={{
                   padding: '6px 12px',
                   background: 'white',

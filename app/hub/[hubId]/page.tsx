@@ -1,16 +1,16 @@
 import { notFound } from "next/navigation";
-import { LibraryLayout, BoardPageWrapper } from "@/components/library";
+import { HubLayout, HubPageWrapper } from "@/components/library";
 import { db, catalogEntries, assetBoards, boards, boardTags, tags } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 
 // Force dynamic rendering to avoid database calls at build time
 export const dynamic = 'force-dynamic';
 
-interface BoardPageProps {
-  params: Promise<{ boardId: string }>;
+interface HubPageProps {
+  params: Promise<{ hubId: string }>;
 }
 
-interface BoardData {
+interface HubData {
   id: string;
   slug: string;
   name: string;
@@ -24,23 +24,23 @@ interface TagData {
   id: string;
   name: string;
   slug: string;
-  displayName?: string | null; // Board-specific display name override
+  displayName?: string | null;
 }
 
-async function getBoardWithTagsAndAssets(boardSlug: string) {
-  // Get the board from the database
-  const [boardRecord] = await db
+async function getHubWithTagsAndAssets(hubSlug: string) {
+  // Get the hub from the database
+  const [hubRecord] = await db
     .select()
     .from(boards)
-    .where(eq(boards.slug, boardSlug))
+    .where(eq(boards.slug, hubSlug))
     .limit(1);
 
-  if (!boardRecord) {
+  if (!hubRecord) {
     return null;
   }
 
-  // Get tags for this board (including displayName override from boardTags)
-  const boardTagsData = await db
+  // Get tags for this hub (including displayName override from boardTags)
+  const hubTagsData = await db
     .select({
       id: tags.id,
       name: tags.name,
@@ -49,10 +49,10 @@ async function getBoardWithTagsAndAssets(boardSlug: string) {
     })
     .from(boardTags)
     .innerJoin(tags, eq(boardTags.tagId, tags.id))
-    .where(eq(boardTags.boardId, boardRecord.id))
+    .where(eq(boardTags.boardId, hubRecord.id))
     .orderBy(boardTags.sortOrder);
 
-  // Get assets associated with this board
+  // Get assets associated with this hub
   const assets = await db
     .selectDistinct({
       id: catalogEntries.id,
@@ -77,43 +77,43 @@ async function getBoardWithTagsAndAssets(boardSlug: string) {
     .where(
       and(
         eq(catalogEntries.status, 'published'),
-        eq(assetBoards.boardId, boardRecord.id)
+        eq(assetBoards.boardId, hubRecord.id)
       )
     );
 
   return {
-    board: boardRecord as BoardData,
-    tags: boardTagsData as TagData[],
+    hub: hubRecord as HubData,
+    tags: hubTagsData as TagData[],
     assets,
   };
 }
 
-export default async function BoardPage({ params }: BoardPageProps) {
-  const { boardId } = await params;
+export default async function HubPage({ params }: HubPageProps) {
+  const { hubId } = await params;
 
-  // Fetch board, tags, and assets from database
-  const data = await getBoardWithTagsAndAssets(boardId);
+  // Fetch hub, tags, and assets from database
+  const data = await getHubWithTagsAndAssets(hubId);
 
-  // Board must exist in database (no static fallback)
+  // Hub must exist in database (no static fallback)
   if (!data) {
     notFound();
   }
 
-  const { board, tags: boardTagsData, assets: dbAssets } = data;
+  const { hub, tags: hubTagsData, assets: dbAssets } = data;
 
-  // Use database values for board config
-  const boardIcon = board.icon || '📁';
-  const boardName = board.name;
-  const boardColor = board.color;
+  // Use database values for hub config
+  const hubIcon = hub.icon || '📁';
+  const hubName = hub.name;
+  const hubColor = hub.color;
 
-  // Board config to pass to content component
-  const boardConfig = {
-    name: boardName,
-    icon: boardIcon,
-    color: boardColor,
+  // Hub config to pass to content component
+  const hubConfig = {
+    name: hubName,
+    icon: hubIcon,
+    color: hubColor,
   };
 
-  // Transform database assets to match BoardPageWrapper interface
+  // Transform database assets to match HubPageWrapper interface
   const assets = dbAssets.map(asset => ({
     id: asset.id,
     slug: asset.slug,
@@ -132,21 +132,20 @@ export default async function BoardPage({ params }: BoardPageProps) {
   }));
 
   return (
-    <LibraryLayout
-      activeBoard={boardId}
+    <HubLayout
+      activeHub={hubId}
       breadcrumbs={[
-        { label: 'Library', href: '/library' },
-        { label: `${boardIcon} ${boardName}` },
+        { label: 'Home', href: '/' },
+        { label: `${hubIcon} ${hubName}` },
       ]}
       showFilters={false}
     >
-      <BoardPageWrapper
-        boardId={boardId}
-        board={boardConfig}
+      <HubPageWrapper
+        hubId={hubId}
+        hub={hubConfig}
         assets={assets}
-        boardTags={boardTagsData}
+        hubTags={hubTagsData}
       />
-    </LibraryLayout>
+    </HubLayout>
   );
 }
-
