@@ -101,7 +101,7 @@
   /* Layout */
   --sidebar-width: 240px;
   --filter-width: 220px;
-  --header-height: 56px;
+  --header-height: 64px;
 
   /* Neutral */
   --card-bg: #FFFFFF;
@@ -196,6 +196,18 @@ body {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Header search placeholder styling */
+.header-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Spin animation for loading indicator */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* View Tabs - v7 design */

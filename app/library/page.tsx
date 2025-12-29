@@ -1,13 +1,13 @@
 import { LibraryLayout } from '@/components/library';
-import { LibraryBrowseContent } from '@/components/library/LibraryBrowseContent';
+import { LibraryHomepageContent } from '@/components/library/LibraryHomepageContent';
 import { db, catalogEntries, boards, assetBoards } from '@/lib/db';
-import { eq, desc, sql, count } from 'drizzle-orm';
+import { eq, desc, count, gte } from 'drizzle-orm';
 
 // Force dynamic rendering to avoid database calls at build time
 export const dynamic = 'force-dynamic';
 
-// Fetch all published assets
-async function getAssets() {
+// Fetch recent published assets
+async function getRecentAssets() {
   const assets = await db
     .select({
       id: catalogEntries.id,
@@ -28,14 +28,13 @@ async function getAssets() {
     .from(catalogEntries)
     .where(eq(catalogEntries.status, 'published'))
     .orderBy(desc(catalogEntries.updatedAt))
-    .limit(50);
+    .limit(20);
 
   return assets;
 }
 
 // Fetch all boards with asset counts
 async function getBoards() {
-  // Get all boards
   const allBoards = await db
     .select()
     .from(boards)
@@ -65,18 +64,57 @@ async function getBoards() {
   return boardsWithCounts;
 }
 
+// Get total published items count
+async function getTotalCount() {
+  const [result] = await db
+    .select({ count: count() })
+    .from(catalogEntries)
+    .where(eq(catalogEntries.status, 'published'));
+
+  return result?.count || 0;
+}
+
+// Get count of items added in the last 7 days
+async function getNewThisWeek() {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const [result] = await db
+    .select({ count: count() })
+    .from(catalogEntries)
+    .where(
+      eq(catalogEntries.status, 'published')
+    );
+
+  // For now, filter in memory since we need to check createdAt
+  const recentAssets = await db
+    .select({ createdAt: catalogEntries.createdAt })
+    .from(catalogEntries)
+    .where(eq(catalogEntries.status, 'published'));
+
+  const newCount = recentAssets.filter(a =>
+    a.createdAt && new Date(a.createdAt) >= sevenDaysAgo
+  ).length;
+
+  return newCount;
+}
+
 export default async function LibraryPage() {
-  const [assets, boardsData] = await Promise.all([getAssets(), getBoards()]);
-  const totalItems = assets.length;
+  const [recentAssets, boardsData, totalCount, newThisWeek] = await Promise.all([
+    getRecentAssets(),
+    getBoards(),
+    getTotalCount(),
+    getNewThisWeek(),
+  ]);
 
   return (
     <LibraryLayout
       showSidebar={true}
       showFilters={false}
-      breadcrumbs={[{ label: 'Library' }]}
+      breadcrumbs={[{ label: 'Home' }]}
     >
-      <LibraryBrowseContent
-        assets={assets.map(a => ({
+      <LibraryHomepageContent
+        recentAssets={recentAssets.map(a => ({
           id: a.id,
           slug: a.slug,
           title: a.title,
@@ -93,7 +131,8 @@ export default async function LibraryPage() {
           primaryLink: a.primaryLink || undefined,
         }))}
         boards={boardsData}
-        totalItems={totalItems}
+        totalItems={totalCount}
+        newThisWeek={newThisWeek}
       />
     </LibraryLayout>
   );

@@ -3,11 +3,6 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-interface BreadcrumbItem {
-  label: string;
-  href?: string;
-}
-
 interface SearchResult {
   type: 'board' | 'tag' | 'asset';
   id: string;
@@ -18,11 +13,7 @@ interface SearchResult {
   color?: string;
 }
 
-interface PageHeaderProps {
-  breadcrumbs?: BreadcrumbItem[];
-}
-
-export function PageHeader({ breadcrumbs }: PageHeaderProps) {
+export function PageHeader() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [results, setResults] = useState<{
@@ -97,65 +88,66 @@ export function PageHeader({ breadcrumbs }: PageHeaderProps) {
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '16px 28px',
-        background: 'white',
-        borderBottom: '1px solid var(--card-border)',
-        gap: '24px',
+        padding: '0 24px',
+        background: 'linear-gradient(135deg, #111827 0%, #1F2937 100%)',
+        height: '64px',
+        gap: '16px',
       }}
     >
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center" style={{ gap: '10px', minWidth: '150px' }}>
-        {breadcrumbs?.map((item, index) => (
-          <span key={index} className="flex items-center" style={{ gap: '10px' }}>
-            {index > 0 && <span style={{ color: '#D1D5DB', fontSize: '14px' }}>/</span>}
-            {item.href ? (
-              <Link
-                href={item.href}
-                className="no-underline hover:text-gray-900 transition-colors"
-                style={{ color: '#6B7280', fontSize: '14px' }}
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <span
-                style={{
-                  color: '#111827',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                }}
-              >
-                {item.label}
-              </span>
-            )}
-          </span>
-        ))}
-      </nav>
+      {/* Brand - Logo + Text */}
+      <Link
+        href="/library"
+        className="flex items-center no-underline"
+        style={{ gap: '12px' }}
+      >
+        <div
+          style={{
+            width: '36px',
+            height: '36px',
+            background: '#10B981',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: '14px',
+          }}
+        >
+          G+
+        </div>
+        <span style={{ color: 'white', fontSize: '16px', fontWeight: 600 }}>
+          GTM Library
+        </span>
+      </Link>
 
-      {/* Centered Search Bar */}
+      {/* Centered Search Container */}
       <div
         ref={searchRef}
         style={{
           flex: 1,
-          maxWidth: '560px',
-          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '0 40px',
           position: 'relative',
         }}
       >
         <div
           style={{
+            width: '100%',
+            maxWidth: '640px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            padding: '10px 16px',
-            background: '#F9FAFB',
-            border: isSearchOpen ? '1px solid #10B981' : '1px solid #E5E7EB',
+            padding: '12px 16px',
+            background: isSearchOpen ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)',
+            border: isSearchOpen ? '1px solid rgba(255,255,255,0.25)' : '1px solid rgba(255,255,255,0.15)',
             borderRadius: '10px',
             transition: 'all 0.15s ease',
-            boxShadow: isSearchOpen ? '0 0 0 3px rgba(16, 185, 129, 0.1)' : 'none',
           }}
         >
           <svg
-            style={{ width: '18px', height: '18px', color: '#9CA3AF', flexShrink: 0 }}
+            style={{ width: '20px', height: '20px', color: 'rgba(255,255,255,0.5)', flexShrink: 0 }}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -171,13 +163,14 @@ export function PageHeader({ breadcrumbs }: PageHeaderProps) {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchOpen(true)}
             placeholder="Search boards, tags, content..."
+            className="header-search-input"
             style={{
               flex: 1,
               border: 'none',
               outline: 'none',
               background: 'transparent',
               fontSize: '14px',
-              color: '#111827',
+              color: 'white',
             }}
           />
           {isLoading ? (
@@ -185,7 +178,7 @@ export function PageHeader({ breadcrumbs }: PageHeaderProps) {
               style={{
                 width: '16px',
                 height: '16px',
-                border: '2px solid #E5E7EB',
+                border: '2px solid rgba(255,255,255,0.2)',
                 borderTopColor: '#10B981',
                 borderRadius: '50%',
                 animation: 'spin 0.6s linear infinite',
@@ -194,13 +187,13 @@ export function PageHeader({ breadcrumbs }: PageHeaderProps) {
           ) : (
             <kbd
               style={{
-                fontSize: '11px',
-                padding: '3px 6px',
-                background: 'white',
-                border: '1px solid #E5E7EB',
-                borderRadius: '4px',
-                color: '#9CA3AF',
+                fontSize: '12px',
+                padding: '4px 8px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '6px',
+                color: 'rgba(255,255,255,0.5)',
                 fontFamily: 'inherit',
+                border: 'none',
               }}
             >
               ⌘K
@@ -378,9 +371,6 @@ export function PageHeader({ breadcrumbs }: PageHeaderProps) {
           </div>
         )}
       </div>
-
-      {/* Right spacer for balance */}
-      <div style={{ minWidth: '150px' }} />
     </header>
   );
 }

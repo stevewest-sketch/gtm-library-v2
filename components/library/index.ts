@@ -5,6 +5,6 @@ export { FilterSidebar } from './FilterSidebar';
 export { LibraryLayout, useFilterContext } from './LibraryLayout';
 export { AssetCard } from './AssetCard';
 export { BoardPill } from './BoardPill';
-export { LibraryBrowseContent } from './LibraryBrowseContent';
+export { LibraryHomepageContent } from './LibraryHomepageContent';
 export { BoardPageContent } from './BoardPageContent';
 export { BoardPageWrapper } from './BoardPageWrapper';

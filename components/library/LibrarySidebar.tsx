@@ -44,9 +44,8 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
     fetchBoards();
   }, []);
 
-  // Check if we're in the library section
-  const isLibraryActive = pathname.startsWith('/library');
-  const isHomeActive = pathname === '/';
+  // Check if we're on the home page
+  const isHomeActive = pathname === '/' || pathname === '/library';
 
   // Determine active board from props or pathname
   const currentBoard = activeBoard || pathname.match(/\/board\/([^/]+)/)?.[1];
@@ -64,55 +63,22 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
 
   return (
     <aside
-      className="bg-white border-r fixed top-0 left-0 bottom-0 overflow-y-auto custom-scrollbar"
+      className="bg-white border-r fixed left-0 bottom-0 overflow-y-auto custom-scrollbar"
       style={{
         width: 'var(--sidebar-width)',
         borderColor: 'var(--card-border)',
         display: 'flex',
         flexDirection: 'column',
+        top: '64px', // Below the header
       }}
     >
-      {/* Brand Section - Fixed at top of sidebar */}
-      <Link
-        href="/"
-        className="flex items-center no-underline flex-shrink-0"
-        style={{
-          gap: '12px',
-          padding: '16px 16px',
-          borderBottom: '1px solid var(--card-border)',
-          background: 'white',
-        }}
-      >
-        <div
-          style={{
-            width: '36px',
-            height: '36px',
-            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: '13px',
-            flexShrink: 0,
-          }}
-        >
-          G+
-        </div>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: '15px', color: '#111827', lineHeight: 1.2 }}>GTM Library</div>
-          <div style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: 1.3 }}>Revenue Enablement</div>
-        </div>
-      </Link>
-
-      {/* Scrollable Navigation Area */}
+      {/* Navigation Area */}
       <div style={{ flex: 1, overflow: 'auto', padding: '16px 12px' }}>
       {/* Main Navigation - v7 exact: nav-section margin-bottom: 20px */}
       <div style={{ marginBottom: '20px' }}>
         {/* Home Link */}
         <Link
-          href="/"
+          href="/library"
           className="flex items-center gap-2.5 rounded-md text-[13px] no-underline transition-all"
           style={{
             padding: '9px 10px',
@@ -131,29 +97,6 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
         >
           <span className="w-5 text-center text-sm">🏠</span>
           <span>Home</span>
-        </Link>
-
-        {/* Library Link */}
-        <Link
-          href="/library"
-          className="flex items-center gap-2.5 rounded-md text-[13px] no-underline transition-all"
-          style={{
-            padding: '9px 10px',
-            margin: '2px 0',
-            color: isLibraryActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-            backgroundColor: isLibraryActive ? 'var(--bg-page)' : 'transparent',
-            fontWeight: isLibraryActive ? 500 : 400,
-            borderRadius: '6px',
-          }}
-          onMouseEnter={(e) => {
-            if (!isLibraryActive) e.currentTarget.style.backgroundColor = '#F3F4F6';
-          }}
-          onMouseLeave={(e) => {
-            if (!isLibraryActive) e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-        >
-          <span className="w-5 text-center text-sm">📚</span>
-          <span>Library</span>
         </Link>
       </div>
 
