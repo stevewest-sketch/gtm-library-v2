@@ -12,42 +12,42 @@ interface Tag {
 }
 
 interface FilterSidebarProps {
-  activeBoard?: string;
-  // Dynamic tags for the active board (from API)
-  boardTags?: Tag[];
-  // Selected tags for the active board
+  activeHub?: string;
+  // Dynamic tags for the active hub (from API)
+  hubTags?: Tag[];
+  // Selected tags for the active hub
   selectedTags?: string[];
   onTagChange?: (tags: string[]) => void;
 }
 
 export function FilterSidebar({
-  activeBoard,
-  boardTags,
+  activeHub,
+  hubTags,
   selectedTags,
   onTagChange,
 }: FilterSidebarProps) {
-  // Get all board tags for default checked state (from API)
-  const allBoardTags = useMemo(() => {
-    if (boardTags) {
-      return boardTags.map(t => t.name);
+  // Get all hub tags for default checked state (from API)
+  const allHubTags = useMemo(() => {
+    if (hubTags) {
+      return hubTags.map(t => t.name);
     }
     return [];
-  }, [boardTags]);
+  }, [hubTags]);
 
   // Use API data for display tags (with displayName for UI display, name for matching)
-  const displayTags: { name: string; slug?: string; displayName?: string | null }[] = boardTags
-    ? boardTags.map(t => ({ name: t.name, slug: t.slug, displayName: t.displayName }))
+  const displayTags: { name: string; slug?: string; displayName?: string | null }[] = hubTags
+    ? hubTags.map(t => ({ name: t.name, slug: t.slug, displayName: t.displayName }))
     : [];
 
   // Use effective selected tags (default to all if not provided)
-  const effectiveSelectedTags = selectedTags ?? allBoardTags;
+  const effectiveSelectedTags = selectedTags ?? allHubTags;
 
-  // Initialize selectedTags with ALL board tags on first render
+  // Initialize selectedTags with ALL hub tags on first render
   useEffect(() => {
-    if (selectedTags === undefined && onTagChange && allBoardTags.length > 0) {
-      onTagChange([...allBoardTags]);
+    if (selectedTags === undefined && onTagChange && allHubTags.length > 0) {
+      onTagChange([...allHubTags]);
     }
-  }, [activeBoard]); // Only run when activeBoard changes
+  }, [activeHub]); // Only run when activeHub changes
 
   const toggleTag = (tagName: string) => {
     if (!onTagChange) return;
@@ -58,11 +58,11 @@ export function FilterSidebar({
     onTagChange(newTags);
   };
 
-  const hasActiveFilters = effectiveSelectedTags.length < allBoardTags.length;
+  const hasActiveFilters = effectiveSelectedTags.length < allHubTags.length;
 
   const clearAllFilters = () => {
     // Reset to all tags selected
-    onTagChange?.([...allBoardTags]);
+    onTagChange?.([...allHubTags]);
   };
 
   return (
@@ -77,7 +77,7 @@ export function FilterSidebar({
         height: 'calc(100vh - 65px)',
       }}
     >
-      {/* Board's Tags - v7 exact: filter-section margin-bottom: 28px, filter-section-title margin-bottom: 14px */}
+      {/* Hub's Tags - v7 exact: filter-section margin-bottom: 28px, filter-section-title margin-bottom: 14px */}
       {displayTags.length > 0 && (
         <div style={{ marginBottom: '28px' }}>
           <div
@@ -90,7 +90,7 @@ export function FilterSidebar({
               marginBottom: '14px',
             }}
           >
-            Board&apos;s Tags
+            Hub&apos;s Tags
           </div>
           <div className="flex flex-col">
             {displayTags.map((tag) => {
