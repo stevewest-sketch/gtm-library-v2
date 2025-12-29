@@ -3,14 +3,18 @@ import { db } from '@/lib/db';
 import { catalogEntries, tags, assetTags, boards, assetBoards } from '@/lib/db/schema';
 import { inArray, eq } from 'drizzle-orm';
 
+// Configure for longer timeout on Vercel
+export const maxDuration = 60; // 60 seconds max
+
 // CSV structure from updated audit:
-// title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,date,presenters,duration
+// title,slug,description,shortDescription,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,date,presenters,duration
 
 interface ParsedRow {
   rowNum: number;
   title: string;
   slug: string;
   description: string;
+  shortDescription: string; // 6 words max, shown on card
   externalUrl: string;
   videoUrl: string;
   slidesUrl: string;
@@ -187,7 +191,7 @@ export async function POST(request: NextRequest) {
     // Parse header
     const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
     const colMap: Record<string, number> = {};
-    const expectedCols = ['title', 'slug', 'description', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration'];
+    const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration'];
 
     headers.forEach((h, i) => {
       if (expectedCols.includes(h)) {
@@ -228,6 +232,7 @@ export async function POST(request: NextRequest) {
         title,
         slug,
         description: getValue('description'),
+        shortDescription: getValue('shortdescription'),
         externalUrl: getValue('externalurl'),
         videoUrl: getValue('videourl'),
         slidesUrl: getValue('slidesurl'),
@@ -355,6 +360,7 @@ export async function POST(request: NextRequest) {
         slug: row.slug,
         title: row.title,
         description: row.description || null,
+        shortDescription: row.shortDescription || null,
         hub: row.hub,
         format: row.format,
         types: row.type ? [row.type] : [],
@@ -398,64 +404,71 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // STEP 6b: Update existing entries
+    // STEP 6b: Update existing entries in parallel batches
     const updatedSlugs: string[] = [];
-    for (const row of toUpdate) {
-      const existingId = existingIdBySlug.get(row.slug);
-      if (!existingId) continue;
+    const UPDATE_BATCH_SIZE = 10; // Process 10 updates concurrently
 
-      try {
-        // Build update object - only include fields that have values
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: Record<string, any> = {
-          updatedAt: new Date(),
-        };
+    for (let i = 0; i < toUpdate.length; i += UPDATE_BATCH_SIZE) {
+      const batch = toUpdate.slice(i, i + UPDATE_BATCH_SIZE);
 
-        // Only update fields that have non-empty values in CSV
-        if (row.title) updateData.title = row.title;
-        if (row.description) updateData.description = row.description;
-        if (row.hub) updateData.hub = row.hub;
-        if (row.format) updateData.format = row.format;
-        if (row.type) updateData.types = [row.type];
-        if (row.tags) updateData.tags = parseTagsString(row.tags);
-        if (row.externalUrl) updateData.primaryLink = row.externalUrl;
-        if (row.videoUrl) updateData.videoUrl = row.videoUrl;
-        if (row.slidesUrl) updateData.slidesUrl = row.slidesUrl;
-        if (row.keyAssetUrl) updateData.keyAssetUrl = row.keyAssetUrl;
-        if (row.transcriptUrl) updateData.transcriptUrl = row.transcriptUrl;
-        if (row.date) {
-          const parsedDate = parseDate(row.date);
-          if (parsedDate) updateData.eventDate = parsedDate;
+      await Promise.all(batch.map(async (row) => {
+        const existingId = existingIdBySlug.get(row.slug);
+        if (!existingId) return;
+
+        try {
+          // Build update object - only include fields that have values
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const updateData: Record<string, any> = {
+            updatedAt: new Date(),
+          };
+
+          // Only update fields that have non-empty values in CSV
+          if (row.title) updateData.title = row.title;
+          if (row.description) updateData.description = row.description;
+          if (row.shortDescription) updateData.shortDescription = row.shortDescription;
+          if (row.hub) updateData.hub = row.hub;
+          if (row.format) updateData.format = row.format;
+          if (row.type) updateData.types = [row.type];
+          if (row.tags) updateData.tags = parseTagsString(row.tags);
+          if (row.externalUrl) updateData.primaryLink = row.externalUrl;
+          if (row.videoUrl) updateData.videoUrl = row.videoUrl;
+          if (row.slidesUrl) updateData.slidesUrl = row.slidesUrl;
+          if (row.keyAssetUrl) updateData.keyAssetUrl = row.keyAssetUrl;
+          if (row.transcriptUrl) updateData.transcriptUrl = row.transcriptUrl;
+          if (row.date) {
+            const parsedDate = parseDate(row.date);
+            if (parsedDate) updateData.eventDate = parsedDate;
+          }
+          if (row.presenters) updateData.presenters = parsePresenters(row.presenters);
+          if (row.duration) {
+            const parsedDuration = parseDuration(row.duration);
+            if (parsedDuration !== null) updateData.durationMinutes = parsedDuration;
+          }
+
+          await db.update(catalogEntries)
+            .set(updateData)
+            .where(eq(catalogEntries.id, existingId));
+
+          updatedSlugs.push(row.slug);
+          results.push({
+            success: true,
+            row: row.rowNum,
+            slug: row.slug,
+            title: row.title,
+            hub: row.hub,
+            updated: true,
+          });
+        } catch (e) {
+          console.error('Update error for slug:', row.slug, e);
+          results.push({
+            success: false,
+            row: row.rowNum,
+            slug: row.slug,
+            title: row.title,
+            error: e instanceof Error ? e.message : 'Update failed',
+          });
         }
-        if (row.presenters) updateData.presenters = parsePresenters(row.presenters);
-        if (row.duration) {
-          const parsedDuration = parseDuration(row.duration);
-          if (parsedDuration !== null) updateData.durationMinutes = parsedDuration;
-        }
-
-        await db.update(catalogEntries)
-          .set(updateData)
-          .where(eq(catalogEntries.id, existingId));
-
-        updatedSlugs.push(row.slug);
-        results.push({
-          success: true,
-          row: row.rowNum,
-          slug: row.slug,
-          title: row.title,
-          hub: row.hub,
-          updated: true,
-        });
-      } catch (e) {
-        console.error('Update error for slug:', row.slug, e);
-        results.push({
-          success: false,
-          row: row.rowNum,
-          slug: row.slug,
-          title: row.title,
-          error: e instanceof Error ? e.message : 'Update failed',
-        });
-      }
+      }));
     }
 
     // STEP 7: Get all inserted asset IDs
@@ -493,13 +506,17 @@ export async function POST(request: NextRequest) {
 
     // STEP 8: Handle asset-board assignments
     // For updated assets, only update board assignments if hub was specified in CSV
-    for (const asset of updatedAssets) {
-      const row = rowBySlug.get(asset.slug);
-      if (!row || !row.hub) continue; // Skip if no hub in CSV
+    // Batch delete board assignments for updated assets
+    const assetIdsForBoardDelete = updatedAssets
+      .filter(asset => {
+        const row = rowBySlug.get(asset.slug);
+        return row && row.hub;
+      })
+      .map(asset => asset.id);
 
-      // Delete existing board assignments for this asset
+    if (assetIdsForBoardDelete.length > 0) {
       try {
-        await db.delete(assetBoards).where(eq(assetBoards.assetId, asset.id));
+        await db.delete(assetBoards).where(inArray(assetBoards.assetId, assetIdsForBoardDelete));
       } catch (e) {
         console.log('Delete board assignment error (ignored):', e);
       }
@@ -530,12 +547,17 @@ export async function POST(request: NextRequest) {
 
     // STEP 9: Handle asset-tag assignments
     // For updated assets, only update tag assignments if tags were specified in CSV
-    for (const asset of updatedAssets) {
-      const row = rowBySlug.get(asset.slug);
-      if (!row || !row.tags) continue; // Skip if no tags in CSV
+    // Batch delete tag assignments for updated assets
+    const assetIdsForTagDelete = updatedAssets
+      .filter(asset => {
+        const row = rowBySlug.get(asset.slug);
+        return row && row.tags;
+      })
+      .map(asset => asset.id);
 
+    if (assetIdsForTagDelete.length > 0) {
       try {
-        await db.delete(assetTags).where(eq(assetTags.assetId, asset.id));
+        await db.delete(assetTags).where(inArray(assetTags.assetId, assetIdsForTagDelete));
       } catch (e) {
         console.log('Delete tag assignment error (ignored):', e);
       }
@@ -574,6 +596,15 @@ export async function POST(request: NextRequest) {
     const skipped = results.filter(r => r.error?.includes('Skipped')).length;
     const errors = results.filter(r => !r.success).length;
 
+    // Limit results to prevent large JSON responses that freeze browsers
+    // Include all errors first, then fill up to 100 items with successes
+    const errorResults = results.filter(r => !r.success || r.error);
+    const successResults = results.filter(r => r.success && !r.error);
+    const limitedResults = [
+      ...errorResults.slice(0, 50),
+      ...successResults.slice(0, Math.max(0, 100 - errorResults.length)),
+    ].sort((a, b) => a.row - b.row);
+
     return NextResponse.json({
       success: true,
       summary: {
@@ -583,7 +614,8 @@ export async function POST(request: NextRequest) {
         skipped,
         errors,
       },
-      results,
+      results: limitedResults,
+      totalResults: results.length,
     });
 
   } catch (error) {

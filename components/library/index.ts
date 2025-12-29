@@ -1,4 +1,5 @@
 export { GlobalHeader } from './GlobalHeader';
+export { PageHeader } from './PageHeader';
 export { LibrarySidebar } from './LibrarySidebar';
 export { FilterSidebar } from './FilterSidebar';
 export { LibraryLayout, useFilterContext } from './LibraryLayout';

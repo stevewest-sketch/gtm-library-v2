@@ -4,19 +4,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { BoardButton } from './BoardButton';
 import { AssetCard } from './AssetCard';
-import { HUBS, type HubId } from '@/lib/constants/hubs';
+import { getTypeConfig, getHubColor, getFormatLabel } from '@/lib/type-config';
 
 interface Asset {
   id: string;
   slug: string;
   title: string;
   description?: string;
+  shortDescription?: string;
   hub: string;
   format: string;
+  type?: string;
   tags: string[];
   views?: number;
   shares?: number;
   durationMinutes?: number;
+  publishDate?: string;
+  primaryLink?: string;
 }
 
 interface Board {
@@ -37,31 +41,6 @@ interface LibraryBrowseContentProps {
 }
 
 type SortOption = 'newest' | 'name';
-
-// Hub color configurations for stack view
-const HUB_STYLES: Record<string, { primary: string; light: string; accent: string }> = {
-  coe: { primary: '#F59E0B', light: '#FEF3C7', accent: '#B45309' },
-  content: { primary: '#8C69F0', light: '#EDE9FE', accent: '#6D28D9' },
-  enablement: { primary: '#10B981', light: '#D1FAE5', accent: '#047857' },
-};
-
-// Format labels for stack view
-const FORMAT_LABELS: Record<string, string> = {
-  slides: 'Slides',
-  video: 'Video',
-  document: 'Document',
-  pdf: 'PDF',
-  sheet: 'Sheet',
-  tool: 'Tool',
-  link: 'Link',
-  training: 'Training',
-  battlecard: 'Battlecard',
-  template: 'Template',
-  guide: 'Guide',
-  report: 'Report',
-  'figma prototype': 'Figma Prototype',
-  'one pager': 'One Pager',
-};
 
 export function LibraryBrowseContent({
   assets,
@@ -84,12 +63,11 @@ export function LibraryBrowseContent({
     }
   });
 
-  // Stack view row component
+  // Stack view row component - v3 design with TYPE badge
   const StackRow = ({ asset }: { asset: Asset }) => {
-    const hubStyle = HUB_STYLES[asset.hub.toLowerCase()] || HUB_STYLES.content;
-    const hubData = HUBS[asset.hub.toLowerCase() as HubId];
-    const hubLabel = hubData?.shortName || asset.hub.toUpperCase();
-    const formatLabel = FORMAT_LABELS[asset.format.toLowerCase()] || asset.format.toUpperCase();
+    const hubColor = getHubColor(asset.hub);
+    const typeConfig = getTypeConfig(asset.type);
+    const formatLabel = getFormatLabel(asset.format);
 
     return (
       <Link
@@ -97,31 +75,36 @@ export function LibraryBrowseContent({
         className="flex items-center bg-white border rounded-lg transition-all hover:shadow-md group"
         style={{
           borderColor: 'var(--card-border)',
-          padding: '16px 20px',
-          borderLeft: `4px solid ${hubStyle.primary}`,
+          padding: '18px 24px',
+          borderLeft: `4px solid ${hubColor}`,
+          gap: '16px',
         }}
       >
-        {/* Icon placeholder */}
-        <div
-          className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center mr-4"
-          style={{ backgroundColor: '#F9FAFB' }}
+        {/* Type Badge with Icon */}
+        <span
+          className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-md text-[11px] font-semibold uppercase tracking-wide"
+          style={{
+            padding: '5px 10px',
+            backgroundColor: typeConfig.bg,
+            color: typeConfig.color,
+            whiteSpace: 'nowrap',
+          }}
         >
-          <svg className="w-5 h-5" style={{ color: 'var(--text-muted)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
-        </div>
+          <span className="text-xs">{typeConfig.icon}</span>
+          {typeConfig.label}
+        </span>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h4
-            className="font-semibold truncate"
-            style={{ fontSize: '14px', color: 'var(--text-primary)' }}
+            className="font-semibold line-clamp-1"
+            style={{ fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px' }}
           >
             {asset.title}
           </h4>
           {asset.description && (
             <p
-              className="truncate mt-0.5"
+              className="line-clamp-1"
               style={{ fontSize: '13px', color: 'var(--text-secondary)' }}
             >
               {asset.description}
@@ -129,27 +112,20 @@ export function LibraryBrowseContent({
           )}
         </div>
 
-        {/* Hub Badge */}
+        {/* Format Label - Plain gray text, NO icon */}
         <span
-          className="flex-shrink-0 text-[10px] font-semibold uppercase tracking-wider rounded ml-4"
-          style={{
-            padding: '4px 10px',
-            backgroundColor: hubStyle.light,
-            color: hubStyle.accent,
-          }}
+          className="flex-shrink-0"
+          style={{ fontSize: '13px', fontWeight: 500, color: '#9CA3AF' }}
         >
-          {hubLabel}
+          {formatLabel}
         </span>
 
-        {/* Format */}
+        {/* View Action - appears on hover */}
         <span
-          className="flex-shrink-0 flex items-center gap-1.5 ml-4"
-          style={{ fontSize: '12px', color: 'var(--text-muted)' }}
+          className="flex-shrink-0 text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ color: hubColor }}
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-          </svg>
-          {formatLabel}
+          View →
         </span>
       </Link>
     );

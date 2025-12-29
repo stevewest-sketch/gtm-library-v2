@@ -69,7 +69,6 @@ export interface IngestResult {
     type: 'google-slides' | 'google-docs' | 'google-sheets' | 'loom' | 'youtube' | 'pdf' | 'generic';
     title?: string;
     description?: string;
-    thumbnailUrl?: string;
   };
 }
 

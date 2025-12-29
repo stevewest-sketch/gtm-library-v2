@@ -26,6 +26,78 @@
   --demo-primary: #06B6D4;
   --proof-primary: #84CC16;
 
+  /* Content Type Colors */
+  --type-deck: #8C69F0;
+  --type-deck-bg: #EDE9FE;
+  --type-battlecard: #EF4444;
+  --type-battlecard-bg: #FEE2E2;
+  --type-one-pager: #F59E0B;
+  --type-one-pager-bg: #FEF3C7;
+  --type-template: #8B5CF6;
+  --type-template-bg: #EDE9FE;
+  --type-messaging: #EC4899;
+  --type-messaging-bg: #FCE7F3;
+  --type-calculator: #06B6D4;
+  --type-calculator-bg: #CFFAFE;
+  --type-competitive: #EF4444;
+  --type-competitive-bg: #FEE2E2;
+  --type-guide: #3B82F6;
+  --type-guide-bg: #DBEAFE;
+  --type-press: #64748B;
+  --type-press-bg: #F1F5F9;
+  --type-case-study: #059669;
+  --type-case-study-bg: #D1FAE5;
+
+  /* Enablement Type Colors */
+  --type-product-training: #10B981;
+  --type-product-training-bg: #D1FAE5;
+  --type-technical-training: #6366F1;
+  --type-technical-training-bg: #E0E7FF;
+  --type-gtm-training: #8B5CF6;
+  --type-gtm-training-bg: #EDE9FE;
+  --type-gtm-tool: #06B6D4;
+  --type-gtm-tool-bg: #CFFAFE;
+  --type-competitive-training: #EF4444;
+  --type-competitive-training-bg: #FEE2E2;
+  --type-certification: #F59E0B;
+  --type-certification-bg: #FEF3C7;
+  --type-partner-training: #3B82F6;
+  --type-partner-training-bg: #DBEAFE;
+  --type-value-realization: #059669;
+  --type-value-realization-bg: #D1FAE5;
+  --type-playbook: #EC4899;
+  --type-playbook-bg: #FCE7F3;
+
+  /* CoE Type Colors */
+  --type-customer-meeting-asset: #F59E0B;
+  --type-customer-meeting-asset-bg: #FEF3C7;
+  --type-prospect-meeting-asset: #F97316;
+  --type-prospect-meeting-asset-bg: #FFEDD5;
+  --type-customer-best-practice: #10B981;
+  --type-customer-best-practice-bg: #D1FAE5;
+  --type-best-practice: #3B82F6;
+  --type-best-practice-bg: #DBEAFE;
+  --type-internal-best-practice: #8B5CF6;
+  --type-internal-best-practice-bg: #EDE9FE;
+  --type-process-innovation: #EC4899;
+  --type-process-innovation-bg: #FCE7F3;
+  --type-dashboard: #06B6D4;
+  --type-dashboard-bg: #CFFAFE;
+  --type-customer-success-metric: #059669;
+  --type-customer-success-metric-bg: #D1FAE5;
+  --type-industry-stat: #6366F1;
+  --type-industry-stat-bg: #E0E7FF;
+  --type-benchmark: #0EA5E9;
+  --type-benchmark-bg: #E0F2FE;
+  --type-competitor-stat: #EF4444;
+  --type-competitor-stat-bg: #FEE2E2;
+  --type-customer-quote: #F59E0B;
+  --type-customer-quote-bg: #FEF3C7;
+
+  /* Format text color (25% lighter) */
+  --format-text: #9CA3AF;
+  --footer-bg: #FAFAFA;
+
   /* Layout */
   --sidebar-width: 240px;
   --filter-width: 220px;
@@ -318,4 +390,14 @@ body {
 
 .filter-group.expanded .filter-group-items {
   display: block;
+}
+
+/* Spinner animation for search */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

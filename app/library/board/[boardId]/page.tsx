@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { LibraryLayout, BoardPageWrapper } from "@/components/library";
-import { BOARDS, type BoardId } from "@/lib/constants/hubs";
 import { db, catalogEntries, assetBoards, boards, boardTags, tags } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 
@@ -25,6 +24,7 @@ interface TagData {
   id: string;
   name: string;
   slug: string;
+  displayName?: string | null; // Board-specific display name override
 }
 
 async function getBoardWithTagsAndAssets(boardSlug: string) {
@@ -39,12 +39,13 @@ async function getBoardWithTagsAndAssets(boardSlug: string) {
     return null;
   }
 
-  // Get tags for this board
+  // Get tags for this board (including displayName override from boardTags)
   const boardTagsData = await db
     .select({
       id: tags.id,
       name: tags.name,
       slug: tags.slug,
+      displayName: boardTags.displayName,
     })
     .from(boardTags)
     .innerJoin(tags, eq(boardTags.tagId, tags.id))
@@ -58,6 +59,7 @@ async function getBoardWithTagsAndAssets(boardSlug: string) {
       slug: catalogEntries.slug,
       title: catalogEntries.title,
       description: catalogEntries.description,
+      shortDescription: catalogEntries.shortDescription,
       hub: catalogEntries.hub,
       format: catalogEntries.format,
       types: catalogEntries.types,
@@ -68,6 +70,7 @@ async function getBoardWithTagsAndAssets(boardSlug: string) {
       views: catalogEntries.views,
       shares: catalogEntries.shares,
       status: catalogEntries.status,
+      createdAt: catalogEntries.createdAt,
     })
     .from(catalogEntries)
     .innerJoin(assetBoards, eq(catalogEntries.id, assetBoards.assetId))
@@ -91,38 +94,24 @@ export default async function BoardPage({ params }: BoardPageProps) {
   // Fetch board, tags, and assets from database
   const data = await getBoardWithTagsAndAssets(boardId);
 
-  // If board doesn't exist in database, check static config as fallback
+  // Board must exist in database (no static fallback)
   if (!data) {
-    if (!BOARDS[boardId as BoardId]) {
-      notFound();
-    }
-    // Fall back to static board with no assets
-    const staticBoard = BOARDS[boardId as BoardId];
-    const staticTags = staticBoard.tags.map((t, i) => ({ id: String(i), name: t, slug: t.toLowerCase().replace(/\s+/g, '-') }));
-    return (
-      <LibraryLayout
-        activeBoard={boardId as BoardId}
-        breadcrumbs={[
-          { label: 'Library', href: '/library' },
-          { label: `${staticBoard.icon} ${staticBoard.name}` },
-        ]}
-        boardTags={staticTags}
-      >
-        <BoardPageWrapper
-          boardId={boardId as BoardId}
-          assets={[]}
-          boardTags={staticTags}
-        />
-      </LibraryLayout>
-    );
+    notFound();
   }
 
   const { board, tags: boardTagsData, assets: dbAssets } = data;
 
-  // Use static config for icon/colors if not in database, fallback to database values
-  const staticBoard = BOARDS[boardId as BoardId];
-  const boardIcon = board.icon || staticBoard?.icon || '📁';
-  const boardName = board.name || staticBoard?.name || boardId;
+  // Use database values for board config
+  const boardIcon = board.icon || '📁';
+  const boardName = board.name;
+  const boardColor = board.color;
+
+  // Board config to pass to content component
+  const boardConfig = {
+    name: boardName,
+    icon: boardIcon,
+    color: boardColor,
+  };
 
   // Transform database assets to match BoardPageWrapper interface
   const assets = dbAssets.map(asset => ({
@@ -130,17 +119,21 @@ export default async function BoardPage({ params }: BoardPageProps) {
     slug: asset.slug,
     title: asset.title,
     description: asset.description || undefined,
+    shortDescription: asset.shortDescription || undefined,
     hub: asset.hub,
     format: asset.format,
+    type: asset.types?.[0] || undefined,
     tags: asset.tags || [],
     views: asset.views || undefined,
     shares: asset.shares || undefined,
     durationMinutes: asset.durationMinutes || undefined,
+    publishDate: asset.createdAt?.toISOString() || undefined,
+    primaryLink: asset.primaryLink || undefined,
   }));
 
   return (
     <LibraryLayout
-      activeBoard={boardId as BoardId}
+      activeBoard={boardId}
       breadcrumbs={[
         { label: 'Library', href: '/library' },
         { label: `${boardIcon} ${boardName}` },
@@ -148,7 +141,8 @@ export default async function BoardPage({ params }: BoardPageProps) {
       boardTags={boardTagsData}
     >
       <BoardPageWrapper
-        boardId={boardId as BoardId}
+        boardId={boardId}
+        board={boardConfig}
         assets={assets}
         boardTags={boardTagsData}
       />

@@ -32,6 +32,7 @@ export async function GET(
         slug: tags.slug,
         color: tags.color,
         sortOrder: boardTags.sortOrder,
+        displayName: boardTags.displayName,
       })
       .from(boardTags)
       .innerJoin(tags, eq(boardTags.tagId, tags.id))

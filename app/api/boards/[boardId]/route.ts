@@ -24,13 +24,14 @@ export async function GET(
       );
     }
 
-    // Get tags for this board
+    // Get tags for this board (including displayName override from boardTags)
     const boardTagsData = await db
       .select({
         id: tags.id,
         name: tags.name,
         slug: tags.slug,
         color: tags.color,
+        displayName: boardTags.displayName,
       })
       .from(boardTags)
       .innerJoin(tags, eq(boardTags.tagId, tags.id))
@@ -75,6 +76,8 @@ export async function PUT(
         lightColor: body.lightColor,
         accentColor: body.accentColor,
         sortOrder: body.sortOrder,
+        defaultView: body.defaultView,
+        updatedAt: new Date(),
       })
       .where(eq(boards.slug, boardId))
       .returning();

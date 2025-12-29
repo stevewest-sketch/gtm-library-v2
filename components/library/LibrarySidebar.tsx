@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { BOARDS, type BoardId } from '@/lib/constants/hubs';
 
 interface BoardFromAPI {
   id: string;
@@ -19,7 +18,7 @@ interface BoardFromAPI {
 }
 
 interface LibrarySidebarProps {
-  activeBoard?: BoardId;
+  activeBoard?: string;
 }
 
 export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
@@ -50,38 +49,65 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
   const isHomeActive = pathname === '/';
 
   // Determine active board from props or pathname
-  const currentBoard = activeBoard || (pathname.match(/\/board\/([^/]+)/)?.[1] as BoardId | undefined);
+  const currentBoard = activeBoard || pathname.match(/\/board\/([^/]+)/)?.[1];
 
-  // Use API boards if loaded, otherwise fall back to static BOARDS
-  const displayBoards = boards.length > 0
-    ? boards.map(b => ({
-        id: b.slug,
-        name: b.name,
-        icon: b.icon || BOARDS[b.slug as BoardId]?.icon || '📁',
-        color: b.color,
-        lightColor: b.lightColor || BOARDS[b.slug as BoardId]?.lightColor || '#F3F4F6',
-        accentColor: b.accentColor || BOARDS[b.slug as BoardId]?.accentColor || '#4B5563',
-        count: b.assetCount,
-      }))
-    : Object.entries(BOARDS).map(([id, board]) => ({
-        id,
-        name: board.name,
-        icon: board.icon,
-        color: board.color,
-        lightColor: board.lightColor,
-        accentColor: board.accentColor,
-        count: board.count,
-      }));
+  // Map API boards to display format
+  const displayBoards = boards.map(b => ({
+    id: b.slug,
+    name: b.name,
+    icon: b.icon || '📁',
+    color: b.color,
+    lightColor: b.lightColor || '#F3F4F6',
+    accentColor: b.accentColor || '#4B5563',
+    count: b.assetCount,
+  }));
 
   return (
     <aside
-      className="bg-white border-r fixed top-[var(--header-height)] left-0 bottom-0 overflow-y-auto custom-scrollbar"
+      className="bg-white border-r fixed top-0 left-0 bottom-0 overflow-y-auto custom-scrollbar"
       style={{
         width: 'var(--sidebar-width)',
         borderColor: 'var(--card-border)',
-        padding: '16px 12px',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
+      {/* Brand Section - Fixed at top of sidebar */}
+      <Link
+        href="/"
+        className="flex items-center no-underline flex-shrink-0"
+        style={{
+          gap: '12px',
+          padding: '16px 16px',
+          borderBottom: '1px solid var(--card-border)',
+          background: 'white',
+        }}
+      >
+        <div
+          style={{
+            width: '36px',
+            height: '36px',
+            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: '13px',
+            flexShrink: 0,
+          }}
+        >
+          G+
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '15px', color: '#111827', lineHeight: 1.2 }}>GTM Library</div>
+          <div style={{ fontSize: '11px', color: '#9CA3AF', lineHeight: 1.3 }}>Revenue Enablement</div>
+        </div>
+      </Link>
+
+      {/* Scrollable Navigation Area */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '16px 12px' }}>
       {/* Main Navigation - v7 exact: nav-section margin-bottom: 20px */}
       <div style={{ marginBottom: '20px' }}>
         {/* Home Link */}
@@ -209,6 +235,7 @@ export function LibrarySidebar({ activeBoard }: LibrarySidebarProps) {
             })
           )}
         </nav>
+      </div>
       </div>
     </aside>
   );

@@ -23,13 +23,14 @@ export async function GET() {
     // For each board, get its tags and asset count
     const boardsWithDetails = await Promise.all(
       boardsData.map(async (board) => {
-        // Get tags for this board
+        // Get tags for this board (including displayName override from boardTags)
         const boardTagsData = await db
           .select({
             id: tags.id,
             name: tags.name,
             slug: tags.slug,
             color: tags.color,
+            displayName: boardTags.displayName,
           })
           .from(boardTags)
           .innerJoin(tags, eq(boardTags.tagId, tags.id))

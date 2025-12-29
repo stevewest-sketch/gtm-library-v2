@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useMemo } from 'react';
 import Link from 'next/link';
 
 // Hub options
@@ -10,24 +10,35 @@ const HUB_OPTIONS = [
   { id: 'enablement', name: 'Enablement', color: '#10B981', light: '#D1FAE5', accent: '#047857' },
 ];
 
-// Format options
-const FORMAT_OPTIONS = [
-  'slides', 'video', 'document', 'pdf', 'sheet', 'tool', 'link',
-  'training', 'battlecard', 'template', 'guide', 'report', 'one pager',
-];
-
 // Status options
 const STATUS_OPTIONS = ['published', 'draft', 'archived'];
 
-// Board options
-const BOARD_OPTIONS = [
-  { id: 'coe', name: 'CoE' },
-  { id: 'content', name: 'Content Types' },
-  { id: 'enablement', name: 'Enablement' },
-  { id: 'product', name: 'Product' },
-  { id: 'competitive', name: 'Competitive' },
-  { id: 'sales', name: 'Sales' },
-];
+// Database types for taxonomy - single source of truth
+interface ContentTypeDB {
+  id: string;
+  slug: string;
+  name: string;
+  hub: string | null;
+  bgColor: string;
+  textColor: string;
+  sortOrder: number;
+}
+
+interface FormatDB {
+  id: string;
+  slug: string;
+  name: string;
+  color: string;
+  iconType: string;
+  sortOrder: number;
+}
+
+interface BoardDB {
+  id: string;
+  slug: string;
+  name: string;
+  color: string;
+}
 
 // Link type options
 const LINK_TYPE_OPTIONS = [
@@ -47,22 +58,34 @@ interface ResourceLink {
   copyable: boolean;
 }
 
+interface HowToItem {
+  id: string;
+  title: string;
+  content: string;
+}
+
 interface AssetData {
   id: string;
   slug: string;
   title: string;
   description: string;
+  shortDescription: string; // 6 words max, shown on card
   hub: string;
   format: string;
+  type: string;
   status: string;
   boards: string[];
   tags: string[];
   primaryLink: string;
   resourceLinks: ResourceLink[];
-  trainingContent?: {
-    videoUrl?: string;
-    takeaways?: string[];
-    tips?: string[];
+  trainingContent: {
+    videoUrl: string;
+    presenters: string;
+    durationMinutes: number | null;
+    eventDate: string;
+    takeaways: string[];
+    howtos: HowToItem[];
+    tips: string[];
   };
 }
 
@@ -79,8 +102,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     slug: '',
     title: '',
     description: '',
+    shortDescription: '',
     hub: 'content',
     format: 'slides',
+    type: '',
     status: 'draft',
     boards: [],
     tags: [],
@@ -88,7 +113,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     resourceLinks: [],
     trainingContent: {
       videoUrl: '',
+      presenters: '',
+      durationMinutes: null,
+      eventDate: '',
       takeaways: [],
+      howtos: [],
       tips: [],
     },
   });
@@ -96,6 +125,46 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
   const [newTag, setNewTag] = useState('');
 
   const [loading, setLoading] = useState(!isNew);
+
+  // Taxonomy data from database
+  const [contentTypes, setContentTypes] = useState<ContentTypeDB[]>([]);
+  const [formats, setFormats] = useState<FormatDB[]>([]);
+  const [boards, setBoards] = useState<BoardDB[]>([]);
+
+  // Fetch taxonomy data on mount
+  useEffect(() => {
+    const fetchTaxonomy = async () => {
+      try {
+        const [typesRes, formatsRes, boardsRes] = await Promise.all([
+          fetch('/api/admin/content-types'),
+          fetch('/api/admin/formats'),
+          fetch('/api/boards'),
+        ]);
+        if (typesRes.ok) setContentTypes(await typesRes.json());
+        if (formatsRes.ok) setFormats(await formatsRes.json());
+        if (boardsRes.ok) setBoards(await boardsRes.json());
+      } catch (error) {
+        console.error('Error fetching taxonomy:', error);
+      }
+    };
+    fetchTaxonomy();
+  }, []);
+
+  // Build dropdown options from database - single source of truth
+  const TYPE_OPTIONS = useMemo(() =>
+    contentTypes
+      .map(t => ({ slug: t.slug, name: t.name }))
+      .sort((a, b) => a.name.localeCompare(b.name)),
+    [contentTypes]
+  );
+
+  const FORMAT_OPTIONS = useMemo(() =>
+    formats
+      .map(f => ({ slug: f.slug, name: f.name }))
+      .sort((a, b) => a.name.localeCompare(b.name)),
+    [formats]
+  );
+
 
   // Load asset data if editing existing
   useEffect(() => {
@@ -115,10 +184,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           slug: data.slug,
           title: data.title || '',
           description: data.description || '',
+          shortDescription: data.shortDescription || '',
           hub: data.hub || 'content',
           format: data.format || 'slides',
+          type: data.types?.[0] || '',
           status: data.status || 'draft',
-          boards: data.boards?.map((b: { slug: string }) => b.slug) || [],
+          boards: data.boards?.map((b: string | { slug: string }) => typeof b === 'string' ? b : b.slug) || [],
           tags: data.tags || [],
           primaryLink: data.primaryLink || '',
           resourceLinks: [
@@ -129,7 +200,15 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           ],
           trainingContent: {
             videoUrl: data.videoUrl || '',
+            presenters: Array.isArray(data.presenters) ? data.presenters.join(', ') : (data.presenters || ''),
+            durationMinutes: data.durationMinutes || null,
+            eventDate: data.eventDate ? new Date(data.eventDate).toISOString().split('T')[0] : '',
             takeaways: data.takeaways || [],
+            howtos: (data.howtos || []).map((h: { title: string; content: string }, i: number) => ({
+              id: `howto-${i}`,
+              title: h.title || '',
+              content: h.content || '',
+            })),
             tips: data.tips || [],
           },
         });
@@ -203,6 +282,97 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     }));
   };
 
+  // Training content handlers
+  const handleAddTakeaway = () => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        takeaways: [...prev.trainingContent.takeaways, ''],
+      },
+    }));
+  };
+
+  const handleUpdateTakeaway = (index: number, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        takeaways: prev.trainingContent.takeaways.map((t, i) => (i === index ? value : t)),
+      },
+    }));
+  };
+
+  const handleRemoveTakeaway = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        takeaways: prev.trainingContent.takeaways.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const handleAddHowTo = () => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        howtos: [...prev.trainingContent.howtos, { id: Date.now().toString(), title: '', content: '' }],
+      },
+    }));
+  };
+
+  const handleUpdateHowTo = (id: string, field: 'title' | 'content', value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        howtos: prev.trainingContent.howtos.map((h) => (h.id === id ? { ...h, [field]: value } : h)),
+      },
+    }));
+  };
+
+  const handleRemoveHowTo = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        howtos: prev.trainingContent.howtos.filter((h) => h.id !== id),
+      },
+    }));
+  };
+
+  const handleAddTip = () => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        tips: [...prev.trainingContent.tips, ''],
+      },
+    }));
+  };
+
+  const handleUpdateTip = (index: number, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        tips: prev.trainingContent.tips.map((t, i) => (i === index ? value : t)),
+      },
+    }));
+  };
+
+  const handleRemoveTip = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      trainingContent: {
+        ...prev.trainingContent,
+        tips: prev.trainingContent.tips.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -210,20 +380,27 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
       const payload = {
         title: formData.title,
         description: formData.description,
+        shortDescription: formData.shortDescription || null,
         hub: formData.hub,
         format: formData.format,
+        types: formData.type ? [formData.type] : [],
         status: formData.status,
         primaryLink: formData.primaryLink,
         tags: formData.tags,
         boardSlugs: formData.boards,
         tagNames: formData.tags,
         // Extract URLs from resource links
-        videoUrl: formData.resourceLinks.find(l => l.type === 'video')?.url || formData.trainingContent?.videoUrl || null,
+        videoUrl: formData.resourceLinks.find(l => l.type === 'video')?.url || formData.trainingContent.videoUrl || null,
         slidesUrl: formData.resourceLinks.find(l => l.type === 'slides')?.url || null,
         transcriptUrl: formData.resourceLinks.find(l => l.type === 'transcript')?.url || null,
         keyAssetUrl: formData.resourceLinks.find(l => l.type === 'document')?.url || null,
-        takeaways: formData.trainingContent?.takeaways || [],
-        tips: formData.trainingContent?.tips || [],
+        // Training content
+        presenters: formData.trainingContent.presenters ? formData.trainingContent.presenters.split(',').map(p => p.trim()) : [],
+        durationMinutes: formData.trainingContent.durationMinutes,
+        eventDate: formData.trainingContent.eventDate ? new Date(formData.trainingContent.eventDate) : null,
+        takeaways: formData.trainingContent.takeaways,
+        howtos: formData.trainingContent.howtos.map(h => ({ title: h.title, content: h.content })),
+        tips: formData.trainingContent.tips,
       };
 
       const res = await fetch(`/api/assets/${slug}`, {
@@ -605,11 +782,40 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 />
               </div>
 
-              {/* Hub, Format, Status */}
+              {/* Short Description */}
+              <div style={{ marginBottom: '20px' }}>
+                <label
+                  className="flex items-center justify-between"
+                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
+                >
+                  Short Description
+                  <span style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: 400 }}>
+                    {formData.shortDescription.split(/\s+/).filter(Boolean).length}/6 words
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.shortDescription}
+                  onChange={(e) => handleInputChange('shortDescription', e.target.value)}
+                  placeholder="Brief summary for card display (6 words max)"
+                  style={{
+                    width: '100%',
+                    padding: '11px 14px',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                  }}
+                />
+                <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                  Shown on the card in grid view. Keep it brief.
+                </div>
+              </div>
+
+              {/* Hub, Format, Type, Status */}
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr',
                   gap: '16px',
                 }}
               >
@@ -658,8 +864,34 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     }}
                   >
                     {FORMAT_OPTIONS.map((format) => (
-                      <option key={format} value={format} style={{ textTransform: 'capitalize' }}>
-                        {format}
+                      <option key={format.slug} value={format.slug}>
+                        {format.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Type
+                  </label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => handleInputChange('type', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      appearance: 'none',
+                      background: `white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 14px center`,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <option value="">Select type...</option>
+                    {TYPE_OPTIONS.map((typeOpt) => (
+                      <option key={typeOpt.slug} value={typeOpt.slug}>
+                        {typeOpt.name}
                       </option>
                     ))}
                   </select>
@@ -752,25 +984,91 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '12px' }}>
                   Boards
                 </label>
-                <div className="flex flex-wrap" style={{ gap: '8px' }}>
-                  {BOARD_OPTIONS.map((board) => (
-                    <button
-                      key={board.id}
-                      onClick={() => handleToggleBoard(board.id)}
-                      style={{
-                        padding: '8px 16px',
-                        border: '1px solid',
-                        borderColor: formData.boards.includes(board.id) ? '#8C69F0' : '#E5E7EB',
-                        background: formData.boards.includes(board.id) ? '#EDE9FE' : 'white',
-                        color: formData.boards.includes(board.id) ? '#6D28D9' : '#4B5563',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {board.name}
-                    </button>
-                  ))}
+                {/* Currently assigned boards with remove button */}
+                {formData.boards.length > 0 && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Assigned to:
+                    </div>
+                    <div className="flex flex-wrap" style={{ gap: '8px' }}>
+                      {formData.boards.map((boardId) => {
+                        // boardId could be slug or name, match both
+                        const board = boards.find(b => b.slug === boardId || b.name === boardId);
+                        const displayName = board?.name || boardId;
+                        return (
+                          <span
+                            key={boardId}
+                            className="flex items-center"
+                            style={{
+                              gap: '8px',
+                              padding: '8px 12px',
+                              background: '#EDE9FE',
+                              border: '1px solid #8C69F0',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              color: '#6D28D9',
+                            }}
+                          >
+                            {displayName}
+                            <button
+                              onClick={() => handleToggleBoard(boardId)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#8C69F0',
+                                cursor: 'pointer',
+                                padding: 0,
+                                fontSize: '16px',
+                                lineHeight: 1,
+                                fontWeight: 'bold',
+                              }}
+                              title="Remove from board"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {/* Available boards to add */}
+                <div>
+                  <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {formData.boards.length > 0 ? 'Add to more boards:' : 'Add to boards:'}
+                  </div>
+                  <div className="flex flex-wrap" style={{ gap: '8px' }}>
+                    {boards.length === 0 ? (
+                      <span style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                        Loading boards...
+                      </span>
+                    ) : (
+                      <>
+                        {boards.filter(b => !formData.boards.includes(b.slug) && !formData.boards.includes(b.name)).map((board) => (
+                          <button
+                            key={board.id}
+                            onClick={() => handleToggleBoard(board.slug)}
+                            style={{
+                              padding: '8px 16px',
+                              border: '1px solid #E5E7EB',
+                              background: 'white',
+                              color: '#4B5563',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            + {board.name}
+                          </button>
+                        ))}
+                        {boards.filter(b => !formData.boards.includes(b.slug) && !formData.boards.includes(b.name)).length === 0 && (
+                          <span style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                            Added to all boards
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1039,7 +1337,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </label>
                 <input
                   type="url"
-                  value={formData.trainingContent?.videoUrl || ''}
+                  value={formData.trainingContent.videoUrl}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -1060,74 +1358,341 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
 
-              {/* Key Takeaways */}
-              <div style={{ marginBottom: '20px' }}>
-                <label
-                  className="flex items-center justify-between"
-                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
-                >
-                  Key Takeaways
-                  <button
+              {/* Presenters & Duration Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Presenter(s)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.trainingContent.presenters}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        trainingContent: { ...prev.trainingContent, presenters: e.target.value },
+                      }))
+                    }
+                    placeholder="John Smith, Jane Doe"
                     style={{
-                      fontSize: '11px',
-                      padding: '4px 10px',
-                      background: '#EEF2FF',
-                      border: '1px solid #C7D2FE',
-                      borderRadius: '4px',
-                      color: '#4338CA',
-                      cursor: 'pointer',
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
                     }}
-                  >
-                    ✨ AI Generate
-                  </button>
-                </label>
-                <textarea
-                  placeholder="Enter key takeaways, one per line..."
-                  rows={4}
-                  style={{
-                    width: '100%',
-                    padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    resize: 'vertical',
-                  }}
-                />
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Duration (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.trainingContent.durationMinutes || ''}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        trainingContent: { ...prev.trainingContent, durationMinutes: e.target.value ? parseInt(e.target.value) : null },
+                      }))
+                    }
+                    placeholder="45"
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Event Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.trainingContent.eventDate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        trainingContent: { ...prev.trainingContent, eventDate: e.target.value },
+                      }))
+                    }
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                    }}
+                  />
+                </div>
               </div>
 
-              {/* Tips */}
+              {/* Key Takeaways - Repeatable List */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                    Key Takeaways
+                  </label>
+                  <div className="flex items-center" style={{ gap: '8px' }}>
+                    <button
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#EEF2FF',
+                        border: '1px solid #C7D2FE',
+                        borderRadius: '4px',
+                        color: '#4338CA',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      ✨ AI Generate
+                    </button>
+                    <button
+                      onClick={handleAddTakeaway}
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#10B981',
+                        border: 'none',
+                        borderRadius: '4px',
+                        color: 'white',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      + Add
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col" style={{ gap: '8px' }}>
+                  {formData.trainingContent.takeaways.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                      No takeaways yet. Click "+ Add" to add one.
+                    </div>
+                  ) : (
+                    formData.trainingContent.takeaways.map((takeaway, index) => (
+                      <div key={index} className="flex items-center" style={{ gap: '8px' }}>
+                        <span style={{ color: '#9CA3AF', fontSize: '12px', width: '20px' }}>{index + 1}.</span>
+                        <input
+                          type="text"
+                          value={takeaway}
+                          onChange={(e) => handleUpdateTakeaway(index, e.target.value)}
+                          placeholder="Enter a key takeaway..."
+                          style={{
+                            flex: 1,
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                          }}
+                        />
+                        <button
+                          onClick={() => handleRemoveTakeaway(index)}
+                          style={{
+                            padding: '8px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#9CA3AF',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* How-Tos - Repeatable Cards with Title + Content */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                    How-To Steps
+                  </label>
+                  <div className="flex items-center" style={{ gap: '8px' }}>
+                    <button
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#EEF2FF',
+                        border: '1px solid #C7D2FE',
+                        borderRadius: '4px',
+                        color: '#4338CA',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      ✨ AI Generate
+                    </button>
+                    <button
+                      onClick={handleAddHowTo}
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#10B981',
+                        border: 'none',
+                        borderRadius: '4px',
+                        color: 'white',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      + Add Step
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col" style={{ gap: '12px' }}>
+                  {formData.trainingContent.howtos.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                      No how-to steps yet. Click "+ Add Step" to add one.
+                    </div>
+                  ) : (
+                    formData.trainingContent.howtos.map((howto, index) => (
+                      <div
+                        key={howto.id}
+                        style={{
+                          padding: '16px',
+                          background: '#FAFAFA',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '10px',
+                        }}
+                      >
+                        <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                          <span style={{ fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Step {index + 1}</span>
+                          <button
+                            onClick={() => handleRemoveHowTo(howto.id)}
+                            style={{
+                              padding: '4px',
+                              background: 'transparent',
+                              border: 'none',
+                              color: '#9CA3AF',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={howto.title}
+                          onChange={(e) => handleUpdateHowTo(howto.id, 'title', e.target.value)}
+                          placeholder="Step title (e.g., 'Open the Dashboard')"
+                          style={{
+                            width: '100%',
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                            marginBottom: '8px',
+                            background: 'white',
+                          }}
+                        />
+                        <textarea
+                          value={howto.content}
+                          onChange={(e) => handleUpdateHowTo(howto.id, 'content', e.target.value)}
+                          placeholder="Describe this step in detail..."
+                          rows={2}
+                          style={{
+                            width: '100%',
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            resize: 'vertical',
+                            background: 'white',
+                          }}
+                        />
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Tips - Repeatable List */}
               <div>
-                <label
-                  className="flex items-center justify-between"
-                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
-                >
-                  Tips & Best Practices
-                  <button
-                    style={{
-                      fontSize: '11px',
-                      padding: '4px 10px',
-                      background: '#EEF2FF',
-                      border: '1px solid #C7D2FE',
-                      borderRadius: '4px',
-                      color: '#4338CA',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    ✨ AI Generate
-                  </button>
-                </label>
-                <textarea
-                  placeholder="Enter tips and best practices, one per line..."
-                  rows={4}
-                  style={{
-                    width: '100%',
-                    padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    resize: 'vertical',
-                  }}
-                />
+                <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                    Tips & Best Practices
+                  </label>
+                  <div className="flex items-center" style={{ gap: '8px' }}>
+                    <button
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#EEF2FF',
+                        border: '1px solid #C7D2FE',
+                        borderRadius: '4px',
+                        color: '#4338CA',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      ✨ AI Generate
+                    </button>
+                    <button
+                      onClick={handleAddTip}
+                      style={{
+                        fontSize: '11px',
+                        padding: '4px 10px',
+                        background: '#10B981',
+                        border: 'none',
+                        borderRadius: '4px',
+                        color: 'white',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      + Add
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col" style={{ gap: '8px' }}>
+                  {formData.trainingContent.tips.length === 0 ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                      No tips yet. Click "+ Add" to add one.
+                    </div>
+                  ) : (
+                    formData.trainingContent.tips.map((tip, index) => (
+                      <div key={index} className="flex items-center" style={{ gap: '8px' }}>
+                        <span style={{ color: '#F59E0B', fontSize: '14px' }}>💡</span>
+                        <input
+                          type="text"
+                          value={tip}
+                          onChange={(e) => handleUpdateTip(index, e.target.value)}
+                          placeholder="Enter a tip or best practice..."
+                          style={{
+                            flex: 1,
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                          }}
+                        />
+                        <button
+                          onClick={() => handleRemoveTip(index)}
+                          style={{
+                            padding: '8px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#9CA3AF',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>

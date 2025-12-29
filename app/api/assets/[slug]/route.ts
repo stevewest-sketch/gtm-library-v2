@@ -133,30 +133,56 @@ export async function PUT(
       // Add new tag associations
       if (tagNames.length > 0) {
         for (const tagName of tagNames) {
-          const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          const tagSlug = tagName
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]/g, '')
+            .replace(/^-+|-+$/g, ''); // Also trim leading/trailing dashes
 
-          // Find or create tag
+          // Find existing tag by slug OR by name (case-insensitive)
           let [existingTag] = await db
             .select()
             .from(tags)
             .where(eq(tags.slug, tagSlug))
             .limit(1);
 
+          // If not found by slug, try by exact name
           if (!existingTag) {
             [existingTag] = await db
-              .insert(tags)
-              .values({ name: tagName, slug: tagSlug })
-              .returning();
+              .select()
+              .from(tags)
+              .where(eq(tags.name, tagName))
+              .limit(1);
           }
 
-          // Create association
-          await db
-            .insert(assetTags)
-            .values({
-              assetId: existingAsset.id,
-              tagId: existingTag.id,
-            })
-            .onConflictDoNothing();
+          // If still not found, create new tag
+          if (!existingTag) {
+            try {
+              [existingTag] = await db
+                .insert(tags)
+                .values({ name: tagName, slug: tagSlug })
+                .returning();
+            } catch (insertError) {
+              // If insert fails (e.g., race condition), try to fetch again
+              console.error('Tag insert failed, trying to fetch:', insertError);
+              [existingTag] = await db
+                .select()
+                .from(tags)
+                .where(eq(tags.slug, tagSlug))
+                .limit(1);
+            }
+          }
+
+          // Create association if we have a valid tag
+          if (existingTag) {
+            await db
+              .insert(assetTags)
+              .values({
+                assetId: existingAsset.id,
+                tagId: existingTag.id,
+              })
+              .onConflictDoNothing();
+          }
         }
       }
     }
@@ -164,6 +190,58 @@ export async function PUT(
     return NextResponse.json(updatedAsset);
   } catch (error) {
     console.error('Error updating asset:', error);
+    return NextResponse.json(
+      { error: 'Failed to update asset' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH: Partial update an asset by slug or id
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  try {
+    const { slug } = await params;
+    const body = await request.json();
+
+    // Find asset by slug or id
+    let [existingAsset] = await db
+      .select()
+      .from(catalogEntries)
+      .where(eq(catalogEntries.slug, slug))
+      .limit(1);
+
+    // If not found by slug, try by id
+    if (!existingAsset) {
+      [existingAsset] = await db
+        .select()
+        .from(catalogEntries)
+        .where(eq(catalogEntries.id, slug))
+        .limit(1);
+    }
+
+    if (!existingAsset) {
+      return NextResponse.json(
+        { error: 'Asset not found' },
+        { status: 404 }
+      );
+    }
+
+    // Update only the provided fields
+    const [updatedAsset] = await db
+      .update(catalogEntries)
+      .set({
+        ...body,
+        updatedAt: new Date(),
+      })
+      .where(eq(catalogEntries.id, existingAsset.id))
+      .returning();
+
+    return NextResponse.json(updatedAsset);
+  } catch (error) {
+    console.error('Error patching asset:', error);
     return NextResponse.json(
       { error: 'Failed to update asset' },
       { status: 500 }

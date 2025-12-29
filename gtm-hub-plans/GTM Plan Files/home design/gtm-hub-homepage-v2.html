@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Homepage</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - FULL PAGE FRAMEWORK
+           ======================================== */
+        
+        :root {
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-enablement: #10B981;
+            --hub-coe: #F59E0B;
+            
+            /* Type Badge Colors */
+            --type-messaging: #EC4899;
+            --type-messaging-bg: #FCE7F3;
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-product-training: #10B981;
+            --type-product-training-bg: #D1FAE5;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-proof-point: #10B981;
+            --type-proof-point-bg: #D1FAE5;
+            
+            /* Neutrals */
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --bg-page: #F9FAFB;
+            --bg-sidebar: #FFFFFF;
+            --footer-bg: #FAFAFA;
+            
+            --sidebar-width: 240px;
+            --header-height: 64px;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* ========================================
+           LEFT SIDEBAR
+           ======================================== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .sidebar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-brand-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .sidebar-brand-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-page);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: #F0FDF4;
+            color: #166534;
+        }
+        
+        .nav-item.active .nav-icon {
+            color: #22C55E;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 12px 8px;
+        }
+        
+        .board-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.15s ease;
+            margin-bottom: 2px;
+        }
+        
+        .board-item:hover {
+            background: var(--bg-page);
+            color: var(--text-primary);
+        }
+        
+        .board-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .board-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .board-dot.coe { background: var(--hub-coe); }
+        .board-dot.content { background: var(--hub-content); }
+        .board-dot.enablement { background: var(--hub-enablement); }
+        .board-dot.blue { background: #3B82F6; }
+        .board-dot.pink { background: #EC4899; }
+        .board-dot.cyan { background: #06B6D4; }
+        
+        .board-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* ========================================
+           TOP HEADER
+           ======================================== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            z-index: 50;
+        }
+        
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: var(--bg-page);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            width: 400px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .header-search:hover {
+            border-color: #D1D5DB;
+        }
+        
+        .header-search-icon {
+            color: var(--text-muted);
+        }
+        
+        .header-search-text {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .header-search-shortcut {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+        }
+        
+        /* ========================================
+           MAIN CONTENT AREA
+           ======================================== */
+        .main {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+            padding: 48px 40px 64px;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 40px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .hero-subtitle {
+            font-size: 16px;
+            color: #94A3B8;
+            margin-bottom: 40px;
+        }
+        
+        /* Hub Cards Grid */
+        .hub-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hub-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .hub-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .hub-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+        
+        .hub-card[data-hub="coe"] .hub-icon {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+        
+        .hub-card[data-hub="content"] .hub-icon {
+            background: linear-gradient(135deg, #8C69F0 0%, #7C3AED 100%);
+        }
+        
+        .hub-card[data-hub="enablement"] .hub-icon {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+        
+        .hub-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+        }
+        
+        .hub-card-desc {
+            font-size: 13px;
+            color: #94A3B8;
+            line-height: 1.5;
+        }
+        
+        /* ========================================
+           CONTENT SECTIONS
+           ======================================== */
+        .content-area {
+            padding: 32px 40px;
+        }
+        
+        /* ========================================
+           FEATURED BOARD SECTION
+           ======================================== */
+        .featured-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .section-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #92400E;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .section-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--hub-content);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .section-link:hover {
+            text-decoration: underline;
+        }
+        
+        .featured-board {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        
+        .featured-board-header {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .featured-board-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #8C69F0 0%, #7C3AED 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .featured-board-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 3px;
+        }
+        
+        .featured-board-info p {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+        
+        .featured-board-meta {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .board-stat {
+            text-align: center;
+        }
+        
+        .board-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .board-stat-label {
+            font-size: 11px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .featured-board-content {
+            padding: 20px 24px;
+        }
+        
+        .featured-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        
+        /* ========================================
+           RECENTLY ADDED SECTION
+           ======================================== */
+        .recent-section {
+            margin-bottom: 40px;
+        }
+        
+        .recent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .recent-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recent-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .new-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #DCFCE7;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #166534;
+        }
+        
+        .new-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #22C55E;
+            border-radius: 50%;
+        }
+        
+        .recent-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        /* ========================================
+           LIBRARY CARD - COMPACT
+           ======================================== */
+        .library-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 200px;
+            min-height: 200px;
+            max-height: 200px;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        
+        .library-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .library-card[data-hub="content"] { border-top: 4px solid var(--hub-content); }
+        .library-card[data-hub="content"]:hover { border-color: var(--hub-content); }
+        .library-card[data-hub="enablement"] { border-top: 4px solid var(--hub-enablement); }
+        .library-card[data-hub="enablement"]:hover { border-color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] { border-top: 4px solid var(--hub-coe); }
+        .library-card[data-hub="coe"]:hover { border-color: var(--hub-coe); }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px 0;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+        
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+        
+        .type-badge[data-type="messaging"] { background: var(--type-messaging-bg); color: var(--type-messaging); }
+        .type-badge[data-type="deck"] { background: var(--type-deck-bg); color: var(--type-deck); }
+        .type-badge[data-type="battlecard"] { background: var(--type-battlecard-bg); color: var(--type-battlecard); }
+        .type-badge[data-type="product-training"] { background: var(--type-product-training-bg); color: var(--type-product-training); }
+        .type-badge[data-type="guide"] { background: var(--type-guide-bg); color: var(--type-guide); }
+        .type-badge[data-type="proof-point"] { background: var(--type-proof-point-bg); color: var(--type-proof-point); }
+        
+        .format-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px 6px 8px;
+            background: var(--bg-page);
+            border-radius: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .format-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        
+        .format-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .card-body {
+            padding: 12px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 0;
+            overflow: hidden;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+            min-height: calc(16px * 1.35 * 2);
+            max-height: calc(16px * 1.35 * 2);
+        }
+        
+        .card-short-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        
+        .card-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .card-action {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .library-card[data-hub="content"] .card-action { color: var(--hub-content); }
+        .library-card[data-hub="enablement"] .card-action { color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] .card-action { color: var(--hub-coe); }
+        
+        /* New indicator dot */
+        .card-new-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #22C55E;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+        
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 1200px) {
+            .hub-cards {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .header {
+                left: 0;
+            }
+            
+            .main {
+                margin-left: 0;
+            }
+            
+            .hub-cards {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========================================
+         LEFT SIDEBAR
+         ======================================== -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">G+</div>
+            <div class="sidebar-brand">
+                <span class="sidebar-brand-name">GTM Library</span>
+                <span class="sidebar-brand-sub">Revenue Enablement</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                Home
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📚</span>
+                Library
+            </a>
+            
+            <div class="nav-section-title">Boards</div>
+            
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot coe"></span>
+                    CoE
+                </div>
+                <span class="board-count">233</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot content"></span>
+                    Content Types
+                </div>
+                <span class="board-count">130</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot enablement"></span>
+                    Enablement
+                </div>
+                <span class="board-count">47</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot blue"></span>
+                    Product
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot pink"></span>
+                    Competitive
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot cyan"></span>
+                    Sales
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot content"></span>
+                    CSM
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot pink"></span>
+                    SC
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot enablement"></span>
+                    Demo
+                </div>
+                <span class="board-count">0</span>
+            </a>
+            <a href="#" class="board-item">
+                <div class="board-item-left">
+                    <span class="board-dot coe"></span>
+                    Proof Points
+                </div>
+                <span class="board-count">0</span>
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- ========================================
+         TOP HEADER
+         ======================================== -->
+    <header class="header">
+        <h1 class="header-title">Home</h1>
+        
+        <div class="header-search">
+            <svg class="header-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="header-search-text">Search boards, tags, content...</span>
+            <span class="header-search-shortcut">⌘K</span>
+        </div>
+        
+        <div></div>
+    </header>
+    
+    <!-- ========================================
+         MAIN CONTENT
+         ======================================== -->
+    <main class="main">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-title">GTM Hub</h1>
+            <p class="hero-subtitle">Your central hub for selling, supporting, and growing with Gladly.</p>
+            
+            <div class="hub-cards">
+                <a href="#" class="hub-card" data-hub="coe">
+                    <div class="hub-icon">⭐</div>
+                    <h3 class="hub-card-title">CoE Hub</h3>
+                    <p class="hub-card-desc">Centers of Excellence resources and best practices.</p>
+                </a>
+                
+                <a href="#" class="hub-card" data-hub="content">
+                    <div class="hub-icon">📦</div>
+                    <h3 class="hub-card-title">Content Hub</h3>
+                    <p class="hub-card-desc">Sales content, decks, and customer-facing resources.</p>
+                </a>
+                
+                <a href="#" class="hub-card" data-hub="enablement">
+                    <div class="hub-icon">🚀</div>
+                    <h3 class="hub-card-title">Enablement Hub</h3>
+                    <p class="hub-card-desc">Training sessions and skill-building resources.</p>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- Featured Board Section -->
+            <section class="featured-section">
+                <div class="section-header">
+                    <div class="section-header-left">
+                        <span class="featured-badge">⭐ Featured</span>
+                        <h2 class="section-title">Spotlight</h2>
+                    </div>
+                    <a href="#" class="section-link">View Board →</a>
+                </div>
+                
+                <div class="featured-board">
+                    <div class="featured-board-header">
+                        <div class="featured-board-icon">🎯</div>
+                        <div class="featured-board-info">
+                            <h3>Apex 2 Naming and Messaging</h3>
+                            <p>Updated positioning, naming conventions, and messaging for Apex 2 launch</p>
+                        </div>
+                        <div class="featured-board-meta">
+                            <div class="board-stat">
+                                <div class="board-stat-value">12</div>
+                                <div class="board-stat-label">Resources</div>
+                            </div>
+                            <div class="board-stat">
+                                <div class="board-stat-value">Dec 28</div>
+                                <div class="board-stat-label">Updated</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="featured-board-content">
+                        <div class="featured-cards-grid">
+                            <!-- Card 1 -->
+                            <a href="#" class="library-card" data-hub="content">
+                                <div class="card-header">
+                                    <span class="type-badge" data-type="messaging">Messaging</span>
+                                    <span class="format-label">
+                                        <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                            <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                                            <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                        <span class="format-text">Document</span>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Apex 2 Core Messaging Framework</h4>
+                                    <p class="card-short-desc">Complete messaging guide</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="card-date">Dec 28, 2024</span>
+                                    <span class="card-action">View →</span>
+                                </div>
+                            </a>
+                            
+                            <!-- Card 2 -->
+                            <a href="#" class="library-card" data-hub="content">
+                                <div class="card-header">
+                                    <span class="type-badge" data-type="deck">Deck</span>
+                                    <span class="format-label">
+                                        <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                            <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                                            <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                                            <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                                        </svg>
+                                        <span class="format-text">Slides</span>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Apex 2 Sales Deck</h4>
+                                    <p class="card-short-desc">Updated pitch deck</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="card-date">Dec 27, 2024</span>
+                                    <span class="card-action">View →</span>
+                                </div>
+                            </a>
+                            
+                            <!-- Card 3 -->
+                            <a href="#" class="library-card" data-hub="content">
+                                <div class="card-header">
+                                    <span class="type-badge" data-type="battlecard">Battlecard</span>
+                                    <span class="format-label">
+                                        <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                            <path d="M4 4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#EA4335"/>
+                                            <path d="M14 2v6h6" fill="#B31412"/>
+                                            <text x="5" y="17" fill="white" font-size="7" font-weight="bold">PDF</text>
+                                        </svg>
+                                        <span class="format-text">PDF</span>
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">Apex 2 Competitive Positioning</h4>
+                                    <p class="card-short-desc">Competitor comparison</p>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="card-date">Dec 26, 2024</span>
+                                    <span class="card-action">View →</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recently Added Section -->
+            <section class="recent-section">
+                <div class="recent-header">
+                    <div class="recent-title">
+                        <h2>Recently Added</h2>
+                        <span class="new-badge">Live Feed</span>
+                    </div>
+                    <a href="#" class="section-link">View All →</a>
+                </div>
+                
+                <div class="recent-cards-grid">
+                    <!-- Recent Card 1 -->
+                    <a href="#" class="library-card" data-hub="enablement">
+                        <span class="card-new-indicator"></span>
+                        <div class="card-header">
+                            <span class="type-badge" data-type="product-training">Product Training</span>
+                            <span class="format-label">
+                                <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" fill="#DC2626"/>
+                                    <circle cx="12" cy="12" r="4" fill="white"/>
+                                    <circle cx="12" cy="12" r="2" fill="#DC2626"/>
+                                </svg>
+                                <span class="format-text">Live Replay</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Sidekick Voice Deep Dive</h4>
+                            <p class="card-short-desc">Complete Voice AI training</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">Dec 28, 2024</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Recent Card 2 -->
+                    <a href="#" class="library-card" data-hub="content">
+                        <span class="card-new-indicator"></span>
+                        <div class="card-header">
+                            <span class="type-badge" data-type="deck">Deck</span>
+                            <span class="format-label">
+                                <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                                    <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                                    <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                                </svg>
+                                <span class="format-text">Slides</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Q1 2025 Kickoff Deck</h4>
+                            <p class="card-short-desc">Sales kickoff materials</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">Dec 27, 2024</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Recent Card 3 -->
+                    <a href="#" class="library-card" data-hub="coe">
+                        <span class="card-new-indicator"></span>
+                        <div class="card-header">
+                            <span class="type-badge" data-type="proof-point">Proof Point</span>
+                            <span class="format-label">
+                                <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                                    <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                                <span class="format-text">Document</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Allbirds - 45% FCR Improvement</h4>
+                            <p class="card-short-desc">Customer success metric</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">Dec 26, 2024</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                    
+                    <!-- Recent Card 4 -->
+                    <a href="#" class="library-card" data-hub="enablement">
+                        <div class="card-header">
+                            <span class="type-badge" data-type="guide">Guide</span>
+                            <span class="format-label">
+                                <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#3B82F6"/>
+                                    <path d="M8 2v20" stroke="#1D4ED8" stroke-width="2"/>
+                                    <path d="M11 7h6M11 11h6M11 15h4" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                                </svg>
+                                <span class="format-text">Guide</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">BVA Implementation Playbook</h4>
+                            <p class="card-short-desc">Step-by-step BVA setup</p>
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-date">Dec 25, 2024</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+            
+        </div>
+    </main>
+</body>
+</html>

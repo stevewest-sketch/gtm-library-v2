@@ -200,8 +200,24 @@ export async function GET(request: Request) {
       .from(catalogEntries)
       .where(includeAll ? undefined : eq(catalogEntries.status, 'published'));
 
+    // Fetch board names for each asset
+    const assetsWithBoards = await Promise.all(
+      assetsData.map(async (asset) => {
+        const assetBoardsData = await db
+          .select({ name: boards.name })
+          .from(assetBoards)
+          .innerJoin(boards, eq(assetBoards.boardId, boards.id))
+          .where(eq(assetBoards.assetId, asset.id));
+
+        return {
+          ...asset,
+          boards: assetBoardsData.map(b => b.name),
+        };
+      })
+    );
+
     return NextResponse.json({
-      assets: assetsData,
+      assets: assetsWithBoards,
       total: countResult?.count || 0,
       limit,
       offset,
@@ -300,31 +316,56 @@ export async function POST(request: Request) {
     if (assetTagsList && assetTagsList.length > 0) {
       // Get or create tags
       for (const tagName of assetTagsList) {
-        const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const tagSlug = tagName
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '')
+          .replace(/^-+|-+$/g, ''); // Trim leading/trailing dashes
 
-        // Try to find existing tag
+        // Find existing tag by slug OR by name
         let [existingTag] = await db
           .select()
           .from(tags)
           .where(eq(tags.slug, tagSlug))
           .limit(1);
 
+        // If not found by slug, try by exact name
         if (!existingTag) {
-          // Create new tag
           [existingTag] = await db
-            .insert(tags)
-            .values({ name: tagName, slug: tagSlug })
-            .returning();
+            .select()
+            .from(tags)
+            .where(eq(tags.name, tagName))
+            .limit(1);
         }
 
-        // Associate tag with asset
-        await db
-          .insert(assetTags)
-          .values({
-            assetId: newAsset.id,
-            tagId: existingTag.id,
-          })
-          .onConflictDoNothing();
+        // If still not found, create new tag
+        if (!existingTag) {
+          try {
+            [existingTag] = await db
+              .insert(tags)
+              .values({ name: tagName, slug: tagSlug })
+              .returning();
+          } catch (insertError) {
+            // If insert fails (e.g., race condition or unique constraint), try to fetch again
+            console.error('Tag insert failed, trying to fetch:', insertError);
+            [existingTag] = await db
+              .select()
+              .from(tags)
+              .where(eq(tags.slug, tagSlug))
+              .limit(1);
+          }
+        }
+
+        // Associate tag with asset if we have a valid tag
+        if (existingTag) {
+          await db
+            .insert(assetTags)
+            .values({
+              assetId: newAsset.id,
+              tagId: existingTag.id,
+            })
+            .onConflictDoNothing();
+        }
       }
     }
 

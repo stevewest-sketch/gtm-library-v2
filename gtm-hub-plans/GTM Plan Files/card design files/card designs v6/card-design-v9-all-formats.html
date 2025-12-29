@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Card Design v9 (All Formats)</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - CARD DESIGN v9
+           Option B: Inline Pill + All 13 Formats
+           ======================================== */
+        
+        :root {
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-enablement: #10B981;
+            --hub-coe: #F59E0B;
+            
+            /* Type Badge Colors */
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-one-pager: #F59E0B;
+            --type-one-pager-bg: #FEF3C7;
+            --type-template: #8B5CF6;
+            --type-template-bg: #EDE9FE;
+            --type-messaging: #EC4899;
+            --type-messaging-bg: #FCE7F3;
+            --type-calculator: #06B6D4;
+            --type-calculator-bg: #CFFAFE;
+            --type-competitive: #EF4444;
+            --type-competitive-bg: #FEE2E2;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-press: #6B7280;
+            --type-press-bg: #F3F4F6;
+            --type-case-study: #059669;
+            --type-case-study-bg: #D1FAE5;
+            --type-product-training: #10B981;
+            --type-product-training-bg: #D1FAE5;
+            --type-technical-training: #2563EB;
+            --type-technical-training-bg: #DBEAFE;
+            --type-gtm-training: #8B5CF6;
+            --type-gtm-training-bg: #EDE9FE;
+            --type-gtm-tool: #06B6D4;
+            --type-gtm-tool-bg: #CFFAFE;
+            --type-competitive-training: #EF4444;
+            --type-competitive-training-bg: #FEE2E2;
+            --type-certification: #F59E0B;
+            --type-certification-bg: #FEF3C7;
+            --type-partner-training: #D97706;
+            --type-partner-training-bg: #FEF3C7;
+            --type-value-realization: #0891B2;
+            --type-value-realization-bg: #CFFAFE;
+            --type-playbook: #8B5CF6;
+            --type-playbook-bg: #EDE9FE;
+            --type-customer-meeting-asset: #059669;
+            --type-customer-meeting-asset-bg: #D1FAE5;
+            --type-prospect-meeting-asset: #8B5CF6;
+            --type-prospect-meeting-asset-bg: #EDE9FE;
+            --type-best-practice: #F59E0B;
+            --type-best-practice-bg: #FEF3C7;
+            --type-process-innovation: #06B6D4;
+            --type-process-innovation-bg: #CFFAFE;
+            --type-proof-point: #10B981;
+            --type-proof-point-bg: #D1FAE5;
+            --type-dashboard: #3B82F6;
+            --type-dashboard-bg: #DBEAFE;
+            
+            /* Neutrals */
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --bg-page: #F8FAFC;
+            --footer-bg: #FAFAFA;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            padding: 40px;
+        }
+        
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 16px; color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 56px 0 24px;
+        }
+        
+        .section-title:first-of-type {
+            margin-top: 32px;
+        }
+        
+        .info-box {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 24px 0 40px;
+        }
+        .info-box h4 { font-size: 16px; font-weight: 600; color: #1E40AF; margin-bottom: 12px; }
+        .info-box p { font-size: 14px; color: #1E40AF; line-height: 1.6; }
+        .info-box code { background: #DBEAFE; padding: 3px 8px; border-radius: 4px; font-size: 13px; }
+        
+        /* ========================================
+           FORMAT ICONS GRID - ALL 13 FORMATS
+           ======================================== */
+        .format-icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .format-icon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            transition: all 0.15s ease;
+        }
+        
+        .format-icon-item:hover {
+            border-color: var(--hub-content);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .format-icon-item .format-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+        
+        .format-icon-item .format-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .format-icon-item .format-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .format-icon-item .format-slug {
+            font-size: 11px;
+            font-family: 'SF Mono', Monaco, monospace;
+            color: var(--text-muted);
+        }
+        
+        /* ========================================
+           CARD GRID
+           ======================================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        
+        /* ========================================
+           LIBRARY CARD - v9
+           ======================================== */
+        .library-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 220px; /* Fixed height - increased to prevent cutoff */
+            min-height: 220px; /* Enforce minimum */
+            max-height: 220px; /* Enforce maximum */
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .library-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        /* Hub accent - top border */
+        .library-card[data-hub="content"] { border-top: 5px solid var(--hub-content); }
+        .library-card[data-hub="content"]:hover { border-color: var(--hub-content); }
+        .library-card[data-hub="enablement"] { border-top: 5px solid var(--hub-enablement); }
+        .library-card[data-hub="enablement"]:hover { border-color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] { border-top: 5px solid var(--hub-coe); }
+        .library-card[data-hub="coe"]:hover { border-color: var(--hub-coe); }
+        
+        /* Card Header - Type Badge + Format Pill */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 0;
+            flex-shrink: 0;
+            gap: 12px;
+        }
+        
+        /* Type Badge - TEXT ONLY */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        
+        /* Format Label - OPTION B: Inline Pill */
+        .format-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px 8px 10px;
+            background: var(--bg-page);
+            border-radius: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .format-icon {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+        
+        .format-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        /* Card Body */
+        .card-body {
+            padding: 14px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 0; /* Prevent flex overflow */
+            overflow: hidden;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 6px;
+            /* Reserve space for exactly 2 lines */
+            min-height: calc(18px * 1.35 * 2); /* font-size * line-height * 2 lines = 48.6px */
+            max-height: calc(18px * 1.35 * 2);
+        }
+        
+        .card-short-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Card Footer - Always at bottom */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+            flex-shrink: 0;
+            margin-top: auto; /* Push to bottom */
+        }
+        
+        .card-date {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .card-action {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .library-card[data-hub="content"] .card-action { color: var(--hub-content); }
+        .library-card[data-hub="enablement"] .card-action { color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] .card-action { color: var(--hub-coe); }
+        
+        /* Type Badge Color Variants */
+        .type-badge[data-type="deck"] { background: var(--type-deck-bg); color: var(--type-deck); }
+        .type-badge[data-type="battlecard"] { background: var(--type-battlecard-bg); color: var(--type-battlecard); }
+        .type-badge[data-type="one-pager"] { background: var(--type-one-pager-bg); color: var(--type-one-pager); }
+        .type-badge[data-type="template"] { background: var(--type-template-bg); color: var(--type-template); }
+        .type-badge[data-type="messaging"] { background: var(--type-messaging-bg); color: var(--type-messaging); }
+        .type-badge[data-type="calculator"] { background: var(--type-calculator-bg); color: var(--type-calculator); }
+        .type-badge[data-type="competitive"] { background: var(--type-competitive-bg); color: var(--type-competitive); }
+        .type-badge[data-type="guide"] { background: var(--type-guide-bg); color: var(--type-guide); }
+        .type-badge[data-type="press"] { background: var(--type-press-bg); color: var(--type-press); }
+        .type-badge[data-type="case-study"] { background: var(--type-case-study-bg); color: var(--type-case-study); }
+        .type-badge[data-type="product-training"] { background: var(--type-product-training-bg); color: var(--type-product-training); }
+        .type-badge[data-type="technical-training"] { background: var(--type-technical-training-bg); color: var(--type-technical-training); }
+        .type-badge[data-type="gtm-training"] { background: var(--type-gtm-training-bg); color: var(--type-gtm-training); }
+        .type-badge[data-type="gtm-tool"] { background: var(--type-gtm-tool-bg); color: var(--type-gtm-tool); }
+        .type-badge[data-type="competitive-training"] { background: var(--type-competitive-training-bg); color: var(--type-competitive-training); }
+        .type-badge[data-type="certification"] { background: var(--type-certification-bg); color: var(--type-certification); }
+        .type-badge[data-type="partner-training"] { background: var(--type-partner-training-bg); color: var(--type-partner-training); }
+        .type-badge[data-type="value-realization"] { background: var(--type-value-realization-bg); color: var(--type-value-realization); }
+        .type-badge[data-type="playbook"] { background: var(--type-playbook-bg); color: var(--type-playbook); }
+        .type-badge[data-type="customer-meeting-asset"] { background: var(--type-customer-meeting-asset-bg); color: var(--type-customer-meeting-asset); }
+        .type-badge[data-type="prospect-meeting-asset"] { background: var(--type-prospect-meeting-asset-bg); color: var(--type-prospect-meeting-asset); }
+        .type-badge[data-type="best-practice"] { background: var(--type-best-practice-bg); color: var(--type-best-practice); }
+        .type-badge[data-type="process-innovation"] { background: var(--type-process-innovation-bg); color: var(--type-process-innovation); }
+        .type-badge[data-type="proof-point"] { background: var(--type-proof-point-bg); color: var(--type-proof-point); }
+        .type-badge[data-type="dashboard"] { background: var(--type-dashboard-bg); color: var(--type-dashboard); }
+        
+        /* ========================================
+           LIST VIEW
+           ======================================== */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .list-item:hover {
+            border-color: var(--hub-coe);
+            background: #FAFBFC;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        
+        .list-item[data-hub="content"] { border-left: 5px solid var(--hub-content); }
+        .list-item[data-hub="enablement"] { border-left: 5px solid var(--hub-enablement); }
+        .list-item[data-hub="coe"] { border-left: 5px solid var(--hub-coe); }
+        
+        .list-type {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .list-title {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .list-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+        
+        .list-format {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px 6px 8px;
+            background: var(--bg-page);
+            border-radius: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .list-format .format-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        
+        .list-format .format-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .list-action {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .list-item[data-hub="content"] .list-action { color: var(--hub-content); }
+        .list-item[data-hub="enablement"] .list-action { color: var(--hub-enablement); }
+        .list-item[data-hub="coe"] .list-action { color: var(--hub-coe); }
+        
+        /* List type badge variants */
+        .list-type[data-type="proof-point"] { background: var(--type-proof-point-bg); color: var(--type-proof-point); }
+        .list-type[data-type="best-practice"] { background: var(--type-best-practice-bg); color: var(--type-best-practice); }
+        .list-type[data-type="dashboard"] { background: var(--type-dashboard-bg); color: var(--type-dashboard); }
+        .list-type[data-type="process-innovation"] { background: var(--type-process-innovation-bg); color: var(--type-process-innovation); }
+        
+        .divider {
+            height: 1px;
+            background: var(--card-border);
+            margin: 48px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>GTM Library - Card Design v9</h1>
+    <p class="subtitle">Option B: Inline Pill format labels + All 13 format icons from taxonomy</p>
+    
+    <div class="info-box">
+        <h4>📋 Format Icon Mapping - All 13 Formats</h4>
+        <p>
+            Complete icon set aligned with <code>CONTENT_TAXONOMY_FRAMEWORK.md</code>.<br>
+            Icons use recognizable brand colors: Google Workspace suite, Adobe PDF, etc.
+        </p>
+    </div>
+    
+    <!-- ========================================
+         ALL 13 FORMAT ICONS
+         ======================================== -->
+    <div class="section-title">Complete Format Icon Reference</div>
+    
+    <div class="format-icons-grid">
+        <!-- 1. Slides - Google Slides Yellow -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                <rect x="5" y="14" width="14" height="2" rx="1" fill="white" opacity="0.4"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Slides</span>
+                <span class="format-slug">slides</span>
+            </div>
+        </div>
+        
+        <!-- 2. Document - Google Docs Blue -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Document</span>
+                <span class="format-slug">document</span>
+            </div>
+        </div>
+        
+        <!-- 3. Spreadsheet - Google Sheets Green -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="2" width="18" height="20" rx="2" fill="#34A853"/>
+                <path d="M7 6h10M7 10h10M7 14h10M7 18h10" stroke="white" stroke-width="1.2"/>
+                <path d="M12 6v12" stroke="white" stroke-width="1.2"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Spreadsheet</span>
+                <span class="format-slug">spreadsheet</span>
+            </div>
+        </div>
+        
+        <!-- 4. PDF - Adobe Red -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M4 4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#EA4335"/>
+                <path d="M14 2v6h6" fill="#B31412"/>
+                <text x="5" y="17" fill="white" font-size="7" font-weight="bold" font-family="Arial">PDF</text>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">PDF</span>
+                <span class="format-slug">pdf</span>
+            </div>
+        </div>
+        
+        <!-- 5. Video - Red with Play -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" fill="#EA4335"/>
+                <path d="M10 8.5v7l6-3.5-6-3.5z" fill="white"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Video</span>
+                <span class="format-slug">video</span>
+            </div>
+        </div>
+        
+        <!-- 6. Article - Newspaper Gray/Blue -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" fill="#64748B"/>
+                <rect x="6" y="6" width="5" height="5" fill="white"/>
+                <path d="M13 7h5M13 10h5M6 14h12M6 17h9" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Article</span>
+                <span class="format-slug">article</span>
+            </div>
+        </div>
+        
+        <!-- 7. Tool - Cyan Dashboard -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" fill="#06B6D4"/>
+                <rect x="6" y="6" width="5" height="5" rx="1" fill="white"/>
+                <rect x="13" y="6" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+                <rect x="13" y="11" width="5" height="5" rx="1" fill="white" opacity="0.5"/>
+                <rect x="6" y="13" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Tool</span>
+                <span class="format-slug">tool</span>
+            </div>
+        </div>
+        
+        <!-- 8. Guide - Blue Book -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#3B82F6"/>
+                <path d="M8 2v20" stroke="#1D4ED8" stroke-width="2"/>
+                <path d="M11 7h6M11 11h6M11 15h4" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Guide</span>
+                <span class="format-slug">guide</span>
+            </div>
+        </div>
+        
+        <!-- 9. Sequence - Purple Email -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" fill="#8B5CF6"/>
+                <path d="M2 6l10 7 10-7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 18l4-4M18 18l-4-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Sequence</span>
+                <span class="format-slug">sequence</span>
+            </div>
+        </div>
+        
+        <!-- 10. Live Replay - Red with Record Dot -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" fill="#DC2626"/>
+                <circle cx="12" cy="12" r="4" fill="white"/>
+                <circle cx="12" cy="12" r="2" fill="#DC2626"/>
+                <circle cx="18" cy="7" r="2" fill="#FCA5A5">
+                    <animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Live Replay</span>
+                <span class="format-slug">live-replay</span>
+            </div>
+        </div>
+        
+        <!-- 11. On Demand - Blue with Play -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" fill="#2563EB"/>
+                <path d="M10 8.5v7l6-3.5-6-3.5z" fill="white"/>
+                <rect x="5" y="17" width="14" height="1.5" rx="0.75" fill="white" opacity="0.5"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">On Demand</span>
+                <span class="format-slug">on-demand</span>
+            </div>
+        </div>
+        
+        <!-- 12. Course - Purple Graduation -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3L2 8l10 5 10-5-10-5z" fill="#7C3AED"/>
+                <path d="M6 10.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" stroke="#7C3AED" stroke-width="2" fill="#A78BFA"/>
+                <path d="M20 8v7" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="20" cy="16" r="1.5" fill="#7C3AED"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Course</span>
+                <span class="format-slug">course</span>
+            </div>
+        </div>
+        
+        <!-- 13. Web Link - Chain Link -->
+        <div class="format-icon-item">
+            <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                <rect x="1" y="1" width="22" height="22" rx="4" fill="#6B7280"/>
+                <path d="M10 14a3.5 3.5 0 005 0l2-2a3.5 3.5 0 00-5-5l-1 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 10a3.5 3.5 0 00-5 0l-2 2a3.5 3.5 0 005 5l1-1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="format-info">
+                <span class="format-name">Web Link</span>
+                <span class="format-slug">web-link</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         CONTENT HUB - CARD VIEW
+         ======================================== -->
+    <div class="section-title">Content Hub - Cards (Format Pill)</div>
+    <div class="card-grid">
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="battlecard">Battlecard</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4a2 2 0 012-2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#EA4335"/>
+                        <path d="M14 2v6h6" fill="#B31412"/>
+                        <text x="5" y="17" fill="white" font-size="7" font-weight="bold" font-family="Arial">PDF</text>
+                    </svg>
+                    <span class="format-text">PDF</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Ada Battlecard</h4>
+                <p class="card-short-desc">Competitive positioning vs Ada</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 10, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="template">Template</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                        <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                        <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                        <rect x="5" y="14" width="14" height="2" rx="1" fill="white" opacity="0.4"/>
+                    </svg>
+                    <span class="format-text">Slides</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">First Meeting Deck Template</h4>
+                <p class="card-short-desc">First meeting presentation template</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 15, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="messaging">Messaging</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                        <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Document</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Airline Vertical Sequence</h4>
+                <p class="card-short-desc">Messaging framework for airline prospects</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 8, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="competitive">Competitive</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="2" width="18" height="20" rx="2" fill="#34A853"/>
+                        <path d="M7 6h10M7 10h10M7 14h10M7 18h10" stroke="white" stroke-width="1.2"/>
+                        <path d="M12 6v12" stroke="white" stroke-width="1.2"/>
+                    </svg>
+                    <span class="format-text">Spreadsheet</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Competitive Capability Research</h4>
+                <p class="card-short-desc">Detailed comparison of AI platforms</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 5, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="press">Press</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="3" width="18" height="18" rx="2" fill="#64748B"/>
+                        <rect x="6" y="6" width="5" height="5" fill="white"/>
+                        <path d="M13 7h5M13 10h5M6 14h12M6 17h9" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Article</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">TechCrunch: Gladly Raises Series D</h4>
+                <p class="card-short-desc">Media coverage of Series D funding</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Nov 28, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="messaging">Messaging</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#8B5CF6"/>
+                        <path d="M2 6l10 7 10-7" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6 18l4-4M18 18l-4-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Sequence</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Enterprise Outreach Sequence</h4>
+                <p class="card-short-desc">10-touch enterprise outreach flow</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 2, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         ENABLEMENT HUB - CARD VIEW
+         ======================================== -->
+    <div class="section-title">Enablement Hub - Cards</div>
+    <div class="card-grid">
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="product-training">Product Training</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#DC2626"/>
+                        <circle cx="12" cy="12" r="4" fill="white"/>
+                        <circle cx="12" cy="12" r="2" fill="#DC2626"/>
+                        <circle cx="18" cy="7" r="2" fill="#FCA5A5"/>
+                    </svg>
+                    <span class="format-text">Live Replay</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Sidekick Voice Deep Dive</h4>
+                <p class="card-short-desc">Sidekick product training session</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 12, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="gtm-training">GTM Training</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#EA4335"/>
+                        <path d="M10 8.5v7l6-3.5-6-3.5z" fill="white"/>
+                    </svg>
+                    <span class="format-text">Video</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Selling High + First Meeting Deck</h4>
+                <p class="card-short-desc">GTM skills for selling high</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 5, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="value-realization">Value Realization</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="2" width="18" height="20" rx="2" fill="#34A853"/>
+                        <path d="M7 6h10M7 10h10M7 14h10M7 18h10" stroke="white" stroke-width="1.2"/>
+                        <path d="M12 6v12" stroke="white" stroke-width="1.2"/>
+                    </svg>
+                    <span class="format-text">Spreadsheet</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">*New* Pre-Sales BVA Calculator</h4>
+                <p class="card-short-desc">Value calculator for pre-sales BVA</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 28, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="certification">Certification</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3L2 8l10 5 10-5-10-5z" fill="#7C3AED"/>
+                        <path d="M6 10.5v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" stroke="#7C3AED" stroke-width="2" fill="#A78BFA"/>
+                        <path d="M20 8v7" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="20" cy="16" r="1.5" fill="#7C3AED"/>
+                    </svg>
+                    <span class="format-text">Course</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Gladly Product Certification</h4>
+                <p class="card-short-desc">Complete certification program</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 1, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="playbook">Playbook</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#3B82F6"/>
+                        <path d="M8 2v20" stroke="#1D4ED8" stroke-width="2"/>
+                        <path d="M11 7h6M11 11h6M11 15h4" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Guide</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">White Glove Onboarding Playbook</h4>
+                <p class="card-short-desc">Enterprise customer onboarding guide</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 18, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="technical-training">Technical Training</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#2563EB"/>
+                        <path d="M10 8.5v7l6-3.5-6-3.5z" fill="white"/>
+                        <rect x="5" y="17" width="14" height="1.5" rx="0.75" fill="white" opacity="0.5"/>
+                    </svg>
+                    <span class="format-text">On Demand</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">API Integration Deep Dive</h4>
+                <p class="card-short-desc">Technical training for integrations</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 10, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         COE HUB - CARD VIEW
+         ======================================== -->
+    <div class="section-title">CoE Hub - Cards</div>
+    <div class="card-grid">
+        <a href="#" class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="proof-point">Proof Point</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                        <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Document</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Breeze Airways - 61% Resolution Rate</h4>
+                <p class="card-short-desc">Customer success story with metrics</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 10, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="dashboard">Dashboard</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="3" width="18" height="18" rx="2" fill="#06B6D4"/>
+                        <rect x="6" y="6" width="5" height="5" rx="1" fill="white"/>
+                        <rect x="13" y="6" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+                        <rect x="13" y="11" width="5" height="5" rx="1" fill="white" opacity="0.5"/>
+                        <rect x="6" y="13" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+                    </svg>
+                    <span class="format-text">Tool</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">CoE Metrics Dashboard</h4>
+                <p class="card-short-desc">Real-time performance metrics</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 15, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="best-practice">Best Practice</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                        <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                        <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                        <rect x="5" y="14" width="14" height="2" rx="1" fill="white" opacity="0.4"/>
+                    </svg>
+                    <span class="format-text">Slides</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Chat Optimization Mastery</h4>
+                <p class="card-short-desc">Path to 90% FCR playbook</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 5, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="process-innovation">Process Innovation</span>
+                <span class="format-label">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="1" y="1" width="22" height="22" rx="4" fill="#6B7280"/>
+                        <path d="M10 14a3.5 3.5 0 005 0l2-2a3.5 3.5 0 00-5-5l-1 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 10a3.5 3.5 0 00-5 0l-2 2a3.5 3.5 0 005 5l1-1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="format-text">Web Link</span>
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">AI Workflow Automation Hub</h4>
+                <p class="card-short-desc">External innovation resource portal</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 20, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         COE HUB - STACK VIEW
+         ======================================== -->
+    <div class="section-title">CoE Hub - Stack View (List)</div>
+    
+    <div class="list-container">
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="proof-point">Proof Point</span>
+            <span class="list-title">Breeze Airways - 61% resolution rate for pre-booking questions</span>
+            <div class="list-meta">
+                <span class="list-format">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="2" width="18" height="20" rx="2" fill="#4285F4"/>
+                        <path d="M7 7h10M7 11h10M7 15h7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Document</span>
+                </span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="best-practice">Best Practice</span>
+            <span class="list-title">Voice Channel Optimization Guidelines</span>
+            <div class="list-meta">
+                <span class="list-format">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4a2 2 0 012-2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" fill="#3B82F6"/>
+                        <path d="M8 2v20" stroke="#1D4ED8" stroke-width="2"/>
+                        <path d="M11 7h6M11 11h6M11 15h4" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="format-text">Guide</span>
+                </span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="dashboard">Dashboard</span>
+            <span class="list-title">Agent Communication Time Metrics</span>
+            <div class="list-meta">
+                <span class="list-format">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="3" width="18" height="18" rx="2" fill="#06B6D4"/>
+                        <rect x="6" y="6" width="5" height="5" rx="1" fill="white"/>
+                        <rect x="13" y="6" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+                        <rect x="13" y="11" width="5" height="5" rx="1" fill="white" opacity="0.5"/>
+                        <rect x="6" y="13" width="5" height="3" rx="1" fill="white" opacity="0.7"/>
+                    </svg>
+                    <span class="format-text">Tool</span>
+                </span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="process-innovation">Process Innovation</span>
+            <span class="list-title">Self-Service AI Routing Framework</span>
+            <div class="list-meta">
+                <span class="list-format">
+                    <svg class="format-icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#FBBC04"/>
+                        <rect x="5" y="7" width="6" height="5" rx="1" fill="white"/>
+                        <rect x="13" y="7" width="6" height="5" rx="1" fill="white" opacity="0.6"/>
+                        <rect x="5" y="14" width="14" height="2" rx="1" fill="white" opacity="0.4"/>
+                    </svg>
+                    <span class="format-text">Slides</span>
+                </span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+    </div>
+</body>
+</html>

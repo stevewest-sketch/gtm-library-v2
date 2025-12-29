@@ -6,6 +6,7 @@ export const catalogEntries = pgTable('catalog_entries', {
   slug: text('slug').unique().notNull(),
   title: text('title').notNull(),
   description: text('description'),
+  shortDescription: text('short_description'), // 6 words max, shown on card view
 
   // Classification
   hub: text('hub').notNull(), // 'coe' | 'content' | 'enablement'
@@ -79,6 +80,7 @@ export const boards = pgTable('boards', {
   color: text('color').notNull(),
   lightColor: text('light_color').notNull(),
   accentColor: text('accent_color').notNull(),
+  defaultView: text('default_view').default('grid'), // 'grid' | 'stack'
   sortOrder: integer('sort_order').default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
@@ -107,6 +109,7 @@ export const boardTags = pgTable('board_tags', {
   boardId: uuid('board_id').references(() => boards.id, { onDelete: 'cascade' }),
   tagId: uuid('tag_id').references(() => tags.id, { onDelete: 'cascade' }),
   sortOrder: integer('sort_order').default(0),
+  displayName: text('display_name'), // Optional override for tag name on this board (e.g., "tool" → "Tools")
   createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -145,3 +148,34 @@ export const viewEvents = pgTable('view_events', {
 });
 
 export type ViewEvent = typeof viewEvents.$inferSelect;
+
+// Content Types table (e.g., Deck, Battlecard, Product Overview, etc.)
+export const contentTypes = pgTable('content_types', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  hub: text('hub'), // Which hub this type belongs to: 'content' | 'enablement' | 'coe' | null (all)
+  bgColor: text('bg_color').notNull(), // Background color for badge (e.g., '#EDE9FE')
+  textColor: text('text_color').notNull(), // Text color for badge (e.g., '#8C69F0')
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export type ContentType = typeof contentTypes.$inferSelect;
+export type NewContentType = typeof contentTypes.$inferInsert;
+
+// Formats table (e.g., Slides, Video, Document, etc.)
+export const formats = pgTable('formats', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  color: text('color').notNull(), // Icon/brand color (e.g., '#FBBC04' for Google Slides)
+  iconType: text('icon_type').notNull().default('document'), // Which icon to use (maps to FORMAT_ICONS keys)
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export type Format = typeof formats.$inferSelect;
+export type NewFormat = typeof formats.$inferInsert;

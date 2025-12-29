@@ -8,6 +8,34 @@
       "when": 1766902357590,
       "tag": "0000_fixed_wallflower",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766937124330,
+      "tag": "0001_high_sandman",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766939520845,
+      "tag": "0002_bizarre_deadpool",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766941408522,
+      "tag": "0003_gray_boom_boom",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766945331821,
+      "tag": "0004_organic_krista_starr",
+      "breakpoints": true
     }
   ]
 }

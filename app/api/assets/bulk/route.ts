@@ -51,21 +51,43 @@ export async function POST(request: NextRequest) {
         // If tagNames provided, find or create tags
         if (tagNames && tagNames.length > 0) {
           for (const tagName of tagNames) {
-            const slug = tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const slug = tagName
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-+|-+$/g, '');
 
-            // Try to find existing tag
+            // Find existing tag by slug OR by name
             let [existingTag] = await db
               .select()
               .from(tags)
               .where(eq(tags.slug, slug))
               .limit(1);
 
+            // If not found by slug, try by exact name
             if (!existingTag) {
-              // Create new tag
               [existingTag] = await db
-                .insert(tags)
-                .values({ name: tagName, slug })
-                .returning();
+                .select()
+                .from(tags)
+                .where(eq(tags.name, tagName))
+                .limit(1);
+            }
+
+            // If still not found, create new tag
+            if (!existingTag) {
+              try {
+                [existingTag] = await db
+                  .insert(tags)
+                  .values({ name: tagName, slug })
+                  .returning();
+              } catch (insertError) {
+                // If insert fails, try to fetch again
+                console.error('Tag insert failed, trying to fetch:', insertError);
+                [existingTag] = await db
+                  .select()
+                  .from(tags)
+                  .where(eq(tags.slug, slug))
+                  .limit(1);
+              }
             }
 
             if (existingTag && !resolvedTagIds.includes(existingTag.id)) {

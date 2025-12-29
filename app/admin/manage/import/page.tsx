@@ -3,11 +3,14 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 
+type ImportType = 'assets' | 'tags' | 'boards';
+
 interface ImportResult {
   success: boolean;
   row: number;
   slug: string;
-  title: string;
+  title?: string;
+  name?: string;
   error?: string;
   created?: boolean;
   updated?: boolean;
@@ -25,17 +28,64 @@ interface ImportResponse {
   success: boolean;
   summary?: ImportSummary;
   results?: ImportResult[];
+  totalResults?: number;
   error?: string;
   details?: string;
 }
 
+const importConfigs: Record<ImportType, {
+  label: string;
+  description: string;
+  exportUrl: string;
+  importUrl: string;
+  columns: string;
+  notes: string;
+}> = {
+  assets: {
+    label: 'Assets',
+    description: 'Import catalog entries (slides, documents, videos, etc.)',
+    exportUrl: '/api/export',
+    importUrl: '/api/import',
+    columns: 'title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags',
+    notes: `<strong>Required:</strong> title, hub<br />
+<strong>Optional:</strong> slug (auto-generated from title if blank)<br />
+<strong>Hub values:</strong> CoE, Content, Enablement<br />
+<strong>Tags format:</strong> Pipe-separated, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">sales|gladly|Meeting Examples</code>`,
+  },
+  tags: {
+    label: 'Tags',
+    description: 'Import and manage tags for categorizing assets',
+    exportUrl: '/api/export/tags',
+    importUrl: '/api/import/tags',
+    columns: 'name,slug,category,color,sortOrder,boards',
+    notes: `<strong>Required:</strong> name<br />
+<strong>Optional:</strong> slug (auto-generated from name if blank)<br />
+<strong>Boards format:</strong> Pipe-separated board slugs, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">product|competitive|sales</code>`,
+  },
+  boards: {
+    label: 'Boards',
+    description: 'Import and manage boards for organizing content',
+    exportUrl: '/api/export/boards',
+    importUrl: '/api/import/boards',
+    columns: 'name,slug,icon,color,lightColor,accentColor,sortOrder,tags',
+    notes: `<strong>Required:</strong> name<br />
+<strong>Optional:</strong> slug (auto-generated from name if blank)<br />
+<strong>Colors:</strong> Hex values like #8C69F0<br />
+<strong>Tags format:</strong> Pipe-separated tag slugs, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">zendesk|sidekick|ai</code>`,
+  },
+};
+
 export default function ImportPage() {
+  const [activeTab, setActiveTab] = useState<ImportType>('assets');
   const [file, setFile] = useState<File | null>(null);
   const [duplicateAction, setDuplicateAction] = useState<'skip' | 'update' | 'create'>('update');
   const [isImporting, setIsImporting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<ImportResponse | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const config = importConfigs[activeTab];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -58,11 +108,35 @@ export default function ImportPage() {
     e.preventDefault();
   };
 
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const response = await fetch(config.exportUrl);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${activeTab}-export-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const handleImport = async () => {
     if (!file) return;
 
     setIsImporting(true);
     setProgress(10);
+
+    // Create abort controller with 5 minute timeout for large imports
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
 
     try {
       const formData = new FormData();
@@ -72,12 +146,20 @@ export default function ImportPage() {
 
       setProgress(30);
 
-      const response = await fetch('/api/import', {
+      // Animate progress while waiting
+      const progressInterval = setInterval(() => {
+        setProgress(prev => Math.min(prev + 2, 85));
+      }, 1000);
+
+      const response = await fetch(config.importUrl, {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
 
-      setProgress(80);
+      clearInterval(progressInterval);
+      clearTimeout(timeoutId);
+      setProgress(90);
 
       const data: ImportResponse = await response.json();
 
@@ -85,11 +167,19 @@ export default function ImportPage() {
       setResults(data);
 
     } catch (error) {
-      setResults({
-        success: false,
-        error: 'Failed to import',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      });
+      if (error instanceof Error && error.name === 'AbortError') {
+        setResults({
+          success: false,
+          error: 'Import timed out',
+          details: 'The import took too long. Try importing smaller batches of data.',
+        });
+      } else {
+        setResults({
+          success: false,
+          error: 'Failed to import',
+          details: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
     } finally {
       setIsImporting(false);
     }
@@ -99,11 +189,11 @@ export default function ImportPage() {
     if (!results?.results) return;
 
     const csv = [
-      ['Row', 'Slug', 'Title', 'Status', 'Error'].join(','),
+      ['Row', 'Slug', 'Name/Title', 'Status', 'Error'].join(','),
       ...results.results.map(r => [
         r.row,
         `"${r.slug}"`,
-        `"${r.title}"`,
+        `"${r.title || r.name || ''}"`,
         r.created ? 'Created' : r.updated ? 'Updated' : r.error ? 'Error' : 'Skipped',
         `"${r.error || ''}"`,
       ].join(',')),
@@ -113,9 +203,16 @@ export default function ImportPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `import-results-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `${activeTab}-import-results-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleTabChange = (tab: ImportType) => {
+    setActiveTab(tab);
+    setFile(null);
+    setResults(null);
+    setProgress(0);
   };
 
   return (
@@ -142,12 +239,83 @@ export default function ImportPage() {
         </Link>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
-            Bulk Import
+            Import / Export
           </h1>
           <p style={{ fontSize: '14px', color: '#4B5563' }}>
-            Import assets from a CSV file into the library.
+            Bulk import and export assets, tags, and boards via CSV.
           </p>
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+        {(Object.keys(importConfigs) as ImportType[]).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => handleTabChange(tab)}
+            style={{
+              padding: '10px 20px',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              background: activeTab === tab ? '#8C69F0' : '#F3F4F6',
+              color: activeTab === tab ? 'white' : '#4B5563',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {importConfigs[tab].label}
+          </button>
+        ))}
+      </div>
+
+      {/* Export Section */}
+      <div
+        style={{
+          background: '#F0FDF4',
+          border: '1px solid #86EFAC',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#166534', marginBottom: '4px' }}>
+            Export Current {config.label}
+          </h3>
+          <p style={{ fontSize: '13px', color: '#4B5563' }}>
+            Download all {activeTab} as a CSV file to edit and re-import.
+          </p>
+        </div>
+        <button
+          onClick={handleExport}
+          disabled={isExporting}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 18px',
+            background: '#10B981',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: 'white',
+            cursor: isExporting ? 'not-allowed' : 'pointer',
+            opacity: isExporting ? 0.7 : 1,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          {isExporting ? 'Exporting...' : `Export ${config.label}`}
+        </button>
       </div>
 
       {/* CSV Format Info */}
@@ -161,10 +329,10 @@ export default function ImportPage() {
         }}
       >
         <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#4338CA', marginBottom: '12px' }}>
-          Expected CSV Format
+          CSV Format for {config.label}
         </h3>
         <p style={{ fontSize: '13px', color: '#4B5563', marginBottom: '12px' }}>
-          Your CSV should have these columns (in order):
+          {config.description}
         </p>
         <div
           style={{
@@ -177,14 +345,12 @@ export default function ImportPage() {
             overflowX: 'auto',
           }}
         >
-          title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags
+          {config.columns}
         </div>
-        <div style={{ marginTop: '12px', fontSize: '12px', color: '#6B7280' }}>
-          <strong>Required:</strong> title, hub<br />
-          <strong>Optional:</strong> slug (auto-generated from title if blank)<br />
-          <strong>Hub values:</strong> CoE, Content, Enablement<br />
-          <strong>Tags format:</strong> Pipe-separated, e.g., <code style={{ background: '#F3F4F6', padding: '2px 4px', borderRadius: '3px' }}>sales|gladly|Meeting Examples</code>
-        </div>
+        <div
+          style={{ marginTop: '12px', fontSize: '12px', color: '#6B7280' }}
+          dangerouslySetInnerHTML={{ __html: config.notes }}
+        />
       </div>
 
       {/* Upload Area */}
@@ -266,7 +432,7 @@ export default function ImportPage() {
                   </svg>
                 </div>
                 <div style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
-                  Drop your CSV file here
+                  Drop your {config.label.toLowerCase()} CSV file here
                 </div>
                 <div style={{ fontSize: '13px', color: '#6B7280' }}>
                   or click to browse
@@ -278,7 +444,7 @@ export default function ImportPage() {
           {/* Options */}
           <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #F3F4F6' }}>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>
-              When an asset already exists (matching slug):
+              When a {activeTab === 'assets' ? 'asset' : activeTab.slice(0, -1)} already exists (matching slug):
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <label className="flex items-center" style={{ gap: '12px', cursor: 'pointer' }}>
@@ -302,7 +468,7 @@ export default function ImportPage() {
                   style={{ width: '18px', height: '18px', accentColor: '#8C69F0' }}
                 />
                 <span style={{ fontSize: '14px', color: '#374151' }}>
-                  <strong>Skip</strong> - Keep existing asset unchanged
+                  <strong>Skip</strong> - Keep existing unchanged
                 </span>
               </label>
               <label className="flex items-center" style={{ gap: '12px', cursor: 'pointer' }}>
@@ -314,7 +480,7 @@ export default function ImportPage() {
                   style={{ width: '18px', height: '18px', accentColor: '#8C69F0' }}
                 />
                 <span style={{ fontSize: '14px', color: '#374151' }}>
-                  <strong>Create new</strong> - Add with modified slug (e.g., my-asset-1)
+                  <strong>Create new</strong> - Add with modified slug (e.g., my-item-1)
                 </span>
               </label>
             </div>
@@ -328,7 +494,7 @@ export default function ImportPage() {
               style={{
                 width: '100%',
                 padding: '14px 24px',
-                background: file && !isImporting ? '#10B981' : '#E5E7EB',
+                background: file && !isImporting ? '#8C69F0' : '#E5E7EB',
                 border: 'none',
                 borderRadius: '8px',
                 color: file && !isImporting ? 'white' : '#9CA3AF',
@@ -337,7 +503,7 @@ export default function ImportPage() {
                 cursor: file && !isImporting ? 'pointer' : 'not-allowed',
               }}
             >
-              {isImporting ? 'Importing...' : 'Start Import'}
+              {isImporting ? 'Importing...' : `Import ${config.label}`}
             </button>
           </div>
 
@@ -356,14 +522,16 @@ export default function ImportPage() {
                   style={{
                     height: '100%',
                     width: `${progress}%`,
-                    background: '#10B981',
+                    background: '#8C69F0',
                     borderRadius: '4px',
                     transition: 'width 0.3s ease',
                   }}
                 />
               </div>
               <div style={{ fontSize: '13px', color: '#6B7280', marginTop: '8px', textAlign: 'center' }}>
-                Processing your file...
+                {progress < 50 ? 'Uploading and parsing file...' :
+                 progress < 85 ? 'Importing records... This may take a minute for large files.' :
+                 'Finalizing import...'}
               </div>
             </div>
           )}
@@ -463,7 +631,7 @@ export default function ImportPage() {
                       Row
                     </th>
                     <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
-                      Title
+                      {activeTab === 'assets' ? 'Title' : 'Name'}
                     </th>
                     <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
                       Status
@@ -480,7 +648,7 @@ export default function ImportPage() {
                         {result.row}
                       </td>
                       <td style={{ padding: '12px 16px', fontSize: '13px', color: '#111827' }}>
-                        {result.title || '-'}
+                        {result.title || result.name || '-'}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
                         <span
@@ -521,9 +689,10 @@ export default function ImportPage() {
                   ))}
                 </tbody>
               </table>
-              {results.results.length > 50 && (
+              {(results.results.length > 50 || (results.totalResults && results.totalResults > results.results.length)) && (
                 <div style={{ padding: '16px', textAlign: 'center', fontSize: '13px', color: '#6B7280' }}>
-                  Showing first 50 of {results.results.length} results. Download CSV for full report.
+                  Showing {Math.min(50, results.results.length)} of {results.totalResults || results.results.length} results.
+                  {results.summary && results.summary.errors > 0 && ' Errors are shown first.'}
                 </div>
               )}
             </div>
@@ -535,14 +704,14 @@ export default function ImportPage() {
       {results?.success && (
         <div style={{ marginTop: '24px', textAlign: 'center' }}>
           <Link
-            href="/admin/manage"
+            href={activeTab === 'assets' ? '/admin/manage' : `/admin/manage/${activeTab}`}
             style={{
               fontSize: '14px',
               color: '#8C69F0',
               textDecoration: 'none',
             }}
           >
-            View imported assets in Asset Manager →
+            View imported {activeTab} in {activeTab === 'assets' ? 'Asset Manager' : `${config.label} Manager`} →
           </Link>
         </div>
       )}

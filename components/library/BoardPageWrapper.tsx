@@ -2,7 +2,6 @@
 
 import { BoardPageContent } from './BoardPageContent';
 import { useFilterContext } from './LibraryLayout';
-import type { BoardId } from '@/lib/constants/hubs';
 
 interface Asset {
   id: string;
@@ -23,18 +22,26 @@ interface TagData {
   slug: string;
 }
 
+interface BoardConfig {
+  name: string;
+  icon: string;
+  color: string;
+}
+
 interface BoardPageWrapperProps {
-  boardId: BoardId;
+  boardId: string;
+  board: BoardConfig;
   assets: Asset[];
   boardTags?: TagData[];
 }
 
-export function BoardPageWrapper({ boardId, assets, boardTags }: BoardPageWrapperProps) {
+export function BoardPageWrapper({ boardId, board, assets, boardTags }: BoardPageWrapperProps) {
   const { selectedTags } = useFilterContext();
 
   return (
     <BoardPageContent
       boardId={boardId}
+      board={board}
       assets={assets}
       selectedTags={selectedTags}
       boardTags={boardTags}

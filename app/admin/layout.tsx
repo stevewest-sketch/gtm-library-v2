@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/manage/import', label: 'Import', icon: '📥', count: null },
     { href: '/admin/manage/tags', label: 'Tags', icon: '🏷️', count: null },
     { href: '/admin/manage/boards', label: 'Boards', icon: '📊', count: null },
+    { href: '/admin/manage/taxonomy', label: 'Taxonomy', icon: '🎨', count: null },
     { href: '/admin/manage/analytics', label: 'Analytics', icon: '📈', count: null },
   ];
 

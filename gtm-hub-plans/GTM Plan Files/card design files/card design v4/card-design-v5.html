@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Card Design v5 (With Short Description)</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - CARD DESIGN v5
+           Fixed height, single-line short description
+           ======================================== */
+        
+        :root {
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-enablement: #10B981;
+            --hub-coe: #F59E0B;
+            
+            /* Type Badge Colors */
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-one-pager: #F59E0B;
+            --type-one-pager-bg: #FEF3C7;
+            --type-template: #8B5CF6;
+            --type-template-bg: #EDE9FE;
+            --type-messaging: #EC4899;
+            --type-messaging-bg: #FCE7F3;
+            --type-calculator: #06B6D4;
+            --type-calculator-bg: #CFFAFE;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-case-study: #059669;
+            --type-case-study-bg: #D1FAE5;
+            --type-product-training: #10B981;
+            --type-product-training-bg: #D1FAE5;
+            --type-gtm-training: #8B5CF6;
+            --type-gtm-training-bg: #EDE9FE;
+            --type-certification: #F59E0B;
+            --type-certification-bg: #FEF3C7;
+            --type-dashboard: #06B6D4;
+            --type-dashboard-bg: #CFFAFE;
+            --type-customer-meeting-asset: #F59E0B;
+            --type-customer-meeting-asset-bg: #FEF3C7;
+            --type-benchmark: #0EA5E9;
+            --type-benchmark-bg: #E0F2FE;
+            --type-customer-success-metric: #059669;
+            --type-customer-success-metric-bg: #D1FAE5;
+            --type-customer-quote: #F59E0B;
+            --type-customer-quote-bg: #FEF3C7;
+            --type-competitor-stat: #EF4444;
+            --type-competitor-stat-bg: #FEE2E2;
+            --type-industry-stat: #6366F1;
+            --type-industry-stat-bg: #E0E7FF;
+            
+            /* Neutrals */
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --format-text: #9CA3AF;
+            --bg-page: #F8FAFC;
+            --footer-bg: #FAFAFA;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            padding: 40px;
+        }
+        
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 40px 0 16px;
+        }
+        
+        .info-box {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px 0 32px;
+        }
+        .info-box h4 { font-size: 14px; font-weight: 600; color: #1E40AF; margin-bottom: 8px; }
+        .info-box p { font-size: 13px; color: #1E40AF; line-height: 1.5; }
+        .info-box code { background: #DBEAFE; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+        
+        /* ========================================
+           CARD GRID
+           ======================================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        /* ========================================
+           LIBRARY CARD - FIXED HEIGHT WITH SHORT DESC
+           ======================================== */
+        .library-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 156px; /* FIXED HEIGHT - accommodates short desc */
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .library-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        /* Hub accent - top border */
+        .library-card[data-hub="content"] { border-top: 4px solid var(--hub-content); }
+        .library-card[data-hub="content"]:hover { border-color: var(--hub-content); }
+        .library-card[data-hub="enablement"] { border-top: 4px solid var(--hub-enablement); }
+        .library-card[data-hub="enablement"]:hover { border-color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] { border-top: 4px solid var(--hub-coe); }
+        .library-card[data-hub="coe"]:hover { border-color: var(--hub-coe); }
+        
+        /* Card Header - Type Badge + Format */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px 0;
+            flex-shrink: 0;
+        }
+        
+        /* Type Badge */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .type-badge-icon { font-size: 11px; }
+        
+        /* Format Label */
+        .format-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--format-text);
+        }
+        
+        /* Card Body - Title + Short Description */
+        .card-body {
+            padding: 10px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        
+        /* SHORT DESCRIPTION - Single line, 6 words max */
+        .card-short-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Card Footer */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+            flex-shrink: 0;
+        }
+        
+        .card-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .card-action {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .library-card[data-hub="content"] .card-action { color: var(--hub-content); }
+        .library-card[data-hub="enablement"] .card-action { color: var(--hub-enablement); }
+        .library-card[data-hub="coe"] .card-action { color: var(--hub-coe); }
+        
+        /* Type Badge Variants */
+        .type-badge[data-type="deck"] { background: var(--type-deck-bg); color: var(--type-deck); }
+        .type-badge[data-type="battlecard"] { background: var(--type-battlecard-bg); color: var(--type-battlecard); }
+        .type-badge[data-type="one-pager"] { background: var(--type-one-pager-bg); color: var(--type-one-pager); }
+        .type-badge[data-type="template"] { background: var(--type-template-bg); color: var(--type-template); }
+        .type-badge[data-type="messaging"] { background: var(--type-messaging-bg); color: var(--type-messaging); }
+        .type-badge[data-type="calculator"] { background: var(--type-calculator-bg); color: var(--type-calculator); }
+        .type-badge[data-type="guide"] { background: var(--type-guide-bg); color: var(--type-guide); }
+        .type-badge[data-type="case-study"] { background: var(--type-case-study-bg); color: var(--type-case-study); }
+        .type-badge[data-type="product-training"] { background: var(--type-product-training-bg); color: var(--type-product-training); }
+        .type-badge[data-type="gtm-training"] { background: var(--type-gtm-training-bg); color: var(--type-gtm-training); }
+        .type-badge[data-type="certification"] { background: var(--type-certification-bg); color: var(--type-certification); }
+        .type-badge[data-type="dashboard"] { background: var(--type-dashboard-bg); color: var(--type-dashboard); }
+        .type-badge[data-type="customer-meeting-asset"] { background: var(--type-customer-meeting-asset-bg); color: var(--type-customer-meeting-asset); }
+        .type-badge[data-type="benchmark"] { background: var(--type-benchmark-bg); color: var(--type-benchmark); }
+        .type-badge[data-type="customer-success-metric"] { background: var(--type-customer-success-metric-bg); color: var(--type-customer-success-metric); }
+        .type-badge[data-type="customer-quote"] { background: var(--type-customer-quote-bg); color: var(--type-customer-quote); }
+        .type-badge[data-type="competitor-stat"] { background: var(--type-competitor-stat-bg); color: var(--type-competitor-stat); }
+        .type-badge[data-type="industry-stat"] { background: var(--type-industry-stat-bg); color: var(--type-industry-stat); }
+        
+        /* ========================================
+           COMPACT LIST VIEW - NO DESCRIPTION (Proof Points default)
+           ======================================== */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .list-item:hover {
+            border-color: var(--hub-coe);
+            background: #FAFBFC;
+        }
+        
+        .list-item[data-hub="content"] { border-left: 3px solid var(--hub-content); }
+        .list-item[data-hub="content"]:hover { border-left-color: var(--hub-content); }
+        .list-item[data-hub="enablement"] { border-left: 3px solid var(--hub-enablement); }
+        .list-item[data-hub="enablement"]:hover { border-left-color: var(--hub-enablement); }
+        .list-item[data-hub="coe"] { border-left: 3px solid var(--hub-coe); }
+        .list-item[data-hub="coe"]:hover { border-left-color: var(--hub-coe); }
+        
+        .list-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .list-type-icon { font-size: 10px; }
+        
+        .list-title {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .list-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        
+        .list-format {
+            font-size: 12px;
+            color: var(--format-text);
+        }
+        
+        .list-action {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .list-item[data-hub="content"] .list-action { color: var(--hub-content); }
+        .list-item[data-hub="enablement"] .list-action { color: var(--hub-enablement); }
+        .list-item[data-hub="coe"] .list-action { color: var(--hub-coe); }
+        
+        /* List type badge variants */
+        .list-type[data-type="benchmark"] { background: var(--type-benchmark-bg); color: var(--type-benchmark); }
+        .list-type[data-type="customer-success-metric"] { background: var(--type-customer-success-metric-bg); color: var(--type-customer-success-metric); }
+        .list-type[data-type="customer-quote"] { background: var(--type-customer-quote-bg); color: var(--type-customer-quote); }
+        .list-type[data-type="competitor-stat"] { background: var(--type-competitor-stat-bg); color: var(--type-competitor-stat); }
+        .list-type[data-type="industry-stat"] { background: var(--type-industry-stat-bg); color: var(--type-industry-stat); }
+        
+        .divider {
+            height: 1px;
+            background: var(--card-border);
+            margin: 32px 0;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .view-btn.active {
+            background: var(--hub-coe);
+            color: white;
+            border-color: var(--hub-coe);
+        }
+    </style>
+</head>
+<body>
+    <h1>GTM Library - Card Design v5</h1>
+    <p class="subtitle">Fixed height cards with single-line short description (6 words max)</p>
+    
+    <div class="info-box">
+        <h4>📋 Design Spec</h4>
+        <p>
+            <strong>Card Height:</strong> Fixed at <code>156px</code><br>
+            <strong>Title:</strong> Max 2 lines with ellipsis<br>
+            <strong>Short Description:</strong> Single line, 6 words max, shown on card<br>
+            <strong>Full Description:</strong> Shown on detail view when clicked<br>
+            <strong>Proof Point Board:</strong> Defaults to Stack/List view
+        </p>
+    </div>
+    
+    <!-- ========================================
+         CARD VIEW EXAMPLES
+         ======================================== -->
+    <div class="section-title">Content Hub - Card View</div>
+    <div class="card-grid">
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="battlecard">
+                    <span class="type-badge-icon">⚔️</span>
+                    Battlecard
+                </span>
+                <span class="format-label">PDF</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Ada Battlecard</h4>
+                <p class="card-short-desc">Competitive positioning vs Ada</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 10, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="battlecard">
+                    <span class="type-badge-icon">⚔️</span>
+                    Battlecard
+                </span>
+                <span class="format-label">PDF</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Intercom Fin Sidekick Battle Card (External)</h4>
+                <p class="card-short-desc">Competitive positioning vs Intercom</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 5, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="template">
+                    <span class="type-badge-icon">📋</span>
+                    Template
+                </span>
+                <span class="format-label">Slides</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">First Meeting Deck Template</h4>
+                <p class="card-short-desc">First meeting presentation template</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 15, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="messaging">
+                    <span class="type-badge-icon">💬</span>
+                    Messaging
+                </span>
+                <span class="format-label">Document</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Airline Vertical Sequence</h4>
+                <p class="card-short-desc">Messaging framework for airline prospects</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 8, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         ENABLEMENT HUB - CARD VIEW
+         ======================================== -->
+    <div class="section-title">Enablement Hub - Card View</div>
+    <div class="card-grid">
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="product-training">
+                    <span class="type-badge-icon">🎓</span>
+                    Product Training
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Sidekick Voice Deep Dive</h4>
+                <p class="card-short-desc">Sidekick product training session</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 12, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="gtm-training">
+                    <span class="type-badge-icon">🚀</span>
+                    GTM Training
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Selling High + First Meeting Deck Enablement</h4>
+                <p class="card-short-desc">GTM skills for selling high</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 5, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="calculator">
+                    <span class="type-badge-icon">🧮</span>
+                    Value Realization
+                </span>
+                <span class="format-label">Spreadsheet</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">*New* Pre-Sales BVA</h4>
+                <p class="card-short-desc">Value calculator for pre-sales BVA</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date">Dec 28, 2024</span>
+                <span class="card-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- ========================================
+         COE HUB - PROOF POINTS (STACK VIEW - DEFAULT)
+         ======================================== -->
+    <div class="section-title">🟠 CoE - Proof Points Board (Stack View - Default)</div>
+    
+    <div class="view-toggle">
+        <button class="view-btn">Grid</button>
+        <button class="view-btn active">Stack</button>
+    </div>
+    
+    <div class="list-container">
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="customer-success-metric">
+                <span class="list-type-icon">📈</span>
+                Success Metric
+            </span>
+            <span class="list-title">Breeze Airways - 61% resolution rate for pre-booking questions</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="customer-success-metric">
+                <span class="list-type-icon">📈</span>
+                Success Metric
+            </span>
+            <span class="list-title">Rothy's - 31% of conversations resolved with AI</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="benchmark">
+                <span class="list-type-icon">📏</span>
+                Benchmark
+            </span>
+            <span class="list-title">Industry FCR Benchmark - Voice</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="benchmark">
+                <span class="list-type-icon">📏</span>
+                Benchmark
+            </span>
+            <span class="list-title">Industry AHT Benchmark - Chat</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="competitor-stat">
+                <span class="list-type-icon">📉</span>
+                Competitor Stat
+            </span>
+            <span class="list-title">Ada - 291% ROI</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="competitor-stat">
+                <span class="list-type-icon">📉</span>
+                Competitor Stat
+            </span>
+            <span class="list-title">Intercom - 42% AI resolution rate</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="customer-quote">
+                <span class="list-type-icon">💬</span>
+                Customer Quote
+            </span>
+            <span class="list-title">Breeze Airways - Reduced agent attrition</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+        
+        <a href="#" class="list-item" data-hub="coe">
+            <span class="list-type" data-type="industry-stat">
+                <span class="list-type-icon">🏭</span>
+                Industry Stat
+            </span>
+            <span class="list-title">Trust improves profitability; customers 88% more likely to buy</span>
+            <div class="list-meta">
+                <span class="list-format">Proof Point</span>
+                <span class="list-action">View →</span>
+            </div>
+        </a>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <!-- Visual Reference -->
+    <div class="section-title">Card Structure Reference</div>
+    <pre style="background: #1F2937; color: #E5E7EB; padding: 20px; border-radius: 8px; font-size: 12px; line-height: 1.6; overflow-x: auto;">
+CARD VIEW (156px fixed height)
+┌─────────────────────────────────────────┐
+│ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ │  ← 4px hub color bar
+│                                         │
+│  ⚔️ BATTLECARD                    PDF   │  ← Type badge + Format
+│                                         │
+│  Ada Battlecard                         │  ← Title (1-2 lines)
+│  Competitive positioning vs Ada         │  ← Short Description (single line, 6 words)
+│                                         │
+├─────────────────────────────────────────┤
+│  Dec 10, 2024                  View →   │  ← Footer
+└─────────────────────────────────────────┘
+
+STACK/LIST VIEW (Proof Points default)
+┌──────────────────────────────────────────────────────────────────────┐
+│ ▌ 📈 SUCCESS METRIC │ Breeze Airways - 61% resolution rate │ View → │
+└──────────────────────────────────────────────────────────────────────┘
+
+DATA MODEL:
+- title: Full title
+- description: Full description (shown on detail view)
+- shortDescription: 6 words max (shown on card)
+    </pre>
+</body>
+</html>

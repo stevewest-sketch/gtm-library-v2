@@ -1,20 +1,17 @@
 'use client';
 
 import { useState, Suspense, createContext, useContext } from 'react';
-import { GlobalHeader } from './GlobalHeader';
+import { PageHeader } from './PageHeader';
 import { LibrarySidebar } from './LibrarySidebar';
 import { FilterSidebar } from './FilterSidebar';
-import type { BoardId } from '@/lib/constants/hubs';
 
 // Context to share filter state with children
 interface FilterContextType {
   selectedTags: string[];
-  selectedCrossFilters: Record<string, string[]>;
 }
 
 const FilterContext = createContext<FilterContextType>({
   selectedTags: [],
-  selectedCrossFilters: {},
 });
 
 export function useFilterContext() {
@@ -34,7 +31,7 @@ interface TagData {
 
 interface LibraryLayoutProps {
   children: React.ReactNode;
-  activeBoard?: BoardId;
+  activeBoard?: string;
   breadcrumbs?: BreadcrumbItem[];
   showSidebar?: boolean;
   showFilters?: boolean;
@@ -44,11 +41,12 @@ interface LibraryLayoutProps {
 function SidebarFallback() {
   return (
     <aside
-      className="bg-white border-r border-gray-200 fixed bottom-0 left-0 overflow-y-auto"
-      style={{ width: 'var(--sidebar-width)', top: 'var(--header-height)' }}
+      className="bg-white border-r border-gray-200 fixed top-0 bottom-0 left-0 overflow-y-auto"
+      style={{ width: 'var(--sidebar-width)' }}
     >
       <div className="p-4">
         <div className="animate-pulse space-y-4">
+          <div className="h-12 bg-gray-200 rounded mb-4" />
           <div className="h-4 bg-gray-200 rounded w-20" />
           <div className="space-y-2">
             <div className="h-10 bg-gray-100 rounded-lg" />
@@ -64,11 +62,9 @@ function SidebarFallback() {
 function FilterFallback() {
   return (
     <aside
-      className="bg-white border-r border-gray-200 fixed bottom-0 overflow-y-auto"
+      className="bg-white border-r border-gray-200 overflow-y-auto flex-shrink-0"
       style={{
         width: 'var(--filter-width)',
-        left: 'var(--sidebar-width)',
-        top: 'var(--header-height)',
       }}
     >
       <div className="p-4">
@@ -94,14 +90,6 @@ export function LibraryLayout({
   boardTags,
 }: LibraryLayoutProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedCrossFilters, setSelectedCrossFilters] = useState<Record<string, string[]>>({});
-
-  const handleCrossFilterChange = (boardSlug: string, tags: string[]) => {
-    setSelectedCrossFilters(prev => ({
-      ...prev,
-      [boardSlug]: tags,
-    }));
-  };
 
   // Determine main content class based on what's shown
   const getMainClass = () => {
@@ -111,33 +99,53 @@ export function LibraryLayout({
   };
 
   return (
-    <FilterContext.Provider value={{ selectedTags, selectedCrossFilters }}>
-      <div className="min-h-screen" style={{ background: 'var(--bg-page)' }}>
-        <GlobalHeader breadcrumbs={breadcrumbs} />
-
+    <FilterContext.Provider value={{ selectedTags }}>
+      <div className="min-h-screen" style={{ background: 'var(--bg-page)', display: 'flex' }}>
+        {/* Static Left Sidebar */}
         {showSidebar && (
           <Suspense fallback={<SidebarFallback />}>
             <LibrarySidebar activeBoard={activeBoard} />
           </Suspense>
         )}
 
-        {showSidebar && showFilters && (
-          <Suspense fallback={<FilterFallback />}>
-            <FilterSidebar
-              activeBoard={activeBoard}
-              boardTags={boardTags}
-              selectedTags={selectedTags}
-              selectedCrossFilters={selectedCrossFilters}
-              onTagChange={setSelectedTags}
-              onCrossFilterChange={handleCrossFilterChange}
-            />
-          </Suspense>
-        )}
+        {/* Main Content Area (everything to the right of sidebar) */}
+        <div
+          style={{
+            flex: 1,
+            marginLeft: showSidebar ? 'var(--sidebar-width)' : 0,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+          }}
+        >
+          {/* Page Header with Breadcrumbs and Search */}
+          <PageHeader breadcrumbs={breadcrumbs} />
 
-        <div className="app-layout">
-          <main className={getMainClass()}>
-            {children}
-          </main>
+          {/* Content Area */}
+          <div style={{ display: 'flex', flex: 1 }}>
+            {/* Filter Sidebar (if shown) */}
+            {showSidebar && showFilters && (
+              <Suspense fallback={<FilterFallback />}>
+                <FilterSidebar
+                  activeBoard={activeBoard}
+                  boardTags={boardTags}
+                  selectedTags={selectedTags}
+                  onTagChange={setSelectedTags}
+                />
+              </Suspense>
+            )}
+
+            {/* Main Content */}
+            <main
+              style={{
+                flex: 1,
+                padding: '20px 28px',
+                minHeight: 'calc(100vh - 65px)',
+              }}
+            >
+              {children}
+            </main>
+          </div>
         </div>
       </div>
     </FilterContext.Provider>

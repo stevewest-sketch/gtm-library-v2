@@ -41,7 +41,11 @@ export const HUBS = {
 export type HubId = keyof typeof HUBS;
 export type Hub = (typeof HUBS)[HubId];
 
-// Board definitions with colors, icons, and tags
+/**
+ * @deprecated BOARDS is no longer used - all board data now comes from the database.
+ * Use the /api/boards endpoint or query the boards table directly.
+ * This constant is kept only for reference during migration and should be removed.
+ */
 export const BOARDS = {
   coe: {
     name: 'CoE',

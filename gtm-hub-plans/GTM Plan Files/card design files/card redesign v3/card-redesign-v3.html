@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Unified Card Design System v3</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY - UNIFIED CARD DESIGN v3
+           All cards: TYPE badge (left) + Format text (right)
+           ======================================== */
+        
+        :root {
+            /* Hub Colors (for top bar accent) */
+            --coe-primary: #F59E0B;
+            --content-primary: #8C69F0;
+            --enablement-primary: #10B981;
+            
+            /* ========================================
+               CONTENT HUB TYPES (10)
+               ======================================== */
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-one-pager: #F59E0B;
+            --type-one-pager-bg: #FEF3C7;
+            --type-template: #8B5CF6;
+            --type-template-bg: #EDE9FE;
+            --type-messaging: #EC4899;
+            --type-messaging-bg: #FCE7F3;
+            --type-calculator: #06B6D4;
+            --type-calculator-bg: #CFFAFE;
+            --type-competitive: #EF4444;
+            --type-competitive-bg: #FEE2E2;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-press: #64748B;
+            --type-press-bg: #F1F5F9;
+            --type-case-study: #059669;
+            --type-case-study-bg: #D1FAE5;
+            
+            /* ========================================
+               ENABLEMENT HUB TYPES (9)
+               ======================================== */
+            --type-product-training: #10B981;
+            --type-product-training-bg: #D1FAE5;
+            --type-technical-training: #6366F1;
+            --type-technical-training-bg: #E0E7FF;
+            --type-gtm-training: #8B5CF6;
+            --type-gtm-training-bg: #EDE9FE;
+            --type-gtm-tool: #06B6D4;
+            --type-gtm-tool-bg: #CFFAFE;
+            --type-competitive-training: #EF4444;
+            --type-competitive-training-bg: #FEE2E2;
+            --type-certification: #F59E0B;
+            --type-certification-bg: #FEF3C7;
+            --type-partner-training: #3B82F6;
+            --type-partner-training-bg: #DBEAFE;
+            --type-value-realization: #059669;
+            --type-value-realization-bg: #D1FAE5;
+            --type-playbook: #EC4899;
+            --type-playbook-bg: #FCE7F3;
+            
+            /* ========================================
+               COE HUB TYPES (12)
+               ======================================== */
+            --type-customer-meeting-asset: #F59E0B;
+            --type-customer-meeting-asset-bg: #FEF3C7;
+            --type-prospect-meeting-asset: #F97316;
+            --type-prospect-meeting-asset-bg: #FFEDD5;
+            --type-customer-best-practice: #10B981;
+            --type-customer-best-practice-bg: #D1FAE5;
+            --type-best-practice: #3B82F6;
+            --type-best-practice-bg: #DBEAFE;
+            --type-internal-best-practice: #8B5CF6;
+            --type-internal-best-practice-bg: #EDE9FE;
+            --type-process-innovation: #EC4899;
+            --type-process-innovation-bg: #FCE7F3;
+            --type-dashboard: #06B6D4;
+            --type-dashboard-bg: #CFFAFE;
+            --type-customer-success-metric: #059669;
+            --type-customer-success-metric-bg: #D1FAE5;
+            --type-industry-stat: #6366F1;
+            --type-industry-stat-bg: #E0E7FF;
+            --type-benchmark: #0EA5E9;
+            --type-benchmark-bg: #E0F2FE;
+            --type-competitor-stat: #EF4444;
+            --type-competitor-stat-bg: #FEE2E2;
+            --type-customer-quote: #F59E0B;
+            --type-customer-quote-bg: #FEF3C7;
+            
+            /* Neutrals */
+            --card-bg: #FFFFFF;
+            --card-border: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #9CA3AF;
+            --format-text: #9CA3AF;  /* Lightened 25% */
+            --bg-page: #F3F4F6;
+            --footer-bg: #FAFAFA;
+            
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            padding: 40px;
+        }
+        
+        h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 40px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+        
+        /* ========================================
+           UNIFIED LIBRARY CARD
+           ======================================== */
+        
+        .library-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .library-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Hub-specific hover and top accent */
+        .library-card[data-hub="content"] {
+            border-top: 4px solid var(--content-primary);
+        }
+        .library-card[data-hub="content"]:hover {
+            border-color: var(--content-primary);
+        }
+        
+        .library-card[data-hub="enablement"] {
+            border-top: 4px solid var(--enablement-primary);
+        }
+        .library-card[data-hub="enablement"]:hover {
+            border-color: var(--enablement-primary);
+        }
+        
+        .library-card[data-hub="coe"] {
+            border-top: 4px solid var(--coe-primary);
+        }
+        .library-card[data-hub="coe"]:hover {
+            border-color: var(--coe-primary);
+        }
+        
+        /* Card Header - Type Badge + Format Text */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 0;
+        }
+        
+        /* Type Badge with Icon */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .type-badge-icon { font-size: 12px; }
+        
+        /* Format Label - Plain dark gray text, NO icon */
+        .format-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--format-text);
+        }
+        
+        /* Card Body */
+        .card-body { padding: 14px 20px 16px; flex: 1; }
+        
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Card Footer */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+        }
+        
+        .card-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .card-date-icon { font-size: 11px; }
+        
+        .card-action {
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+        
+        .card-action:hover { opacity: 0.8; }
+        
+        /* Hub-specific action colors */
+        .library-card[data-hub="content"] .card-action { color: var(--content-primary); }
+        .library-card[data-hub="enablement"] .card-action { color: var(--enablement-primary); }
+        .library-card[data-hub="coe"] .card-action { color: var(--coe-primary); }
+        
+        /* ========================================
+           TYPE BADGE VARIANTS - CONTENT (10)
+           ======================================== */
+        .type-badge[data-type="deck"] {
+            background: var(--type-deck-bg);
+            color: var(--type-deck);
+        }
+        .type-badge[data-type="battlecard"] {
+            background: var(--type-battlecard-bg);
+            color: var(--type-battlecard);
+        }
+        .type-badge[data-type="one-pager"] {
+            background: var(--type-one-pager-bg);
+            color: var(--type-one-pager);
+        }
+        .type-badge[data-type="template"] {
+            background: var(--type-template-bg);
+            color: var(--type-template);
+        }
+        .type-badge[data-type="messaging"] {
+            background: var(--type-messaging-bg);
+            color: var(--type-messaging);
+        }
+        .type-badge[data-type="calculator"] {
+            background: var(--type-calculator-bg);
+            color: var(--type-calculator);
+        }
+        .type-badge[data-type="competitive"] {
+            background: var(--type-competitive-bg);
+            color: var(--type-competitive);
+        }
+        .type-badge[data-type="guide"] {
+            background: var(--type-guide-bg);
+            color: var(--type-guide);
+        }
+        .type-badge[data-type="press"] {
+            background: var(--type-press-bg);
+            color: var(--type-press);
+        }
+        .type-badge[data-type="case-study"] {
+            background: var(--type-case-study-bg);
+            color: var(--type-case-study);
+        }
+        
+        /* ========================================
+           TYPE BADGE VARIANTS - ENABLEMENT (9)
+           ======================================== */
+        .type-badge[data-type="product-training"] {
+            background: var(--type-product-training-bg);
+            color: var(--type-product-training);
+        }
+        .type-badge[data-type="technical-training"] {
+            background: var(--type-technical-training-bg);
+            color: var(--type-technical-training);
+        }
+        .type-badge[data-type="gtm-training"] {
+            background: var(--type-gtm-training-bg);
+            color: var(--type-gtm-training);
+        }
+        .type-badge[data-type="gtm-tool"] {
+            background: var(--type-gtm-tool-bg);
+            color: var(--type-gtm-tool);
+        }
+        .type-badge[data-type="competitive-training"] {
+            background: var(--type-competitive-training-bg);
+            color: var(--type-competitive-training);
+        }
+        .type-badge[data-type="certification"] {
+            background: var(--type-certification-bg);
+            color: var(--type-certification);
+        }
+        .type-badge[data-type="partner-training"] {
+            background: var(--type-partner-training-bg);
+            color: var(--type-partner-training);
+        }
+        .type-badge[data-type="value-realization"] {
+            background: var(--type-value-realization-bg);
+            color: var(--type-value-realization);
+        }
+        .type-badge[data-type="playbook"] {
+            background: var(--type-playbook-bg);
+            color: var(--type-playbook);
+        }
+        
+        /* ========================================
+           TYPE BADGE VARIANTS - COE (12)
+           ======================================== */
+        .type-badge[data-type="customer-meeting-asset"] {
+            background: var(--type-customer-meeting-asset-bg);
+            color: var(--type-customer-meeting-asset);
+        }
+        .type-badge[data-type="prospect-meeting-asset"] {
+            background: var(--type-prospect-meeting-asset-bg);
+            color: var(--type-prospect-meeting-asset);
+        }
+        .type-badge[data-type="customer-best-practice"] {
+            background: var(--type-customer-best-practice-bg);
+            color: var(--type-customer-best-practice);
+        }
+        .type-badge[data-type="best-practice"] {
+            background: var(--type-best-practice-bg);
+            color: var(--type-best-practice);
+        }
+        .type-badge[data-type="internal-best-practice"] {
+            background: var(--type-internal-best-practice-bg);
+            color: var(--type-internal-best-practice);
+        }
+        .type-badge[data-type="process-innovation"] {
+            background: var(--type-process-innovation-bg);
+            color: var(--type-process-innovation);
+        }
+        .type-badge[data-type="dashboard"] {
+            background: var(--type-dashboard-bg);
+            color: var(--type-dashboard);
+        }
+        .type-badge[data-type="customer-success-metric"] {
+            background: var(--type-customer-success-metric-bg);
+            color: var(--type-customer-success-metric);
+        }
+        .type-badge[data-type="industry-stat"] {
+            background: var(--type-industry-stat-bg);
+            color: var(--type-industry-stat);
+        }
+        .type-badge[data-type="benchmark"] {
+            background: var(--type-benchmark-bg);
+            color: var(--type-benchmark);
+        }
+        .type-badge[data-type="competitor-stat"] {
+            background: var(--type-competitor-stat-bg);
+            color: var(--type-competitor-stat);
+        }
+        .type-badge[data-type="customer-quote"] {
+            background: var(--type-customer-quote-bg);
+            color: var(--type-customer-quote);
+        }
+        
+        /* Info boxes */
+        .info-box {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px 0;
+        }
+        .info-box h4 { font-size: 14px; font-weight: 600; color: #1E40AF; margin-bottom: 8px; }
+        .info-box p { font-size: 13px; color: #1E40AF; line-height: 1.5; }
+        
+        code {
+            background: #F3F4F6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: Monaco, Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>GTM Library - Unified Card Design v3</h1>
+    <p class="subtitle">All cards display TYPE badge (left) with icon + color, FORMAT as plain text (right)</p>
+    
+    <div class="info-box">
+        <h4>📋 Design Rules</h4>
+        <p>
+            <strong>Top Left:</strong> TYPE badge with emoji icon and colored background<br>
+            <strong>Top Right:</strong> FORMAT in dark gray text only (no icon)<br>
+            <strong>Top Border:</strong> 4px hub color accent (Purple=Content, Green=Enablement, Orange=CoE)<br>
+            <strong>Footer:</strong> Publish date (left) + View action in hub color (right)
+        </p>
+    </div>
+    
+    <!-- ========================================
+         CONTENT HUB CARDS (10 types)
+         ======================================== -->
+    <div class="section-title">Content Hub Examples</div>
+    <div class="card-grid">
+        <!-- Deck -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="deck">
+                    <span class="type-badge-icon">📊</span>
+                    Deck
+                </span>
+                <span class="format-label">Slides</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">First Meeting Deck Template</h4>
+                <p class="card-description">Executive-ready presentation for initial prospect conversations with value positioning.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 15, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Battlecard -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="battlecard">
+                    <span class="type-badge-icon">⚔️</span>
+                    Battlecard
+                </span>
+                <span class="format-label">PDF</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Zendesk Sidekick Battle Card</h4>
+                <p class="card-description">Competitor battlecard comparing Zendesk AI vs Gladly Sidekick for sales teams.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 10, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- One-Pager -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="one-pager">
+                    <span class="type-badge-icon">📄</span>
+                    One-Pager
+                </span>
+                <span class="format-label">PDF</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Gladly Platform Overview</h4>
+                <p class="card-description">Single-page overview of Gladly platform capabilities and differentiators.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 5, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Template -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="template">
+                    <span class="type-badge-icon">📋</span>
+                    Template
+                </span>
+                <span class="format-label">Slides</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Proposal Deck Template</h4>
+                <p class="card-description">Reusable proposal presentation template with customizable sections.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 28, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Messaging -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="messaging">
+                    <span class="type-badge-icon">💬</span>
+                    Messaging
+                </span>
+                <span class="format-label">Document</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Enterprise Outreach Sequence</h4>
+                <p class="card-description">Email sequence for enterprise prospects with talk tracks and objection handling.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 20, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Case Study -->
+        <div class="library-card" data-hub="content">
+            <div class="card-header">
+                <span class="type-badge" data-type="case-study">
+                    <span class="type-badge-icon">📈</span>
+                    Case Study
+                </span>
+                <span class="format-label">PDF</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">IKEA Customer Success Story</h4>
+                <p class="card-description">How IKEA achieved 40% reduction in handle time with Gladly Sidekick.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 15, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         ENABLEMENT HUB CARDS (9 types)
+         ======================================== -->
+    <div class="section-title">Enablement Hub Examples</div>
+    <div class="card-grid">
+        <!-- Product Training -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="product-training">
+                    <span class="type-badge-icon">🎓</span>
+                    Product Training
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Sidekick Voice Deep Dive</h4>
+                <p class="card-description">Complete technical overview of Voice AI capabilities and configuration.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 12, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Technical Training -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="technical-training">
+                    <span class="type-badge-icon">🔧</span>
+                    Technical Training
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">App Platform Technical Enablement</h4>
+                <p class="card-description">Technical deep-dive on App Platform architecture and integrations.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 8, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- GTM Training -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="gtm-training">
+                    <span class="type-badge-icon">🚀</span>
+                    GTM Training
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Selling High + First Meeting Deck</h4>
+                <p class="card-description">Sales enablement covering First Meeting Deck refresh and Selling High strategies.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 5, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Certification -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="certification">
+                    <span class="type-badge-icon">🏆</span>
+                    Certification
+                </span>
+                <span class="format-label">Course</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Demo Certification Program</h4>
+                <p class="card-description">Complete certification program for delivering compelling Gladly demos.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 30, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Value Realization -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="value-realization">
+                    <span class="type-badge-icon">💰</span>
+                    Value Realization
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">BVA Workshop Series</h4>
+                <p class="card-description">Training on Business Value Assessment methodology and customer ROI storytelling.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 25, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Playbook -->
+        <div class="library-card" data-hub="enablement">
+            <div class="card-header">
+                <span class="type-badge" data-type="playbook">
+                    <span class="type-badge-icon">📕</span>
+                    Playbook
+                </span>
+                <span class="format-label">Document</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Enterprise Deal Playbook</h4>
+                <p class="card-description">Strategic playbook for navigating complex enterprise sales cycles.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 18, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========================================
+         COE HUB CARDS (12 types)
+         ======================================== -->
+    <div class="section-title">CoE Hub Examples</div>
+    <div class="card-grid">
+        <!-- Customer Meeting Asset -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="customer-meeting-asset">
+                    <span class="type-badge-icon">🤝</span>
+                    Customer Meeting Asset
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Smith Optics QBR Recording</h4>
+                <p class="card-description">Example QBR with effective value storytelling and expansion discussion.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 10, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Prospect Meeting Asset -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="prospect-meeting-asset">
+                    <span class="type-badge-icon">🎯</span>
+                    Prospect Meeting Asset
+                </span>
+                <span class="format-label">Live Replay</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Enterprise Discovery Call Example</h4>
+                <p class="card-description">Example discovery call with effective objection handling and qualification.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Dec 5, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Dashboard -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="dashboard">
+                    <span class="type-badge-icon">📊</span>
+                    Dashboard
+                </span>
+                <span class="format-label">Spreadsheet</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Pipeline Reporting EOQ Dashboard</h4>
+                <p class="card-description">Sales pipeline and opportunity tracker synced to Salesforce for EOQ reporting.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 30, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Customer Success Metric -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="customer-success-metric">
+                    <span class="type-badge-icon">📈</span>
+                    Customer Success Metric
+                </span>
+                <span class="format-label">Proof Point</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">CSAT Improvement - Retail Vertical</h4>
+                <p class="card-description">Average 15-point CSAT improvement across retail customers using Sidekick.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 25, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Benchmark -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="benchmark">
+                    <span class="type-badge-icon">📏</span>
+                    Benchmark
+                </span>
+                <span class="format-label">Proof Point</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Handle Time Benchmarks by Vertical</h4>
+                <p class="card-description">Industry benchmarks for average handle time across retail, travel, and hospitality.</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 20, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+        
+        <!-- Customer Quote -->
+        <div class="library-card" data-hub="coe">
+            <div class="card-header">
+                <span class="type-badge" data-type="customer-quote">
+                    <span class="type-badge-icon">💬</span>
+                    Customer Quote
+                </span>
+                <span class="format-label">Proof Point</span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Crate & Barrel CX Leader Quote</h4>
+                <p class="card-description">"Gladly transformed how our agents engage with customers..." - VP of CX</p>
+            </div>
+            <div class="card-footer">
+                <span class="card-date"><span class="card-date-icon">📅</span>Nov 15, 2024</span>
+                <a href="#" class="card-action">View →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Type Badge Reference -->
+    <div class="section-title">Complete Type Badge Reference</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+        <!-- Content Types -->
+        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h4 style="font-size: 12px; color: var(--content-primary); text-transform: uppercase; margin-bottom: 12px;">Content Hub (10)</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span class="type-badge" data-type="deck"><span class="type-badge-icon">📊</span>Deck</span>
+                <span class="type-badge" data-type="battlecard"><span class="type-badge-icon">⚔️</span>Battlecard</span>
+                <span class="type-badge" data-type="one-pager"><span class="type-badge-icon">📄</span>One-Pager</span>
+                <span class="type-badge" data-type="template"><span class="type-badge-icon">📋</span>Template</span>
+                <span class="type-badge" data-type="messaging"><span class="type-badge-icon">💬</span>Messaging</span>
+                <span class="type-badge" data-type="calculator"><span class="type-badge-icon">🧮</span>Calculator</span>
+                <span class="type-badge" data-type="competitive"><span class="type-badge-icon">📊</span>Competitive</span>
+                <span class="type-badge" data-type="guide"><span class="type-badge-icon">📘</span>Guide</span>
+                <span class="type-badge" data-type="press"><span class="type-badge-icon">📰</span>Press</span>
+                <span class="type-badge" data-type="case-study"><span class="type-badge-icon">📈</span>Case Study</span>
+            </div>
+        </div>
+        
+        <!-- Enablement Types -->
+        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h4 style="font-size: 12px; color: var(--enablement-primary); text-transform: uppercase; margin-bottom: 12px;">Enablement Hub (9)</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span class="type-badge" data-type="product-training"><span class="type-badge-icon">🎓</span>Product Training</span>
+                <span class="type-badge" data-type="technical-training"><span class="type-badge-icon">🔧</span>Technical Training</span>
+                <span class="type-badge" data-type="gtm-training"><span class="type-badge-icon">🚀</span>GTM Training</span>
+                <span class="type-badge" data-type="gtm-tool"><span class="type-badge-icon">🛠️</span>GTM Tool</span>
+                <span class="type-badge" data-type="competitive-training"><span class="type-badge-icon">⚔️</span>Competitive Training</span>
+                <span class="type-badge" data-type="certification"><span class="type-badge-icon">🏆</span>Certification</span>
+                <span class="type-badge" data-type="partner-training"><span class="type-badge-icon">🤝</span>Partner Training</span>
+                <span class="type-badge" data-type="value-realization"><span class="type-badge-icon">💰</span>Value Realization</span>
+                <span class="type-badge" data-type="playbook"><span class="type-badge-icon">📕</span>Playbook</span>
+            </div>
+        </div>
+        
+        <!-- CoE Types -->
+        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h4 style="font-size: 12px; color: var(--coe-primary); text-transform: uppercase; margin-bottom: 12px;">CoE Hub (12)</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <span class="type-badge" data-type="customer-meeting-asset"><span class="type-badge-icon">🤝</span>Customer Meeting</span>
+                <span class="type-badge" data-type="prospect-meeting-asset"><span class="type-badge-icon">🎯</span>Prospect Meeting</span>
+                <span class="type-badge" data-type="customer-best-practice"><span class="type-badge-icon">⭐</span>Customer BP</span>
+                <span class="type-badge" data-type="best-practice"><span class="type-badge-icon">✅</span>Best Practice</span>
+                <span class="type-badge" data-type="internal-best-practice"><span class="type-badge-icon">🏢</span>Internal BP</span>
+                <span class="type-badge" data-type="process-innovation"><span class="type-badge-icon">💡</span>Process Innovation</span>
+                <span class="type-badge" data-type="dashboard"><span class="type-badge-icon">📊</span>Dashboard</span>
+                <span class="type-badge" data-type="customer-success-metric"><span class="type-badge-icon">📈</span>Success Metric</span>
+                <span class="type-badge" data-type="industry-stat"><span class="type-badge-icon">🏭</span>Industry Stat</span>
+                <span class="type-badge" data-type="benchmark"><span class="type-badge-icon">📏</span>Benchmark</span>
+                <span class="type-badge" data-type="competitor-stat"><span class="type-badge-icon">📉</span>Competitor Stat</span>
+                <span class="type-badge" data-type="customer-quote"><span class="type-badge-icon">💬</span>Customer Quote</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

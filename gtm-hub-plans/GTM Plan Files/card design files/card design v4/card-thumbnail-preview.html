@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Thumbnail Preview - Design Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F3F4F6;
+            padding: 40px;
+            color: #111827;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .badge {
+            background: #DBEAFE;
+            color: #1D4ED8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        /* Hub colors */
+        .hub-content { --hub-color: #2563EB; }
+        .hub-enablement { --hub-color: #7C3AED; }
+        .hub-coe { --hub-color: #059669; }
+
+        /* ============================================
+           OPTION A: Current Design (No Thumbnail)
+           ============================================ */
+        .card-current {
+            height: 156px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            border-top: 4px solid var(--hub-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .card-current:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* ============================================
+           OPTION B: Top Thumbnail (Taller Card)
+           ============================================ */
+        .card-top-thumb {
+            height: 220px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .card-top-thumb:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-top-thumb .thumb-area {
+            height: 80px;
+            background: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-top-thumb .thumb-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-top-thumb .thumb-area .hub-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--hub-color);
+        }
+
+        .card-top-thumb .thumb-area .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+        }
+
+        .card-top-thumb .thumb-area .placeholder svg {
+            width: 32px;
+            height: 32px;
+            color: #9CA3AF;
+        }
+
+        /* ============================================
+           OPTION B-XL: Top Thumbnail (300px)
+           ============================================ */
+        .card-top-thumb-xl {
+            height: 300px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .card-top-thumb-xl:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .thumb-area-xl {
+            height: 160px;
+            background: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thumb-area-xl img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumb-area-xl .hub-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--hub-color);
+            z-index: 1;
+        }
+
+        .thumb-area-xl .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+        }
+
+        .thumb-area-xl .placeholder svg {
+            width: 48px;
+            height: 48px;
+            color: #9CA3AF;
+        }
+
+        /* ============================================
+           OPTION C: Side Thumbnail (Same Height)
+           ============================================ */
+        .card-side-thumb {
+            height: 156px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            overflow: hidden;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .card-side-thumb:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-side-thumb .thumb-area {
+            width: 100px;
+            flex-shrink: 0;
+            background: #F9FAFB;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-side-thumb .thumb-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-side-thumb .thumb-area .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+        }
+
+        .card-side-thumb .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--hub-color);
+        }
+
+        /* ============================================
+           OPTION D: Small Corner Thumbnail
+           ============================================ */
+        .card-corner-thumb {
+            height: 156px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+            border-top: 4px solid var(--hub-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.15s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card-corner-thumb:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-corner-thumb .mini-thumb {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 48px;
+            height: 36px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #E5E7EB;
+            background: #F9FAFB;
+        }
+
+        .card-corner-thumb .mini-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ============================================
+           Shared Card Components
+           ============================================ */
+        .card-header {
+            padding: 12px 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .type-battlecard { background: #FEE2E2; color: #B91C1C; }
+        .type-template { background: #DBEAFE; color: #1D4ED8; }
+        .type-training { background: #F3E8FF; color: #7C3AED; }
+        .type-dashboard { background: #D1FAE5; color: #047857; }
+
+        .format-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #9CA3AF;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10px 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-footer {
+            padding: 10px 16px;
+            border-top: 1px solid #E5E7EB;
+            background: #FAFAFA;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .card-date {
+            font-size: 11px;
+            color: #9CA3AF;
+        }
+
+        .card-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--hub-color);
+        }
+
+        /* Comparison table */
+        .comparison {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 40px;
+        }
+
+        .comparison h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .comparison table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison th, .comparison td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .comparison th {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6B7280;
+        }
+
+        .comparison td {
+            font-size: 14px;
+        }
+
+        .pro { color: #059669; }
+        .con { color: #DC2626; }
+
+        .note {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 14px;
+        }
+
+        .note strong {
+            color: #B45309;
+        }
+    </style>
+</head>
+<body>
+    <h1>Card Thumbnail Design Options</h1>
+    <p class="subtitle">Compare different approaches for adding image previews to content cards</p>
+
+    <!-- Option A: Current Design -->
+    <div class="section">
+        <div class="section-title">
+            Option A: Current Design (No Change)
+            <span class="badge">156px height</span>
+        </div>
+        <div class="card-grid">
+            <div class="card-current hub-content">
+                <div class="card-header">
+                    <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                    <span class="format-label">Slides</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Ada Battlecard</div>
+                    <div class="card-desc">Competitive positioning vs Ada</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 10, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-current hub-enablement">
+                <div class="card-header">
+                    <span class="type-badge type-template">📋 Template</span>
+                    <span class="format-label">Document</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Discovery Call Template</div>
+                    <div class="card-desc">Questions for initial prospect calls</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 8, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-current hub-coe">
+                <div class="card-header">
+                    <span class="type-badge type-training">🎓 Training</span>
+                    <span class="format-label">Video</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Sidekick Product Deep Dive</div>
+                    <div class="card-desc">Complete product walkthrough</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 5, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option B-XL: Top Thumbnail 300px -->
+    <div class="section">
+        <div class="section-title">
+            Option B-XL: Top Thumbnail (Larger)
+            <span class="badge">300px height</span>
+        </div>
+        <div class="card-grid">
+            <div class="card-top-thumb-xl hub-content">
+                <div class="thumb-area-xl">
+                    <div class="hub-bar"></div>
+                    <!-- Real Google Slides thumbnail - replace FILE_ID with actual ID from your assets -->
+                    <img src="https://docs.google.com/presentation/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/export/png?pageid=p" alt="Preview" onerror="this.parentElement.innerHTML='<div class=placeholder><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'14\' rx=\'2\'/><path d=\'M8 21h8\'/><path d=\'M12 17v4\'/></svg></div>'">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                    <span class="format-label">Slides</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Ada Battlecard</div>
+                    <div class="card-desc">Competitive positioning vs Ada</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 10, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-top-thumb-xl hub-enablement">
+                <div class="thumb-area-xl">
+                    <div class="hub-bar"></div>
+                    <div class="placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-template">📋 Template</span>
+                    <span class="format-label">Document</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Discovery Call Template</div>
+                    <div class="card-desc">Questions for initial prospect calls</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 8, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-top-thumb-xl hub-coe">
+                <div class="thumb-area-xl">
+                    <div class="hub-bar"></div>
+                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video preview">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-training">🎓 Training</span>
+                    <span class="format-label">Video</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Sidekick Product Deep Dive</div>
+                    <div class="card-desc">Complete product walkthrough</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 5, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test with YOUR Asset URLs -->
+    <div class="section">
+        <div class="section-title">
+            Test With Your Asset URLs
+            <span class="badge">Enter URL below</span>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;">
+                Paste a Google Slides/Docs/Drive URL from your library:
+            </label>
+            <input type="text" id="testUrl" placeholder="https://docs.google.com/presentation/d/YOUR_FILE_ID/edit"
+                   style="width: 100%; padding: 12px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 14px;">
+            <button onclick="testThumbnail()"
+                    style="margin-top: 12px; padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 8px; font-weight: 500; cursor: pointer;">
+                Generate Thumbnail Preview
+            </button>
+        </div>
+        <div class="card-grid">
+            <div class="card-top-thumb-xl hub-content" id="testCard">
+                <div class="thumb-area-xl" id="testThumbArea">
+                    <div class="hub-bar"></div>
+                    <div class="placeholder" id="testPlaceholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <path d="M8 21h8"/>
+                            <path d="M12 17v4"/>
+                        </svg>
+                        <div style="font-size: 12px; color: #9CA3AF; margin-top: 8px;">Enter URL above to test</div>
+                    </div>
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                    <span class="format-label">Slides</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Your Asset Title</div>
+                    <div class="card-desc">Your short description here</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 10, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+        </div>
+        <div id="debugInfo" style="margin-top: 16px; padding: 16px; background: #F9FAFB; border-radius: 8px; font-family: monospace; font-size: 12px; display: none;"></div>
+    </div>
+
+    <!-- Option B: Top Thumbnail -->
+    <div class="section">
+        <div class="section-title">
+            Option B: Top Thumbnail
+            <span class="badge">220px height</span>
+        </div>
+        <div class="card-grid">
+            <div class="card-top-thumb hub-content">
+                <div class="thumb-area">
+                    <div class="hub-bar"></div>
+                    <img src="https://docs.google.com/presentation/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/export/png?pageid=p" alt="Preview" onerror="this.parentElement.innerHTML='<div class=placeholder><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'14\' rx=\'2\'/><path d=\'M8 21h8\'/><path d=\'M12 17v4\'/></svg></div>'">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                    <span class="format-label">Slides</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Ada Battlecard</div>
+                    <div class="card-desc">Competitive positioning vs Ada</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 10, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-top-thumb hub-enablement">
+                <div class="thumb-area">
+                    <div class="hub-bar"></div>
+                    <!-- Simulated placeholder for non-Google content -->
+                    <div class="placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-template">📋 Template</span>
+                    <span class="format-label">Document</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Discovery Call Template</div>
+                    <div class="card-desc">Questions for initial prospect calls</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 8, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-top-thumb hub-coe">
+                <div class="thumb-area">
+                    <div class="hub-bar"></div>
+                    <!-- YouTube thumbnail example -->
+                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video preview">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-training">🎓 Training</span>
+                    <span class="format-label">Video</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Sidekick Product Deep Dive</div>
+                    <div class="card-desc">Complete product walkthrough</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 5, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option C: Side Thumbnail -->
+    <div class="section">
+        <div class="section-title">
+            Option C: Side Thumbnail
+            <span class="badge">156px height (same)</span>
+        </div>
+        <div class="card-grid">
+            <div class="card-side-thumb hub-content">
+                <div class="thumb-area">
+                    <img src="https://docs.google.com/presentation/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/export/png?pageid=p" alt="Preview" onerror="this.parentElement.innerHTML='<div class=placeholder><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'14\' rx=\'2\'/><path d=\'M8 21h8\'/><path d=\'M12 17v4\'/></svg></div>'">
+                </div>
+                <div class="content-area">
+                    <div class="card-header">
+                        <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                        <span class="format-label">Slides</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">Ada Battlecard</div>
+                        <div class="card-desc">Competitive positioning vs Ada</div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 10, 2024</span>
+                        <span class="card-action">View →</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-side-thumb hub-enablement">
+                <div class="thumb-area">
+                    <div class="placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="content-area">
+                    <div class="card-header">
+                        <span class="type-badge type-template">📋 Template</span>
+                        <span class="format-label">Document</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">Discovery Call Template</div>
+                        <div class="card-desc">Questions for initial prospect calls</div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 8, 2024</span>
+                        <span class="card-action">View →</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-side-thumb hub-coe">
+                <div class="thumb-area">
+                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video preview">
+                </div>
+                <div class="content-area">
+                    <div class="card-header">
+                        <span class="type-badge type-training">🎓 Training</span>
+                        <span class="format-label">Video</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">Sidekick Product Deep Dive</div>
+                        <div class="card-desc">Complete product walkthrough</div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 5, 2024</span>
+                        <span class="card-action">View →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option D: Corner Thumbnail -->
+    <div class="section">
+        <div class="section-title">
+            Option D: Small Corner Thumbnail
+            <span class="badge">156px height (same)</span>
+        </div>
+        <div class="card-grid">
+            <div class="card-corner-thumb hub-content">
+                <div class="mini-thumb">
+                    <img src="https://docs.google.com/presentation/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/export/png?pageid=p" alt="Preview" onerror="this.style.display='none'">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-battlecard">⚔️ Battlecard</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Ada Battlecard</div>
+                    <div class="card-desc">Competitive positioning vs Ada</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 10, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-corner-thumb hub-enablement">
+                <div class="card-header">
+                    <span class="type-badge type-template">📋 Template</span>
+                    <span class="format-label">Document</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Discovery Call Template</div>
+                    <div class="card-desc">Questions for initial prospect calls</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 8, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+
+            <div class="card-corner-thumb hub-coe">
+                <div class="mini-thumb">
+                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video preview">
+                </div>
+                <div class="card-header">
+                    <span class="type-badge type-training">🎓 Training</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Sidekick Product Deep Dive</div>
+                    <div class="card-desc">Complete product walkthrough</div>
+                </div>
+                <div class="card-footer">
+                    <span class="card-date">Dec 5, 2024</span>
+                    <span class="card-action">View →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="comparison">
+        <h2>Option Comparison</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Height</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>A: Current</strong></td>
+                    <td>156px</td>
+                    <td class="pro">Clean, text-focused, more cards visible</td>
+                    <td class="con">No visual preview of content</td>
+                </tr>
+                <tr>
+                    <td><strong>B: Top Thumb</strong></td>
+                    <td>220px</td>
+                    <td class="pro">Best visual impact, clear preview</td>
+                    <td class="con">Taller cards = fewer visible, placeholder for non-Google</td>
+                </tr>
+                <tr>
+                    <td><strong>C: Side Thumb</strong></td>
+                    <td>156px</td>
+                    <td class="pro">Same height, preview visible</td>
+                    <td class="con">Narrower text area, awkward crop on landscape content</td>
+                </tr>
+                <tr>
+                    <td><strong>D: Corner Thumb</strong></td>
+                    <td>156px</td>
+                    <td class="pro">Subtle, same height, optional</td>
+                    <td class="con">Very small preview, may not be worth the complexity</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <strong>Note:</strong> Thumbnails work automatically for Google Slides, Docs, Sheets, Drive files, and YouTube videos.
+            For Figma, Canva, and other sources, a placeholder icon is shown instead (no public thumbnail API available).
+        </div>
+    </div>
+    <script>
+        function getThumbnailUrl(url) {
+            if (!url) return { thumbnailUrl: null, type: 'unknown' };
+
+            // Google Slides - export first slide as PNG
+            const gslidesMatch = url.match(/docs\.google\.com\/presentation\/d\/([a-zA-Z0-9_-]+)/);
+            if (gslidesMatch) {
+                return {
+                    thumbnailUrl: `https://docs.google.com/presentation/d/${gslidesMatch[1]}/export/png?pageid=p`,
+                    type: 'Google Slides',
+                    fileId: gslidesMatch[1]
+                };
+            }
+
+            // Google Docs - thumbnail API
+            const gdocsMatch = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+            if (gdocsMatch) {
+                return {
+                    thumbnailUrl: `https://drive.google.com/thumbnail?id=${gdocsMatch[1]}&sz=w800`,
+                    type: 'Google Docs',
+                    fileId: gdocsMatch[1]
+                };
+            }
+
+            // Google Sheets - thumbnail API
+            const gsheetsMatch = url.match(/docs\.google\.com\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+            if (gsheetsMatch) {
+                return {
+                    thumbnailUrl: `https://drive.google.com/thumbnail?id=${gsheetsMatch[1]}&sz=w800`,
+                    type: 'Google Sheets',
+                    fileId: gsheetsMatch[1]
+                };
+            }
+
+            // Google Drive file
+            const gdriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (gdriveMatch) {
+                return {
+                    thumbnailUrl: `https://drive.google.com/thumbnail?id=${gdriveMatch[1]}&sz=w800`,
+                    type: 'Google Drive',
+                    fileId: gdriveMatch[1]
+                };
+            }
+
+            // YouTube
+            const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+            if (ytMatch) {
+                return {
+                    thumbnailUrl: `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg`,
+                    type: 'YouTube',
+                    fileId: ytMatch[1]
+                };
+            }
+
+            return { thumbnailUrl: null, type: 'Unsupported URL type' };
+        }
+
+        function testThumbnail() {
+            const url = document.getElementById('testUrl').value.trim();
+            const result = getThumbnailUrl(url);
+            const thumbArea = document.getElementById('testThumbArea');
+            const debugInfo = document.getElementById('debugInfo');
+
+            // Show debug info
+            debugInfo.style.display = 'block';
+            debugInfo.innerHTML = `
+                <strong>Input URL:</strong> ${url}<br>
+                <strong>Detected Type:</strong> ${result.type}<br>
+                <strong>File ID:</strong> ${result.fileId || 'N/A'}<br>
+                <strong>Thumbnail URL:</strong> ${result.thumbnailUrl || 'N/A'}
+            `;
+
+            if (result.thumbnailUrl) {
+                thumbArea.innerHTML = `
+                    <div class="hub-bar"></div>
+                    <img src="${result.thumbnailUrl}" alt="Preview"
+                         onload="document.getElementById('debugInfo').innerHTML += '<br><strong style=color:#059669>✓ Thumbnail loaded successfully!</strong>'"
+                         onerror="document.getElementById('debugInfo').innerHTML += '<br><strong style=color:#DC2626>✗ Failed to load thumbnail. File may be private or restricted.</strong>'">
+                `;
+            } else {
+                thumbArea.innerHTML = `
+                    <div class="hub-bar"></div>
+                    <div class="placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <div style="font-size: 12px; color: #DC2626; margin-top: 8px;">${result.type}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Allow Enter key to trigger test
+        document.getElementById('testUrl')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') testThumbnail();
+        });
+    </script>
+</body>
+</html>

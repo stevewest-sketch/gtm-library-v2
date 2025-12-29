@@ -86,9 +86,19 @@ function getPreviewEmbedUrl(url: string): { embedUrl: string; type: 'gslides' | 
   return { embedUrl: '', type: null, label: '' };
 }
 
+// Document formats that should NOT be treated as video even on Google Drive
+const DOCUMENT_FORMATS = ['pdf', 'document', 'slides', 'spreadsheet', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'];
+
 // Helper to convert video URLs to embeddable format
-function getEmbedUrl(url: string): { embedUrl: string; type: 'loom' | 'youtube' | 'vimeo' | 'gdrive' | 'direct' | null } {
+// Pass assetFormat to prevent document files from being treated as videos
+function getEmbedUrl(url: string, assetFormat?: string | null): { embedUrl: string; type: 'loom' | 'youtube' | 'vimeo' | 'gdrive' | 'wistia' | 'direct' | null } {
   if (!url) return { embedUrl: '', type: null };
+
+  // Wistia
+  const wistiaMatch = url.match(/wistia\.com\/medias\/([a-zA-Z0-9]+)/);
+  if (wistiaMatch) {
+    return { embedUrl: `https://fast.wistia.net/embed/iframe/${wistiaMatch[1]}`, type: 'wistia' };
+  }
 
   // Loom
   const loomMatch = url.match(/loom\.com\/share\/([a-zA-Z0-9]+)/);
@@ -108,10 +118,16 @@ function getEmbedUrl(url: string): { embedUrl: string; type: 'loom' | 'youtube' 
     return { embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}`, type: 'vimeo' };
   }
 
-  // Google Drive - convert to preview/embed URL
+  // Google Drive - only treat as video if asset format is NOT a document type
+  // This allows PDFs and other documents to use the document preview instead
   const gdriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (gdriveMatch) {
-    return { embedUrl: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`, type: 'gdrive' };
+    const isDocumentFormat = assetFormat && DOCUMENT_FORMATS.includes(assetFormat.toLowerCase());
+    if (!isDocumentFormat) {
+      return { embedUrl: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`, type: 'gdrive' };
+    }
+    // If it's a document format, return null type so it falls through to document preview
+    return { embedUrl: '', type: null };
   }
 
   // Direct video files (.mp4, .webm, etc.)
@@ -178,12 +194,18 @@ export function AssetDetailClient({
   const [howToExpanded, setHowToExpanded] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  // Get embeddable video URL
-  const videoEmbed = asset.videoUrl ? getEmbedUrl(asset.videoUrl) : { embedUrl: '', type: null };
+  // Get embeddable video URL - check videoUrl first, then primaryLink for video content
+  // Pass asset.format to prevent document types (PDFs, etc.) from being treated as videos
+  const videoEmbedFromVideoUrl = asset.videoUrl ? getEmbedUrl(asset.videoUrl, asset.format) : { embedUrl: '', type: null };
+  const videoEmbedFromPrimaryLink = asset.primaryLink ? getEmbedUrl(asset.primaryLink, asset.format) : { embedUrl: '', type: null };
+  const videoEmbed = videoEmbedFromVideoUrl.type ? videoEmbedFromVideoUrl : videoEmbedFromPrimaryLink;
   const canEmbedVideo = videoEmbed.type !== null;
+  const hasVideo = asset.videoUrl || (videoEmbedFromPrimaryLink.type !== null);
+  // The actual video URL to use (from videoUrl field or from primaryLink if it's a video)
+  const actualVideoUrl = asset.videoUrl || (videoEmbedFromPrimaryLink.type ? asset.primaryLink : null);
 
-  // Get preview embed URL for documents/slides
-  const previewEmbed = asset.primaryLink ? getPreviewEmbedUrl(asset.primaryLink) : { embedUrl: '', type: null, label: '' };
+  // Get preview embed URL for documents/slides (only if primaryLink is not a video)
+  const previewEmbed = (asset.primaryLink && !videoEmbedFromPrimaryLink.type) ? getPreviewEmbedUrl(asset.primaryLink) : { embedUrl: '', type: null, label: '' };
   const canPreview = previewEmbed.type !== null;
 
   // The copyable link should be the actual asset URL (primaryLink), not the internal website URL
@@ -199,7 +221,7 @@ export function AssetDetailClient({
     }
   };
 
-  const hasMaterials = asset.videoUrl || asset.slidesUrl || asset.keyAssetUrl || asset.transcriptUrl;
+  const hasMaterials = asset.videoUrl || asset.slidesUrl || asset.keyAssetUrl || asset.transcriptUrl || asset.primaryLink;
 
   return (
     <>
@@ -338,134 +360,6 @@ export function AssetDetailClient({
         </div>
       )}
 
-      {/* Document/Slides Preview */}
-      {canPreview && !asset.videoUrl && (
-        <div
-          style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            marginBottom: '24px',
-          }}
-        >
-          <div
-            style={{
-              position: 'relative',
-              aspectRatio: '16/10',
-              background: '#F9FAFB',
-            }}
-          >
-            <iframe
-              src={previewEmbed.embedUrl}
-              style={{
-                width: '100%',
-                height: '100%',
-                border: 'none',
-              }}
-              allowFullScreen
-            />
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '14px 18px',
-              borderTop: '1px solid #E5E7EB',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4B5563' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              {previewEmbed.label || 'Document'}
-            </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <a
-                href={asset.primaryLink!}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 14px',
-                  background: hubStyle.primary,
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  color: 'white',
-                  cursor: 'pointer',
-                  textDecoration: 'none',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-                Open Asset
-              </a>
-              <button
-                onClick={() => copyToClipboard(copyableAssetLink)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 14px',
-                  background: '#F3F4F6',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  color: '#4B5563',
-                  cursor: 'pointer',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                </svg>
-                Share
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Open Asset Button (when no preview available and not a video/training asset) */}
-      {!canPreview && !asset.videoUrl && asset.primaryLink && (
-        <a
-          href={asset.primaryLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '14px 24px',
-            background: hubStyle.primary,
-            borderRadius: '10px',
-            color: 'white',
-            fontSize: '15px',
-            fontWeight: 500,
-            textDecoration: 'none',
-            marginBottom: '24px',
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-            <polyline points="15 3 21 3 21 9" />
-            <line x1="10" y1="14" x2="21" y2="3" />
-          </svg>
-          Open Asset
-        </a>
-      )}
-
       {/* Two Column Layout */}
       <div
         style={{
@@ -477,8 +371,107 @@ export function AssetDetailClient({
       >
         {/* Main Content Column */}
         <div style={{ minWidth: 0 }}>
+          {/* Document/Slides Preview (for non-video assets) */}
+          {canPreview && !hasVideo && (
+            <div
+              style={{
+                background: 'white',
+                border: '1px solid #E5E7EB',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                marginBottom: '24px',
+              }}
+            >
+              <div
+                style={{
+                  position: 'relative',
+                  aspectRatio: '16/10',
+                  background: '#F9FAFB',
+                }}
+              >
+                <iframe
+                  src={previewEmbed.embedUrl}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                  }}
+                  allowFullScreen
+                />
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '14px 18px',
+                  borderTop: '1px solid #E5E7EB',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4B5563' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  {previewEmbed.label || 'Document'}
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <a
+                    href={asset.primaryLink!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '8px 14px',
+                      background: hubStyle.primary,
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                      color: 'white',
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                    Open Asset
+                  </a>
+                  <button
+                    onClick={() => copyToClipboard(copyableAssetLink)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '8px 14px',
+                      background: '#F3F4F6',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '13px',
+                      color: '#4B5563',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Video Container */}
-          {(asset.videoUrl || isTrainingAsset) && (
+          {(hasVideo || isTrainingAsset) && (
             <div
               style={{
                 background: 'white',
@@ -506,7 +499,11 @@ export function AssetDetailClient({
                     />
                   ) : (
                     <iframe
-                      src={videoEmbed.embedUrl + (videoEmbed.type === 'youtube' ? '?autoplay=1' : '')}
+                      src={
+                        videoEmbed.embedUrl +
+                        (videoEmbed.type === 'youtube' ? '?autoplay=1' : '') +
+                        (videoEmbed.type === 'wistia' ? '?autoPlay=true' : '')
+                      }
                       style={{ width: '100%', height: '100%', border: 'none' }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -521,13 +518,13 @@ export function AssetDetailClient({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      cursor: asset.videoUrl ? 'pointer' : 'default',
+                      cursor: actualVideoUrl ? 'pointer' : 'default',
                     }}
                     onClick={() => {
                       if (canEmbedVideo) {
                         setIsVideoPlaying(true);
-                      } else if (asset.videoUrl) {
-                        window.open(asset.videoUrl, '_blank');
+                      } else if (actualVideoUrl) {
+                        window.open(actualVideoUrl, '_blank');
                       }
                     }}
                   >
@@ -555,14 +552,14 @@ export function AssetDetailClient({
                         {asset.description?.substring(0, 50)}...
                       </div>
                     </div>
-                    {asset.videoUrl && (
+                    {actualVideoUrl && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           if (canEmbedVideo) {
                             setIsVideoPlaying(true);
                           } else {
-                            window.open(asset.videoUrl!, '_blank');
+                            window.open(actualVideoUrl, '_blank');
                           }
                         }}
                         style={{
@@ -604,9 +601,9 @@ export function AssetDetailClient({
                   {formattedDuration || 'Duration N/A'}
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  {asset.videoUrl && (
+                  {actualVideoUrl && (
                     <a
-                      href={asset.videoUrl}
+                      href={actualVideoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -877,9 +874,9 @@ export function AssetDetailClient({
                 <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>Session Materials</h3>
               </div>
               <div style={{ padding: '12px' }}>
-                {asset.videoUrl && (
+                {actualVideoUrl && (
                   <a
-                    href={asset.videoUrl}
+                    href={actualVideoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -1054,6 +1051,55 @@ export function AssetDetailClient({
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Transcript</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF' }}>AI-generated</div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </a>
+                )}
+                {asset.primaryLink && !hasVideo && (
+                  <a
+                    href={asset.primaryLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '14px',
+                      padding: '14px',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      color: '#111827',
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <div
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: hubStyle.light,
+                        color: hubStyle.accent,
+                      }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                      </svg>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>
+                        {previewEmbed.label || 'Primary Asset'}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Open in new tab</div>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
