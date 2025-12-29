@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       .where(ilike(boards.name, searchPattern))
       .limit(5);
 
-    // Search tags
+    // Search tags with item counts
     const tagResults = await db
       .select({
         id: tags.id,
@@ -36,6 +36,20 @@ export async function GET(request: NextRequest) {
       .from(tags)
       .where(ilike(tags.name, searchPattern))
       .limit(8);
+
+    // Get item counts for each tag
+    const tagSlugs = tagResults.map(t => t.slug);
+    const tagItemCounts: Record<string, number> = {};
+
+    if (tagSlugs.length > 0) {
+      for (const slug of tagSlugs) {
+        const countResult = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(catalogEntries)
+          .where(sql`${slug} = ANY(${catalogEntries.tags})`);
+        tagItemCounts[slug] = Number(countResult[0]?.count || 0);
+      }
+    }
 
     // Search assets - search in title, description, and tags
     const assetResults = await db
@@ -73,6 +87,7 @@ export async function GET(request: NextRequest) {
       id: t.id,
       slug: t.slug,
       title: t.name,
+      subtitle: tagItemCounts[t.slug] ? `${tagItemCounts[t.slug]} items` : undefined,
     }));
 
     const formatIcons: Record<string, string> = {
@@ -91,13 +106,22 @@ export async function GET(request: NextRequest) {
       'web-link': '🔗',
     };
 
+    // Hub colors for icon backgrounds
+    const hubColors: Record<string, string> = {
+      enablement: '#D1FAE5',
+      content: '#FEF3C7',
+      coe: '#DBEAFE',
+      sales: '#E0E7FF',
+    };
+
     const formattedAssets = assetResults.map((a) => ({
       type: 'asset' as const,
       id: a.id,
       slug: a.slug,
       title: a.title,
-      subtitle: a.types?.[0] || a.format,
+      subtitle: `${a.format?.charAt(0).toUpperCase()}${a.format?.slice(1) || 'Asset'} • ${a.hub?.charAt(0).toUpperCase()}${a.hub?.slice(1) || 'Content'}`,
       icon: formatIcons[a.format] || '📄',
+      color: hubColors[a.hub] || '#F1F5F9',
     }));
 
     return NextResponse.json({

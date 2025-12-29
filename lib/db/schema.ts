@@ -179,3 +179,36 @@ export const formats = pgTable('formats', {
 
 export type Format = typeof formats.$inferSelect;
 export type NewFormat = typeof formats.$inferInsert;
+
+// Homepage configuration (singleton table)
+export const homepageConfig = pgTable('homepage_config', {
+  id: uuid('id').primaryKey().defaultRandom(),
+
+  // Hero Section
+  heroTitle: text('hero_title').notNull().default('GTM Hub'),
+  heroSubtitle: text('hero_subtitle').notNull().default('Your central hub for selling, supporting, and growing with Gladly.'),
+  showHero: boolean('show_hero').default(true),
+
+  // Hub Cards
+  showHubCards: boolean('show_hub_cards').default(true),
+  hubCardsOrder: jsonb('hub_cards_order').$type<string[]>().default(['coe', 'content', 'enablement']),
+
+  // Featured Board
+  featuredBoardId: uuid('featured_board_id').references(() => boards.id, { onDelete: 'set null' }),
+  featuredBoardEnabled: boolean('featured_board_enabled').default(true),
+  featuredBoardMaxItems: integer('featured_board_max_items').default(3),
+  featuredBoardTitleOverride: text('featured_board_title_override'),
+  featuredBoardDescriptionOverride: text('featured_board_description_override'),
+  featuredBoardIcon: text('featured_board_icon').default('🎯'),
+
+  // Recently Added
+  recentlyAddedEnabled: boolean('recently_added_enabled').default(true),
+  recentlyAddedMaxItems: integer('recently_added_max_items').default(6),
+  recentlyAddedNewThresholdDays: integer('recently_added_new_threshold_days').default(7),
+
+  // Metadata
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export type HomepageConfig = typeof homepageConfig.$inferSelect;
+export type NewHomepageConfig = typeof homepageConfig.$inferInsert;

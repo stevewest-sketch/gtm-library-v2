@@ -201,89 +201,44 @@ export function PageHeader() {
           )}
         </div>
 
-        {/* Search Dropdown */}
+        {/* Search Dropdown - matches comprehensive-gtm-design-system.html */}
         {isSearchOpen && (searchQuery.trim() || hasResults) && (
           <div
             style={{
               position: 'absolute',
               top: 'calc(100% + 8px)',
-              left: 0,
-              right: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '100%',
+              maxWidth: '640px',
               background: 'white',
-              border: '1px solid #E5E7EB',
-              borderRadius: '12px',
-              boxShadow: '0 10px 40px rgba(0,0,0,0.12)',
+              border: '1px solid #E2E8F0',
+              borderRadius: '16px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
               maxHeight: '400px',
-              overflow: 'auto',
+              overflowY: 'auto',
+              overflowX: 'hidden',
               zIndex: 100,
             }}
+            onWheel={(e) => e.stopPropagation()}
           >
             {!hasResults && searchQuery.trim() && !isLoading && (
-              <div style={{ padding: '24px', textAlign: 'center', color: '#9CA3AF' }}>
+              <div style={{ padding: '24px', textAlign: 'center', color: '#94A3B8' }}>
                 No results found for "{searchQuery}"
-              </div>
-            )}
-
-            {/* Boards Section */}
-            {results.boards.length > 0 && (
-              <div>
-                <div
-                  style={{
-                    padding: '12px 16px 8px',
-                    fontSize: '10px',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    color: '#9CA3AF',
-                    borderBottom: '1px solid #F3F4F6',
-                  }}
-                >
-                  Boards
-                </div>
-                {results.boards.map((board) => (
-                  <Link
-                    key={board.id}
-                    href={`/library/board/${board.slug}`}
-                    onClick={() => {
-                      setIsSearchOpen(false);
-                      setSearchQuery('');
-                    }}
-                    className="flex items-center gap-3 no-underline transition-colors"
-                    style={{
-                      padding: '10px 16px',
-                      color: '#111827',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F9FAFB')}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <span
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background: board.color || '#6B7280',
-                        flexShrink: 0,
-                      }}
-                    />
-                    <span style={{ fontSize: '14px', fontWeight: 500 }}>{board.title}</span>
-                  </Link>
-                ))}
               </div>
             )}
 
             {/* Tags Section */}
             {results.tags.length > 0 && (
-              <div>
+              <div style={{ borderBottom: results.assets.length > 0 ? '1px solid #F1F5F9' : 'none' }}>
                 <div
                   style={{
-                    padding: '12px 16px 8px',
+                    padding: '12px 20px 8px',
                     fontSize: '10px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    color: '#9CA3AF',
-                    borderBottom: '1px solid #F3F4F6',
-                    borderTop: results.boards.length > 0 ? '1px solid #F3F4F6' : 'none',
+                    color: '#94A3B8',
                   }}
                 >
                   Tags
@@ -291,24 +246,67 @@ export function PageHeader() {
                 {results.tags.map((tag) => (
                   <Link
                     key={tag.id}
-                    href={`/library?tag=${tag.slug}`}
+                    href={`/library/tag/${tag.slug}`}
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchQuery('');
                     }}
-                    className="flex items-center gap-3 no-underline transition-colors"
+                    className="flex items-center no-underline transition-colors"
                     style={{
-                      padding: '10px 16px',
-                      color: '#111827',
+                      padding: '12px 20px',
+                      gap: '14px',
+                      color: '#0F172A',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F9FAFB')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
-                    <span style={{ fontSize: '14px', color: '#6B7280' }}>#</span>
-                    <span style={{ fontSize: '14px', fontWeight: 500 }}>{tag.title}</span>
-                    {tag.subtitle && (
-                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{tag.subtitle}</span>
-                    )}
+                    {/* Tag Icon Box */}
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: '#F1F5F9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#94A3B8',
+                        fontSize: '18px',
+                        fontWeight: 500,
+                        flexShrink: 0,
+                      }}
+                    >
+                      #
+                    </div>
+                    {/* Tag Content */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: '#0F172A',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                        }}
+                      >
+                        {tag.title}
+                        {tag.subtitle && (
+                          <span
+                            style={{
+                              padding: '3px 8px',
+                              background: '#F1F5F9',
+                              borderRadius: '6px',
+                              fontSize: '11px',
+                              fontWeight: 500,
+                              color: '#94A3B8',
+                            }}
+                          >
+                            {tag.subtitle}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -319,14 +317,12 @@ export function PageHeader() {
               <div>
                 <div
                   style={{
-                    padding: '12px 16px 8px',
+                    padding: '12px 20px 8px',
                     fontSize: '10px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    color: '#9CA3AF',
-                    borderBottom: '1px solid #F3F4F6',
-                    borderTop: results.boards.length > 0 || results.tags.length > 0 ? '1px solid #F3F4F6' : 'none',
+                    color: '#94A3B8',
                   }}
                 >
                   Assets
@@ -339,20 +335,38 @@ export function PageHeader() {
                       setIsSearchOpen(false);
                       setSearchQuery('');
                     }}
-                    className="flex items-center gap-3 no-underline transition-colors"
+                    className="flex items-center no-underline transition-colors"
                     style={{
-                      padding: '10px 16px',
-                      color: '#111827',
+                      padding: '12px 20px',
+                      gap: '14px',
+                      color: '#0F172A',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F9FAFB')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
-                    <span style={{ fontSize: '13px' }}>{asset.icon || '📄'}</span>
+                    {/* Asset Icon Box */}
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: asset.color || '#FEF3C7',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '16px',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {asset.icon || '📄'}
+                    </div>
+                    {/* Asset Content */}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
                           fontSize: '14px',
                           fontWeight: 500,
+                          color: '#0F172A',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
@@ -361,9 +375,69 @@ export function PageHeader() {
                         {asset.title}
                       </div>
                       {asset.subtitle && (
-                        <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{asset.subtitle}</div>
+                        <div style={{ fontSize: '12px', color: '#94A3B8' }}>{asset.subtitle}</div>
                       )}
                     </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Boards Section - show at bottom if present */}
+            {results.boards.length > 0 && (
+              <div style={{ borderTop: results.tags.length > 0 || results.assets.length > 0 ? '1px solid #F1F5F9' : 'none' }}>
+                <div
+                  style={{
+                    padding: '12px 20px 8px',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    color: '#94A3B8',
+                  }}
+                >
+                  Boards
+                </div>
+                {results.boards.map((board) => (
+                  <Link
+                    key={board.id}
+                    href={`/library/board/${board.slug}`}
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchQuery('');
+                    }}
+                    className="flex items-center no-underline transition-colors"
+                    style={{
+                      padding: '12px 20px',
+                      gap: '14px',
+                      color: '#0F172A',
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    {/* Board Color Dot */}
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: '#F1F5F9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          background: board.color || '#6B7280',
+                        }}
+                      />
+                    </div>
+                    <span style={{ fontSize: '14px', fontWeight: 500 }}>{board.title}</span>
                   </Link>
                 ))}
               </div>

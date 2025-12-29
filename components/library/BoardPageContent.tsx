@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { AssetCard } from './AssetCard';
-import { getTypeConfig, getHubColor, getFormatLabel } from '@/lib/type-config';
+import { AssetCard, CompactCard, HeroCard } from './AssetCard';
+
+// Number of cards to show before "Show more" (2 rows of 4)
+const INITIAL_GRID_COUNT = 8;
+const INITIAL_LIST_COUNT = 6;
 
 interface Asset {
   id: string;
@@ -28,7 +30,7 @@ interface TagData {
   id: string;
   name: string;
   slug: string;
-  displayName?: string | null; // Board-specific display name override
+  displayName?: string | null;
 }
 
 interface BoardConfig {
@@ -43,168 +45,240 @@ interface BoardPageContentProps {
   assets: Asset[];
   selectedTags: string[];
   boardTags?: TagData[];
-  defaultView?: 'grid' | 'stack'; // From board settings
+  defaultView?: 'grid' | 'stack';
 }
 
 export function BoardPageContent({
-  boardId,
   board,
   assets,
-  selectedTags,
   boardTags: boardTagsFromAPI,
   defaultView = 'grid',
 }: BoardPageContentProps) {
-  // Use API tags (required now that we're database-driven)
-  // boardTagNames: actual tag names used for matching with assets
-  // boardTagDisplayMap: maps tag name to display name (uses displayName override if available)
-  const boardTagNames = boardTagsFromAPI?.map(t => t.name) || [];
+  // Internal tag selection state (horizontal pills manage their own state)
+  // Uses slugs for internal state to match asset.tags
+  const [internalSelectedTags, setInternalSelectedTags] = useState<string[]>([]);
+
+  // Board tag data - use slugs for matching, names/displayNames for display
+  const boardTagSlugs = boardTagsFromAPI?.map(t => t.slug) || [];
+
+  // Map slug -> display name for showing in UI
   const boardTagDisplayMap = useMemo(() => {
     const map: Record<string, string> = {};
     boardTagsFromAPI?.forEach(t => {
-      map[t.name] = t.displayName || t.name;
+      map[t.slug] = t.displayName || t.name;
     });
     return map;
   }, [boardTagsFromAPI]);
 
+  // Count assets per tag (using slugs for comparison)
+  const assetCountByTag = useMemo(() => {
+    const counts: Record<string, number> = {};
+    boardTagSlugs.forEach(slug => {
+      counts[slug] = assets.filter(asset =>
+        asset.tags.some(t => t.toLowerCase() === slug.toLowerCase())
+      ).length;
+    });
+    return counts;
+  }, [assets, boardTagSlugs]);
+
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'stack'>(defaultView);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
-  // Use all board tags if selectedTags is empty (default state)
-  const effectiveSelectedTags = selectedTags.length > 0 ? selectedTags : [...boardTagNames];
+  // Toggle section expansion
+  const toggleSection = (tag: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(tag)) {
+        next.delete(tag);
+      } else {
+        next.add(tag);
+      }
+      return next;
+    });
+  };
 
-  // Group assets by their tags that match board tags
+  // Use internal selected tags, default to all if empty
+  const effectiveSelectedTags = internalSelectedTags.length > 0 ? internalSelectedTags : [...boardTagSlugs];
+
+  // Toggle a tag in the pills
+  const toggleTag = (tagName: string) => {
+    if (internalSelectedTags.length === 0) {
+      // Currently showing all - switch to just this one
+      setInternalSelectedTags([tagName]);
+    } else if (internalSelectedTags.includes(tagName)) {
+      // Remove this tag
+      const newTags = internalSelectedTags.filter(t => t !== tagName);
+      setInternalSelectedTags(newTags); // If empty, will show all
+    } else {
+      // Add this tag
+      setInternalSelectedTags([...internalSelectedTags, tagName]);
+    }
+  };
+
+  // Check if a tag is active
+  const isTagActive = (tagName: string) => {
+    if (internalSelectedTags.length === 0) return true; // All selected
+    return internalSelectedTags.includes(tagName);
+  };
+
+  // Group assets by their tags that match board tags (using slugs)
   const assetsByTag = useMemo(() => {
     const grouped: Record<string, Asset[]> = {};
-
-    // Initialize all board tags with empty arrays (keyed by actual tag name)
-    boardTagNames.forEach(tag => {
-      grouped[tag] = [];
+    boardTagSlugs.forEach(slug => {
+      grouped[slug] = [];
     });
-
-    // Group assets by their tags
     assets.forEach(asset => {
       asset.tags.forEach(assetTag => {
-        // Check if this asset tag matches any board tag (case-insensitive)
-        const matchingBoardTag = boardTagNames.find(
-          bt => bt.toLowerCase() === assetTag.toLowerCase()
+        const matchingBoardSlug = boardTagSlugs.find(
+          slug => slug.toLowerCase() === assetTag.toLowerCase()
         );
-        if (matchingBoardTag && grouped[matchingBoardTag]) {
-          // Avoid duplicates
-          if (!grouped[matchingBoardTag].some(a => a.id === asset.id)) {
-            grouped[matchingBoardTag].push(asset);
+        if (matchingBoardSlug && grouped[matchingBoardSlug]) {
+          if (!grouped[matchingBoardSlug].some(a => a.id === asset.id)) {
+            grouped[matchingBoardSlug].push(asset);
           }
         }
       });
     });
-
     return grouped;
-  }, [assets, boardTagNames]);
+  }, [assets, boardTagSlugs]);
 
-  // Sort assets based on dropdown selection
+  // Sort assets
   const sortAssets = (assetsToSort: Asset[]): Asset[] => {
     return [...assetsToSort].sort((a, b) => {
       switch (sortBy) {
         case 'name':
           return a.title.localeCompare(b.title);
         default:
-          return 0; // Keep original order for 'newest'
+          return 0;
       }
     });
   };
 
-  // Stack view row component - v3 design with TYPE badge
-  const StackRow = ({ asset }: { asset: Asset }) => {
-    const hubColor = getHubColor(asset.hub);
-    const typeConfig = getTypeConfig(asset.type);
-    const formatLabel = getFormatLabel(asset.format);
-
-    return (
-      <Link
-        href={`/library/asset/${asset.slug}`}
-        className="flex items-center bg-white border rounded-lg transition-all hover:shadow-md group"
-        style={{
-          borderColor: 'var(--card-border)',
-          padding: '18px 24px',
-          borderLeft: `4px solid ${hubColor}`,
-          gap: '16px',
-        }}
-      >
-        {/* Type Badge with Icon */}
-        <span
-          className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-md text-[11px] font-semibold uppercase tracking-wide"
-          style={{
-            padding: '5px 10px',
-            backgroundColor: typeConfig.bg,
-            color: typeConfig.color,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span className="text-xs">{typeConfig.icon}</span>
-          {typeConfig.label}
-        </span>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <h4
-            className="font-semibold line-clamp-1"
-            style={{ fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px' }}
-          >
-            {asset.title}
-          </h4>
-          {asset.description && (
-            <p
-              className="line-clamp-1"
-              style={{ fontSize: '13px', color: 'var(--text-secondary)' }}
-            >
-              {asset.description}
-            </p>
-          )}
-        </div>
-
-        {/* Format Label - Plain gray text, NO icon */}
-        <span
-          className="flex-shrink-0"
-          style={{ fontSize: '13px', fontWeight: 500, color: '#9CA3AF' }}
-        >
-          {formatLabel}
-        </span>
-
-        {/* View Action - appears on hover */}
-        <span
-          className="flex-shrink-0 text-[13px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ color: hubColor }}
-        >
-          View →
-        </span>
-      </Link>
-    );
-  };
-
-  // Get visible sections based on selected tags
-  const visibleTags = boardTagNames.filter(tag => effectiveSelectedTags.includes(tag));
-
-  // Check if any section has assets
+  // Get visible sections based on selected tags (using slugs)
+  const visibleSlugs = boardTagSlugs.filter(slug => effectiveSelectedTags.includes(slug));
   const hasAnyAssets = assets.length > 0;
 
   return (
     <>
-      {/* Board Header with Controls */}
+      {/* Sticky Header Container */}
       <div
-        className="flex items-center justify-between"
-        style={{ marginBottom: '28px' }}
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 40,
+          background: '#F8FAFC',
+          marginLeft: '-24px',
+          marginRight: '-24px',
+          paddingLeft: '24px',
+          paddingRight: '24px',
+          marginTop: '-24px',
+          paddingTop: '24px',
+        }}
       >
+        {/* Horizontal Pills Navigation - Option A from design system */}
+        {boardTagSlugs.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 0 20px',
+              borderBottom: '1px solid #E2E8F0',
+              flexWrap: 'wrap',
+            }}
+          >
+          {/* All pill */}
+          <button
+            onClick={() => setInternalSelectedTags([])}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              background: internalSelectedTags.length === 0 ? board.color : '#F1F5F9',
+              color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
+            }}
+          >
+            All
+            <span
+              style={{
+                fontSize: '11px',
+                padding: '2px 6px',
+                borderRadius: '10px',
+                background: internalSelectedTags.length === 0 ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
+                color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
+              }}
+            >
+              {assets.length}
+            </span>
+          </button>
+
+          {/* Tag pills */}
+          {boardTagSlugs.map(slug => {
+            const isActive = isTagActive(slug) && internalSelectedTags.length > 0;
+            const count = assetCountByTag[slug] || 0;
+
+            return (
+              <button
+                key={slug}
+                onClick={() => toggleTag(slug)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: isActive ? board.color : '#F1F5F9',
+                  color: isActive ? 'white' : '#64748B',
+                }}
+              >
+                {boardTagDisplayMap[slug] || slug}
+                <span
+                  style={{
+                    fontSize: '11px',
+                    padding: '2px 6px',
+                    borderRadius: '10px',
+                    background: isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
+                    color: isActive ? 'white' : '#64748B',
+                  }}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+          </div>
+        )}
+
+        {/* Board Header with Controls */}
+        <div
+          className="flex items-center justify-between"
+          style={{ padding: '16px 0 20px' }}
+        >
         {/* Left: Board Title */}
         <div className="flex items-center gap-3">
           <span
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: board.color }}
           />
-          <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <h1 className="text-xl font-bold" style={{ color: '#0F172A' }}>
             {board.name}
           </h1>
           <span
             className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-muted)' }}
+            style={{ backgroundColor: '#F1F5F9', color: '#64748B' }}
           >
             {assets.length} items
           </span>
@@ -217,14 +291,15 @@ export function BoardPageContent({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortOption)}
             style={{
-              padding: '7px 32px 7px 12px',
-              border: '1px solid var(--card-border)',
-              borderRadius: '6px',
+              padding: '8px 32px 8px 12px',
+              border: '1px solid #E2E8F0',
+              borderRadius: '8px',
               fontSize: '13px',
               fontFamily: 'inherit',
-              background: "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 10px center",
+              background: "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 10px center",
               cursor: 'pointer',
               appearance: 'none',
+              color: '#0F172A',
             }}
           >
             <option value="newest">Newest</option>
@@ -235,8 +310,8 @@ export function BoardPageContent({
           <div
             className="flex"
             style={{
-              border: '1px solid var(--card-border)',
-              borderRadius: '6px',
+              border: '1px solid #E2E8F0',
+              borderRadius: '8px',
               overflow: 'hidden',
             }}
           >
@@ -244,8 +319,8 @@ export function BoardPageContent({
             <button
               onClick={() => setViewMode('grid')}
               style={{
-                padding: '7px 10px',
-                background: viewMode === 'grid' ? 'var(--bg-page)' : 'var(--card-bg)',
+                padding: '8px 12px',
+                background: viewMode === 'grid' ? '#F1F5F9' : 'white',
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
@@ -259,7 +334,7 @@ export function BoardPageContent({
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={viewMode === 'grid' ? 'var(--text-primary)' : 'var(--text-muted)'}
+                stroke={viewMode === 'grid' ? '#0F172A' : '#94A3B8'}
                 strokeWidth="2"
               >
                 <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -269,27 +344,27 @@ export function BoardPageContent({
               </svg>
             </button>
 
-            {/* Stack View Button */}
+            {/* Stack/List View Button */}
             <button
               onClick={() => setViewMode('stack')}
               style={{
-                padding: '7px 10px',
-                background: viewMode === 'stack' ? 'var(--bg-page)' : 'var(--card-bg)',
+                padding: '8px 12px',
+                background: viewMode === 'stack' ? '#F1F5F9' : 'white',
                 border: 'none',
-                borderLeft: '1px solid var(--card-border)',
+                borderLeft: '1px solid #E2E8F0',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              title="Stack view"
+              title="List view"
             >
               <svg
                 width="16"
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={viewMode === 'stack' ? 'var(--text-primary)' : 'var(--text-muted)'}
+                stroke={viewMode === 'stack' ? '#0F172A' : '#94A3B8'}
                 strokeWidth="2"
               >
                 <line x1="3" y1="6" x2="21" y2="6" />
@@ -299,26 +374,28 @@ export function BoardPageContent({
             </button>
           </div>
         </div>
+        </div>
       </div>
 
-      {/* Tag-based Sections - Dynamic visibility based on selected filters */}
+      {/* Tag-based Sections */}
       {hasAnyAssets ? (
         <>
-          {visibleTags.map((tag, index) => {
-            const tagAssets = sortAssets(assetsByTag[tag] || []);
-
-            // Only render section if it has assets
+          {visibleSlugs.map((slug, index) => {
+            const tagAssets = sortAssets(assetsByTag[slug] || []);
             if (tagAssets.length === 0) return null;
 
-            const isFirstSection = index === 0 || visibleTags.slice(0, index).every(t => (assetsByTag[t] || []).length === 0);
+            const isFirstSection = index === 0 || visibleSlugs.slice(0, index).every(s => (assetsByTag[s] || []).length === 0);
+
+            // For first section in grid view, show hero cards for first 2 items
+            const heroAssets = isFirstSection && viewMode === 'grid' ? tagAssets.slice(0, 2) : [];
+            const regularAssets = isFirstSection && viewMode === 'grid' ? tagAssets.slice(2) : tagAssets;
 
             return (
-              <section key={tag} style={{ marginBottom: '32px' }}>
-                {/* Divider line before section (except first) */}
+              <section key={slug} style={{ marginBottom: '32px' }}>
                 {!isFirstSection && (
                   <div
                     style={{
-                      borderTop: '1px solid var(--card-border)',
+                      borderTop: '1px solid #E2E8F0',
                       marginBottom: '24px',
                     }}
                   />
@@ -327,27 +404,180 @@ export function BoardPageContent({
                   style={{
                     fontSize: '15px',
                     fontWeight: 600,
-                    color: 'var(--text-primary)',
+                    color: '#0F172A',
                     marginBottom: '16px',
                   }}
                 >
-                  {boardTagDisplayMap[tag] || tag}
+                  {boardTagDisplayMap[slug] || slug}
                 </h3>
-                {viewMode === 'grid' ? (
-                  <div className="card-grid">
-                    {tagAssets.map(asset => (
-                      <AssetCard
+
+                {/* Hero Cards for first section */}
+                {heroAssets.length > 0 && (
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(2, 1fr)',
+                      gap: '20px',
+                      marginBottom: regularAssets.length > 0 ? '20px' : 0,
+                    }}
+                  >
+                    {heroAssets.map(asset => (
+                      <HeroCard
                         key={asset.id}
                         {...asset}
                       />
                     ))}
                   </div>
+                )}
+
+                {/* Regular Cards */}
+                {viewMode === 'grid' ? (
+                  regularAssets.length > 0 && (() => {
+                    const isExpanded = expandedSections.has(slug);
+                    const visibleAssets = isExpanded ? regularAssets : regularAssets.slice(0, INITIAL_GRID_COUNT);
+                    const hiddenCount = regularAssets.length - INITIAL_GRID_COUNT;
+                    const showExpandButton = hiddenCount > 0;
+
+                    return (
+                      <>
+                        <div className="card-grid">
+                          {visibleAssets.map(asset => (
+                            <AssetCard
+                              key={asset.id}
+                              {...asset}
+                            />
+                          ))}
+                        </div>
+                        {showExpandButton && (
+                          <button
+                            onClick={() => toggleSection(slug)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              padding: '12px 20px',
+                              marginTop: '16px',
+                              background: 'white',
+                              border: '1px solid #E2E8F0',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              fontWeight: 500,
+                              color: '#64748B',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F8FAFC';
+                              e.currentTarget.style.borderColor = '#CBD5E1';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'white';
+                              e.currentTarget.style.borderColor = '#E2E8F0';
+                            }}
+                          >
+                            {isExpanded ? (
+                              <>
+                                Show less
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="18 15 12 9 6 15" />
+                                </svg>
+                              </>
+                            ) : (
+                              <>
+                                Show {hiddenCount} more
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()
                 ) : (
-                  <div className="flex flex-col" style={{ gap: '8px' }}>
-                    {tagAssets.map(asset => (
-                      <StackRow key={asset.id} asset={asset} />
-                    ))}
-                  </div>
+                  (() => {
+                    const isExpanded = expandedSections.has(slug);
+                    const visibleAssets = isExpanded ? tagAssets : tagAssets.slice(0, INITIAL_LIST_COUNT);
+                    const hiddenCount = tagAssets.length - INITIAL_LIST_COUNT;
+                    const showExpandButton = hiddenCount > 0;
+
+                    return (
+                      <>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '12px',
+                            maxWidth: '900px',
+                          }}
+                        >
+                          {visibleAssets.map(asset => (
+                            <CompactCard
+                              key={asset.id}
+                              id={asset.id}
+                              slug={asset.slug}
+                              title={asset.title}
+                              shortDescription={asset.shortDescription}
+                              hub={asset.hub}
+                              format={asset.format}
+                              type={asset.type}
+                              publishDate={asset.publishDate}
+                            />
+                          ))}
+                        </div>
+                        {showExpandButton && (
+                          <button
+                            onClick={() => toggleSection(slug)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              maxWidth: '900px',
+                              padding: '12px 20px',
+                              marginTop: '12px',
+                              background: 'white',
+                              border: '1px solid #E2E8F0',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              fontWeight: 500,
+                              color: '#64748B',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F8FAFC';
+                              e.currentTarget.style.borderColor = '#CBD5E1';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'white';
+                              e.currentTarget.style.borderColor = '#E2E8F0';
+                            }}
+                          >
+                            {isExpanded ? (
+                              <>
+                                Show less
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="18 15 12 9 6 15" />
+                                </svg>
+                              </>
+                            ) : (
+                              <>
+                                Show {hiddenCount} more
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()
                 )}
               </section>
             );
@@ -357,23 +587,21 @@ export function BoardPageContent({
           {(() => {
             const untaggedAssets = assets.filter(asset => {
               const hasMatchingTag = asset.tags.some(assetTag =>
-                boardTagNames.some(bt => bt.toLowerCase() === assetTag.toLowerCase())
+                boardTagSlugs.some(slug => slug.toLowerCase() === assetTag.toLowerCase())
               );
               return !hasMatchingTag;
             });
 
             if (untaggedAssets.length === 0) return null;
 
-            // Check if there are any previous sections with content
-            const hasPreviousSections = visibleTags.some(t => (assetsByTag[t] || []).length > 0);
+            const hasPreviousSections = visibleSlugs.some(s => (assetsByTag[s] || []).length > 0);
 
             return (
               <section style={{ marginBottom: '32px' }}>
-                {/* Divider line before section (if there are previous sections) */}
                 {hasPreviousSections && (
                   <div
                     style={{
-                      borderTop: '1px solid var(--card-border)',
+                      borderTop: '1px solid #E2E8F0',
                       marginBottom: '24px',
                     }}
                   />
@@ -382,27 +610,161 @@ export function BoardPageContent({
                   style={{
                     fontSize: '15px',
                     fontWeight: 600,
-                    color: 'var(--text-primary)',
+                    color: '#0F172A',
                     marginBottom: '16px',
                   }}
                 >
                   Other
                 </h3>
                 {viewMode === 'grid' ? (
-                  <div className="card-grid">
-                    {sortAssets(untaggedAssets).map(asset => (
-                      <AssetCard
-                        key={asset.id}
-                        {...asset}
-                      />
-                    ))}
-                  </div>
+                  (() => {
+                    const sortedAssets = sortAssets(untaggedAssets);
+                    const isExpanded = expandedSections.has('__other__');
+                    const visibleAssets = isExpanded ? sortedAssets : sortedAssets.slice(0, INITIAL_GRID_COUNT);
+                    const hiddenCount = sortedAssets.length - INITIAL_GRID_COUNT;
+                    const showExpandButton = hiddenCount > 0;
+
+                    return (
+                      <>
+                        <div className="card-grid">
+                          {visibleAssets.map(asset => (
+                            <AssetCard
+                              key={asset.id}
+                              {...asset}
+                            />
+                          ))}
+                        </div>
+                        {showExpandButton && (
+                          <button
+                            onClick={() => toggleSection('__other__')}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              padding: '12px 20px',
+                              marginTop: '16px',
+                              background: 'white',
+                              border: '1px solid #E2E8F0',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              fontWeight: 500,
+                              color: '#64748B',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F8FAFC';
+                              e.currentTarget.style.borderColor = '#CBD5E1';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'white';
+                              e.currentTarget.style.borderColor = '#E2E8F0';
+                            }}
+                          >
+                            {isExpanded ? (
+                              <>
+                                Show less
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="18 15 12 9 6 15" />
+                                </svg>
+                              </>
+                            ) : (
+                              <>
+                                Show {hiddenCount} more
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()
                 ) : (
-                  <div className="flex flex-col" style={{ gap: '8px' }}>
-                    {sortAssets(untaggedAssets).map(asset => (
-                      <StackRow key={asset.id} asset={asset} />
-                    ))}
-                  </div>
+                  (() => {
+                    const sortedAssets = sortAssets(untaggedAssets);
+                    const isExpanded = expandedSections.has('__other__');
+                    const visibleAssets = isExpanded ? sortedAssets : sortedAssets.slice(0, INITIAL_LIST_COUNT);
+                    const hiddenCount = sortedAssets.length - INITIAL_LIST_COUNT;
+                    const showExpandButton = hiddenCount > 0;
+
+                    return (
+                      <>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '12px',
+                            maxWidth: '900px',
+                          }}
+                        >
+                          {visibleAssets.map(asset => (
+                            <CompactCard
+                              key={asset.id}
+                              id={asset.id}
+                              slug={asset.slug}
+                              title={asset.title}
+                              shortDescription={asset.shortDescription}
+                              hub={asset.hub}
+                              format={asset.format}
+                              type={asset.type}
+                              publishDate={asset.publishDate}
+                            />
+                          ))}
+                        </div>
+                        {showExpandButton && (
+                          <button
+                            onClick={() => toggleSection('__other__')}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              maxWidth: '900px',
+                              padding: '12px 20px',
+                              marginTop: '12px',
+                              background: 'white',
+                              border: '1px solid #E2E8F0',
+                              borderRadius: '8px',
+                              fontSize: '13px',
+                              fontWeight: 500,
+                              color: '#64748B',
+                              cursor: 'pointer',
+                              transition: 'all 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F8FAFC';
+                              e.currentTarget.style.borderColor = '#CBD5E1';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'white';
+                              e.currentTarget.style.borderColor = '#E2E8F0';
+                            }}
+                          >
+                            {isExpanded ? (
+                              <>
+                                Show less
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="18 15 12 9 6 15" />
+                                </svg>
+                              </>
+                            ) : (
+                              <>
+                                Show {hiddenCount} more
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()
                 )}
               </section>
             );
@@ -411,11 +773,11 @@ export function BoardPageContent({
       ) : (
         <div
           className="rounded-xl p-12 text-center"
-          style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
+          style={{ backgroundColor: 'white', border: '1px solid #E2E8F0' }}
         >
           <svg
             className="w-16 h-16 mx-auto mb-4"
-            style={{ color: 'var(--text-muted)' }}
+            style={{ color: '#94A3B8' }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -427,12 +789,11 @@ export function BoardPageContent({
               d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
             />
           </svg>
-          <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+          <h3 className="text-lg font-medium mb-2" style={{ color: '#0F172A' }}>
             No {board.name.toLowerCase()} resources yet
           </h3>
-          <p className="mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
+          <p className="mb-6 max-w-md mx-auto" style={{ color: '#64748B' }}>
             Resources tagged with {board.name} will appear here.
-            Use the filters to narrow down your search.
           </p>
           <a
             href="/admin/upload"

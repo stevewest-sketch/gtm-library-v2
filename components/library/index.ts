@@ -8,3 +8,4 @@ export { BoardPill } from './BoardPill';
 export { LibraryHomepageContent } from './LibraryHomepageContent';
 export { BoardPageContent } from './BoardPageContent';
 export { BoardPageWrapper } from './BoardPageWrapper';
+export { TagResultsContent } from './TagResultsContent';
