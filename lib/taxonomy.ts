@@ -261,6 +261,13 @@ export const ALL_TYPES = {
     color: '#F59E0B',
     bg: '#FEF3C7',
   },
+  internal: {
+    label: 'Internal',
+    description: 'Internal resources and documentation',
+    icon: '🏢',
+    color: '#6366F1',
+    bg: '#E0E7FF',
+  },
   'internal-best-practice': {
     label: 'Internal Best Practice',
     description: 'Internal process examples',
@@ -277,6 +284,13 @@ export const ALL_TYPES = {
     bg: '#EDE9FE',
   },
   // M
+  'meeting-asset': {
+    label: 'Meeting Asset',
+    description: 'Meeting examples and resources',
+    icon: '🎯',
+    color: '#14B8A6',
+    bg: '#CCFBF1',
+  },
   messaging: {
     label: 'Messaging',
     description: 'Positioning/messaging docs',
@@ -378,6 +392,13 @@ export const ALL_TYPES = {
     icon: '📋',
     color: '#8B5CF6',
     bg: '#EDE9FE',
+  },
+  tool: {
+    label: 'Tool',
+    description: 'Interactive tools and utilities',
+    icon: '🛠️',
+    color: '#06B6D4',
+    bg: '#CFFAFE',
   },
   // V
   'value-realization': {

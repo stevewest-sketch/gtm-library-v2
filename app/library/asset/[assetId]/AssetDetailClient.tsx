@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Helper to get embed URL for various document/content types
 function getPreviewEmbedUrl(url: string): { embedUrl: string; type: 'gslides' | 'gdocs' | 'gsheets' | 'gdrive' | 'figma' | 'canva' | 'miro' | 'pdf' | null; label: string } {
@@ -193,6 +193,47 @@ export function AssetDetailClient({
   const [takeawaysExpanded, setTakeawaysExpanded] = useState(true);
   const [howToExpanded, setHowToExpanded] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const hasTrackedView = useRef(false);
+
+  // Track view on page load (once per session)
+  useEffect(() => {
+    if (hasTrackedView.current) return;
+    hasTrackedView.current = true;
+
+    const trackView = async () => {
+      try {
+        await fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            assetId: asset.id,
+            action: 'view',
+            source: 'direct',
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to track view:', error);
+      }
+    };
+
+    trackView();
+  }, [asset.id]);
+
+  // Track share action
+  const trackShare = useCallback(async () => {
+    try {
+      await fetch('/api/analytics/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assetId: asset.id,
+          action: 'share',
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to track share:', error);
+    }
+  }, [asset.id]);
 
   // Get embeddable video URL - check videoUrl first, then primaryLink for video content
   // Pass asset.format to prevent document types (PDFs, etc.) from being treated as videos
@@ -211,11 +252,15 @@ export function AssetDetailClient({
   // The copyable link should be the actual asset URL (primaryLink), not the internal website URL
   const copyableAssetLink = asset.primaryLink || shareableLink;
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string, isShareAction = true) => {
     try {
       await navigator.clipboard.writeText(text);
       setShowCopyToast(true);
       setTimeout(() => setShowCopyToast(false), 2000);
+      // Track share when copying link
+      if (isShareAction) {
+        trackShare();
+      }
     } catch (err) {
       console.error('Failed to copy:', err);
     }

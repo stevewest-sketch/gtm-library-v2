@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Complete Design System & Implementation Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           GTM LIBRARY - COMPLETE DESIGN SYSTEM
+           Consolidated from:
+           - visual-enhancements-mocks.html (Option A Card, Option A Nav, Compact Card)
+           - comprehensive-design-mocks.html (Homepage, Responsive Cards, Asset Detail)
+           - search-and-design-system.html (Search, Tag Results, Design System)
+           ======================================== */
+
+        :root {
+            /* Hub Colors */
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-hover: #FFFBEB;
+            --coe-accent: #B45309;
+
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-hover: #F5F3FF;
+            --content-accent: #6D28D9;
+
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-hover: #ECFDF5;
+            --enablement-accent: #047857;
+
+            /* Board Colors */
+            --product-primary: #3B82F6;
+            --competitive-primary: #EF4444;
+            --sales-primary: #0EA5E9;
+            --csm-primary: #8B5CF6;
+            --demo-primary: #06B6D4;
+            --proof-primary: #84CC16;
+
+            /* Type Colors */
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-tool: #06B6D4;
+            --type-tool-bg: #CFFAFE;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-training: #10B981;
+            --type-training-bg: #D1FAE5;
+            --type-meeting: #F59E0B;
+            --type-meeting-bg: #FEF3C7;
+
+            /* Neutrals */
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+
+            --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --sidebar-width: 240px;
+            --header-height: 64px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           DOCUMENTATION NAVIGATION
+           ======================================== */
+        .doc-nav-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+
+        .doc-nav-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 16px;
+        }
+
+        .doc-nav-btn {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .doc-nav-btn:hover { background: rgba(255,255,255,0.2); }
+        .doc-nav-btn.active { background: var(--enablement-primary); border-color: var(--enablement-primary); }
+
+        /* ========================================
+           SECTIONS
+           ======================================== */
+        .section {
+            display: none;
+            padding: 80px 40px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section.active { display: block; }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--content-primary);
+            border-radius: 2px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .section-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 700px;
+        }
+
+        .subsection { margin-bottom: 48px; }
+
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%);
+            border: 1px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            border-color: #86EFAC;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border-color: #FCD34D;
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+
+        .info-box.success h4 { color: #166534; }
+        .info-box.warning h4 { color: #92400E; }
+
+        .info-box ul {
+            margin: 0 0 0 20px;
+            font-size: 13px;
+            color: #1E3A8A;
+            line-height: 1.7;
+        }
+
+        .info-box.success ul { color: #166534; }
+        .info-box.warning ul { color: #92400E; }
+
+        .highlight {
+            background: rgba(140, 105, 240, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* ========================================
+           OPTION A CARD - Left Accent + Prominent Type
+           (From visual-enhancements-mocks.html)
+           ======================================== */
+        .card-enhanced-a {
+            height: 210px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-a:hover {
+            border-color: var(--content-primary);
+            box-shadow: 0 12px 32px -8px rgba(140, 105, 240, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Accent strip on left */
+        .card-enhanced-a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--content-primary);
+        }
+
+        .card-a-header {
+            padding: 18px 20px 0 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        /* Large prominent type badge */
+        .card-a-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--type-deck-bg);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--type-deck);
+        }
+
+        .card-a-type-icon { font-size: 12px; flex-shrink: 0; }
+
+        .card-a-type-text {
+            white-space: nowrap;
+        }
+
+        /* Format as subtle text only */
+        .card-a-format {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .card-a-body {
+            padding: 14px 20px 16px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-a-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-a-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-a-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 12px 24px;
+            border-top: 1px solid var(--border-light);
+            background: linear-gradient(to right, rgba(140, 105, 240, 0.03), transparent);
+        }
+
+        .card-a-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-a-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--content-primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-a:hover .card-a-action {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ========================================
+           COMPACT CARD - Dense Row View
+           (From visual-enhancements-mocks.html)
+           ======================================== */
+        .card-enhanced-d {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .card-enhanced-d:hover {
+            border-color: var(--type-battlecard);
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.02), transparent);
+        }
+
+        .card-enhanced-d::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            background: var(--type-battlecard);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .card-d-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .card-d-type-col {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding-left: 8px;
+        }
+
+        .card-d-type-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--type-battlecard-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .card-d-type-label {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--type-battlecard);
+        }
+
+        .card-d-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-d-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+
+        .card-d-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-d-action {
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--type-battlecard);
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .card-enhanced-d:hover .card-d-action { opacity: 1; }
+
+        /* ========================================
+           OPTION A NAVIGATION - Horizontal Pills (~50px)
+           (From visual-enhancements-mocks.html)
+           ======================================== */
+        .nav-enhanced-a {
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-a-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-a-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .nav-a-pill {
+            padding: 6px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-a-pill:hover {
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .nav-a-pill.active {
+            background: var(--content-light);
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .nav-a-pill-count {
+            font-size: 11px;
+            background: rgba(140, 105, 240, 0.15);
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        .nav-a-pill.active .nav-a-pill-count {
+            background: rgba(140, 105, 240, 0.25);
+        }
+
+        /* ========================================
+           PAGE MOCK CONTAINER
+           ======================================== */
+        .page-mock {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .mock-header {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 16px;
+        }
+
+        .mock-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--enablement-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .mock-brand {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* PROMINENT CENTERED SEARCH */
+        .mock-search-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 0 40px;
+        }
+
+        .mock-search {
+            width: 100%;
+            max-width: 640px;
+            position: relative;
+        }
+
+        .mock-search-input {
+            width: 100%;
+            padding: 12px 48px 12px 48px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            font-size: 15px;
+            color: white;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: var(--font);
+        }
+
+        .mock-search-input::placeholder { color: rgba(255,255,255,0.5); }
+
+        .mock-search-input:focus {
+            background: rgba(255,255,255,0.18);
+            border-color: var(--enablement-primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .mock-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .mock-search-kbd {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            font-family: var(--font-mono);
+        }
+
+        .mock-layout { display: flex; }
+
+        .mock-sidebar {
+            width: 220px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 16px 12px;
+            min-height: 500px;
+        }
+
+        .mock-sidebar-section { margin-bottom: 20px; }
+
+        .mock-sidebar-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 10px 6px;
+        }
+
+        .mock-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text);
+            text-decoration: none;
+            transition: background 0.15s ease;
+            cursor: pointer;
+        }
+
+        .mock-nav-item:hover { background: #F3F4F6; }
+        .mock-nav-item.active { background: var(--content-light); color: var(--content-primary); font-weight: 500; }
+
+        .mock-nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .mock-nav-count {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .mock-main {
+            flex: 1;
+            padding: 24px 28px;
+            background: var(--bg);
+        }
+
+        /* Card Grids */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1200px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+
+        .card-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .compact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 700px;
+        }
+
+        /* ========================================
+           HOMEPAGE HERO
+           (From comprehensive-design-mocks.html)
+           ======================================== */
+        .home-hero {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .home-hero-content { position: relative; z-index: 1; }
+
+        .home-hero h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .home-hero p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 24px;
+            max-width: 500px;
+        }
+
+        .home-hero-stats {
+            display: flex;
+            gap: 32px;
+        }
+
+        .home-stat { display: flex; flex-direction: column; }
+
+        .home-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .home-stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .cms-indicator {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(59, 130, 246, 0.3);
+            color: #93C5FD;
+            font-size: 9px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        /* Boards Grid */
+        .boards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .board-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .board-card:hover {
+            border-color: var(--content-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .board-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .board-card-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .board-card-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Quick Access */
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .quick-card:hover {
+            border-color: var(--content-primary);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .quick-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .quick-card h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .quick-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Featured Section */
+        .featured-section { margin-bottom: 32px; }
+
+        .featured-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .featured-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .featured-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--content-primary);
+            cursor: pointer;
+        }
+
+        /* ========================================
+           BOARD PAGE HEADER
+           ======================================== */
+        .board-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .board-page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .board-page-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .board-page-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .board-page-count {
+            font-size: 14px;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .board-page-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .board-page-sort {
+            padding: 8px 32px 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+            cursor: pointer;
+            appearance: none;
+            font-family: var(--font);
+        }
+
+        .board-page-view {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .board-page-view-btn {
+            padding: 8px 12px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .board-page-view-btn.active {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ========================================
+           SEARCH DROPDOWN
+           (From search-and-design-system.html)
+           ======================================== */
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .search-section {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .search-section:last-child { border-bottom: none; }
+
+        .search-section-header {
+            padding: 12px 20px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .search-result {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .search-result:hover { background: var(--bg); }
+
+        .search-result-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-result-content { flex: 1; min-width: 0; }
+
+        .search-result-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-result-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .search-result-badge {
+            padding: 3px 8px;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .tag-icon {
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* ========================================
+           TAG RESULTS HEADER
+           (From search-and-design-system.html)
+           ======================================== */
+        .tag-results-header { margin-bottom: 28px; }
+
+        .tag-results-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--content-light);
+            border-radius: 24px;
+            margin-bottom: 16px;
+        }
+
+        .tag-results-badge-icon {
+            font-size: 14px;
+            color: var(--content-primary);
+        }
+
+        .tag-results-badge-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--content-primary);
+        }
+
+        .tag-results-badge-clear {
+            width: 18px;
+            height: 18px;
+            background: var(--content-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+
+        .tag-results-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .tag-results-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .related-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .related-tags-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+
+        .related-tag {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .related-tag:hover {
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .related-tag-hash { color: var(--text-muted); }
+
+        /* ========================================
+           DESIGN SYSTEM COMPONENTS
+           (From search-and-design-system.html)
+           ======================================== */
+        .ds-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .ds-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .color-swatch {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .color-swatch-preview { height: 56px; }
+
+        .color-swatch-info { padding: 12px 14px; background: var(--bg); }
+
+        .color-swatch-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .color-swatch-value {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .type-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .type-badge-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .type-slug {
+            font-size: 10px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .format-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 12px;
+            background: var(--bg);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .format-icon-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .format-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .format-color {
+            font-size: 10px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           IMPLEMENTATION PLAN
+           ======================================== */
+        .plan-phase {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .plan-phase-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .plan-phase-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--enablement-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .plan-phase-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .plan-tasks { margin-left: 40px; }
+
+        .plan-task {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .plan-task:last-child { border-bottom: none; }
+
+        .plan-task-check {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .plan-task-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .plan-task-file {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--content-primary);
+            background: var(--content-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Navigation -->
+    <nav class="doc-nav-fixed">
+        <span class="doc-nav-title">GTM Design System</span>
+        <button class="doc-nav-btn active" onclick="showSection('board')">Board Page</button>
+        <button class="doc-nav-btn" onclick="showSection('cards')">Cards</button>
+        <button class="doc-nav-btn" onclick="showSection('homepage')">Homepage</button>
+        <button class="doc-nav-btn" onclick="showSection('search')">Search</button>
+        <button class="doc-nav-btn" onclick="showSection('tag-results')">Tag Results</button>
+        <button class="doc-nav-btn" onclick="showSection('design-system')">Design System</button>
+        <button class="doc-nav-btn" onclick="showSection('implementation')">Implementation</button>
+    </nav>
+
+    <!-- ========================================
+         SECTION 1: FULL BOARD PAGE
+         Option A Card + Option A Nav
+         ======================================== -->
+    <section id="board" class="section active">
+        <div class="section-label">Board Page Layout</div>
+        <h1 class="section-title">Full Board Page with Horizontal Pills</h1>
+        <p class="section-desc">Complete board page layout using Option A cards (left accent + prominent type) and Option A navigation (horizontal pills ~50px height).</p>
+
+        <div class="page-mock">
+            <!-- Header with Prominent Search -->
+            <div class="mock-header">
+                <div class="mock-logo">G+</div>
+                <span class="mock-brand">GTM Library</span>
+                <div class="mock-search-container">
+                    <div class="mock-search">
+                        <svg class="mock-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" class="mock-search-input" placeholder="Search boards, tags, content...">
+                        <span class="mock-search-kbd">⌘K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mock-layout">
+                <!-- Sidebar -->
+                <div class="mock-sidebar">
+                    <div class="mock-sidebar-section">
+                        <div class="mock-nav-item">
+                            <span style="font-size: 14px;">🏠</span>
+                            Home
+                        </div>
+                    </div>
+                    <div class="mock-sidebar-section">
+                        <div class="mock-sidebar-title">Boards</div>
+                        <div class="mock-nav-item active">
+                            <span class="mock-nav-dot" style="background: #F59E0B;"></span>
+                            CoE
+                            <span class="mock-nav-count">60</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #8C69F0;"></span>
+                            Content Types
+                            <span class="mock-nav-count">135</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #10B981;"></span>
+                            Enablement
+                            <span class="mock-nav-count">52</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #EF4444;"></span>
+                            Competitive
+                            <span class="mock-nav-count">26</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #0EA5E9;"></span>
+                            Sales
+                            <span class="mock-nav-count">31</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div style="flex: 1; display: flex; flex-direction: column;">
+                    <!-- Option A: Horizontal Pills Navigation (~50px) -->
+                    <div class="nav-enhanced-a">
+                        <div class="nav-a-row">
+                            <span class="nav-a-label">Sections</span>
+                            <span class="nav-a-pill active">
+                                CoE Essentials
+                                <span class="nav-a-pill-count">12</span>
+                            </span>
+                            <span class="nav-a-pill active">
+                                Meeting Examples
+                                <span class="nav-a-pill-count">8</span>
+                            </span>
+                            <span class="nav-a-pill active">
+                                Internal BP
+                                <span class="nav-a-pill-count">15</span>
+                            </span>
+                            <span class="nav-a-pill">
+                                Dashboards
+                                <span class="nav-a-pill-count">6</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mock-main">
+                        <!-- Board Header -->
+                        <div class="board-page-header">
+                            <div class="board-page-title">
+                                <span class="board-page-dot" style="background: #F59E0B;"></span>
+                                <span class="board-page-name">CoE</span>
+                                <span class="board-page-count">41 items</span>
+                            </div>
+                            <div class="board-page-controls">
+                                <select class="board-page-sort">
+                                    <option>Newest</option>
+                                    <option>A-Z</option>
+                                </select>
+                                <div class="board-page-view">
+                                    <button class="board-page-view-btn active">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                                            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                                            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                                            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                                        </svg>
+                                    </button>
+                                    <button class="board-page-view-btn">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Option A Cards Grid -->
+                        <div class="card-grid">
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #FEF3C7; color: #B45309;">
+                                        <span class="card-a-type-icon">🎯</span>
+                                        <span class="card-a-type-text">Customer Meeting</span>
+                                    </span>
+                                    <span class="card-a-format">SLIDES</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Enterprise QBR Template</h4>
+                                    <p class="card-a-desc">Quarterly business review deck for strategic accounts</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 28, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #CFFAFE; color: #0E7490;">
+                                        <span class="card-a-type-icon">📊</span>
+                                        <span class="card-a-type-text">Dashboard</span>
+                                    </span>
+                                    <span class="card-a-format">SPREADSHEET</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Weekly Performance Tracker</h4>
+                                    <p class="card-a-desc">Track key metrics across all customer segments</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 27, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #DBEAFE; color: #1D4ED8;">
+                                        <span class="card-a-type-icon">📘</span>
+                                        <span class="card-a-type-text">Guide</span>
+                                    </span>
+                                    <span class="card-a-format">DOCUMENT</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Customer Onboarding Playbook</h4>
+                                    <p class="card-a-desc">Step-by-step guide for new customer success</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 26, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #D1FAE5; color: #047857;">
+                                        <span class="card-a-type-icon">✅</span>
+                                        <span class="card-a-type-text">Best Practice</span>
+                                    </span>
+                                    <span class="card-a-format">DOCUMENT</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Discovery Call Best Practices</h4>
+                                    <p class="card-a-desc">Proven techniques for effective discovery calls</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 25, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #FFEDD5; color: #C2410C;">
+                                        <span class="card-a-type-icon">👥</span>
+                                        <span class="card-a-type-text">Prospect Meeting</span>
+                                    </span>
+                                    <span class="card-a-format">VIDEO</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">First Call Excellence Recording</h4>
+                                    <p class="card-a-desc">Example of a high-converting discovery call</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 20, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">Watch →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #EDE9FE; color: #7C3AED;">
+                                        <span class="card-a-type-icon">🏢</span>
+                                        <span class="card-a-type-text">Internal BP</span>
+                                    </span>
+                                    <span class="card-a-format">SLIDES</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Team Meeting Template</h4>
+                                    <p class="card-a-desc">Standard format for weekly team syncs</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 18, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #FEF3C7; color: #B45309;">
+                                        <span class="card-a-type-icon">💬</span>
+                                        <span class="card-a-type-text">Customer Quote</span>
+                                    </span>
+                                    <span class="card-a-format">DOCUMENT</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">ACME Corp Testimonial</h4>
+                                    <p class="card-a-desc">Customer success story from enterprise segment</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 15, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+
+                            <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #FCE7F3; color: #DB2777;">
+                                        <span class="card-a-type-icon">💡</span>
+                                        <span class="card-a-type-text">Process Innovation</span>
+                                    </span>
+                                    <span class="card-a-format">GUIDE</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Deal Acceleration Framework</h4>
+                                    <p class="card-a-desc">New process for speeding up enterprise sales cycles</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                                    <span class="card-a-date">Dec 10, 2024</span>
+                                    <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 2: CARD VARIATIONS
+         ======================================== -->
+    <section id="cards" class="section">
+        <div class="section-label">Card Components</div>
+        <h1 class="section-title">Asset Card Designs</h1>
+        <p class="section-desc">Option A (left accent + prominent type) for grid view and Compact cards for dense list view.</p>
+
+        <div class="subsection">
+            <h3 class="subsection-title">Option A: Left Accent + Prominent Type Badge</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Height: 210px. Left 4px accent bar. Type badge shows full text (no truncation). Format as monospace text.</p>
+            <div class="card-grid-3">
+                <div class="card-enhanced-a">
+                    <div class="card-a-header">
+                        <span class="card-a-type">
+                            <span class="card-a-type-icon">📊</span>
+                            <span class="card-a-type-text">Deck</span>
+                        </span>
+                        <span class="card-a-format">SLIDES</span>
+                    </div>
+                    <div class="card-a-body">
+                        <h4 class="card-a-title">GTM Kickoff Presentation Q1 2025</h4>
+                        <p class="card-a-desc">Complete sales deck for quarterly planning sessions</p>
+                    </div>
+                    <div class="card-a-footer">
+                        <span class="card-a-date">Dec 28, 2024</span>
+                        <span class="card-a-action">View →</span>
+                    </div>
+                </div>
+
+                <div class="card-enhanced-a" style="--content-primary: #10B981;">
+                    <div class="card-a-header">
+                        <span class="card-a-type" style="background: #D1FAE5; color: #047857;">
+                            <span class="card-a-type-icon">🎓</span>
+                            <span class="card-a-type-text">Product Training</span>
+                        </span>
+                        <span class="card-a-format">VIDEO</span>
+                    </div>
+                    <div class="card-a-body">
+                        <h4 class="card-a-title">Sidekick Voice Deep Dive Training</h4>
+                        <p class="card-a-desc">Complete training on voice features</p>
+                    </div>
+                    <div class="card-a-footer" style="background: linear-gradient(to right, rgba(16, 185, 129, 0.03), transparent);">
+                        <span class="card-a-date">Dec 28, 2024</span>
+                        <span class="card-a-action" style="color: #10B981;">Watch →</span>
+                    </div>
+                </div>
+
+                <div class="card-enhanced-a" style="--content-primary: #EF4444;">
+                    <div class="card-a-header">
+                        <span class="card-a-type" style="background: #FEE2E2; color: #DC2626;">
+                            <span class="card-a-type-icon">⚔️</span>
+                            <span class="card-a-type-text">Battlecard</span>
+                        </span>
+                        <span class="card-a-format">PDF</span>
+                    </div>
+                    <div class="card-a-body">
+                        <h4 class="card-a-title">Zendesk Competitive Battlecard</h4>
+                        <p class="card-a-desc">Positioning against Zendesk AI offerings</p>
+                    </div>
+                    <div class="card-a-footer" style="background: linear-gradient(to right, rgba(239, 68, 68, 0.03), transparent);">
+                        <span class="card-a-date">Dec 26, 2024</span>
+                        <span class="card-a-action" style="color: #EF4444;">View →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subsection">
+            <h3 class="subsection-title">Compact Card: Dense Row View</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">For list view. Icon + type label column. Action appears on hover.</p>
+            <div class="compact-grid">
+                <div class="card-enhanced-d">
+                    <div class="card-d-row">
+                        <div class="card-d-type-col">
+                            <span class="card-d-type-icon">⚔️</span>
+                            <span class="card-d-type-label">Battlecard</span>
+                        </div>
+                        <div class="card-d-content">
+                            <h4 class="card-d-title">Zendesk Competitive Battlecard</h4>
+                            <div class="card-d-meta">
+                                <span>Document</span>
+                                <span>Dec 28</span>
+                            </div>
+                        </div>
+                        <span class="card-d-action">View →</span>
+                    </div>
+                </div>
+
+                <div class="card-enhanced-d" style="--type-battlecard: #06B6D4; --type-battlecard-bg: #CFFAFE;">
+                    <div class="card-d-row">
+                        <div class="card-d-type-col">
+                            <span class="card-d-type-icon">🛠️</span>
+                            <span class="card-d-type-label">Tool</span>
+                        </div>
+                        <div class="card-d-content">
+                            <h4 class="card-d-title">ROI Calculator - Enterprise</h4>
+                            <div class="card-d-meta">
+                                <span>Spreadsheet</span>
+                                <span>Dec 15</span>
+                            </div>
+                        </div>
+                        <span class="card-d-action" style="color: #06B6D4;">View →</span>
+                    </div>
+                </div>
+
+                <div class="card-enhanced-d" style="--type-battlecard: #8C69F0; --type-battlecard-bg: #EDE9FE;">
+                    <div class="card-d-row">
+                        <div class="card-d-type-col">
+                            <span class="card-d-type-icon">📊</span>
+                            <span class="card-d-type-label">Deck</span>
+                        </div>
+                        <div class="card-d-content">
+                            <h4 class="card-d-title">Q4 Product Roadmap Presentation</h4>
+                            <div class="card-d-meta">
+                                <span>Slides</span>
+                                <span>Dec 10</span>
+                            </div>
+                        </div>
+                        <span class="card-d-action" style="color: #8C69F0;">View →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 3: HOMEPAGE WITH CMS
+         ======================================== -->
+    <section id="homepage" class="section">
+        <div class="section-label">Homepage</div>
+        <h1 class="section-title">Homepage with CMS Management</h1>
+        <p class="section-desc">Landing page with hero, hub cards, quick access boards, and featured content. All sections managed via homepageConfig table.</p>
+
+        <div class="page-mock">
+            <div class="mock-header">
+                <div class="mock-logo">G+</div>
+                <span class="mock-brand">GTM Library</span>
+                <div class="mock-search-container">
+                    <div class="mock-search">
+                        <svg class="mock-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" class="mock-search-input" placeholder="Search boards, tags, content...">
+                        <span class="mock-search-kbd">⌘K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mock-layout">
+                <div class="mock-sidebar">
+                    <div class="mock-sidebar-section">
+                        <div class="mock-nav-item active">
+                            <span style="font-size: 14px;">🏠</span>
+                            Home
+                        </div>
+                    </div>
+                    <div class="mock-sidebar-section">
+                        <div class="mock-sidebar-title">Boards</div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #F59E0B;"></span>
+                            CoE
+                            <span class="mock-nav-count">60</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #8C69F0;"></span>
+                            Content Types
+                            <span class="mock-nav-count">135</span>
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #10B981;"></span>
+                            Enablement
+                            <span class="mock-nav-count">52</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mock-main">
+                    <!-- Hero Section -->
+                    <div class="home-hero">
+                        <div class="home-hero-content">
+                            <h1>Welcome to GTM Library <span class="cms-indicator">heroTitle</span></h1>
+                            <p>Your central hub for sales enablement, content resources, and best practices. <span class="cms-indicator">heroSubtitle</span></p>
+                            <div class="home-hero-stats">
+                                <div class="home-stat">
+                                    <span class="home-stat-value">11</span>
+                                    <span class="home-stat-label">Boards</span>
+                                </div>
+                                <div class="home-stat">
+                                    <span class="home-stat-value">455</span>
+                                    <span class="home-stat-label">Resources</span>
+                                </div>
+                                <div class="home-stat">
+                                    <span class="home-stat-value">12</span>
+                                    <span class="home-stat-label">Added This Week</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Access Cards -->
+                    <div class="featured-section">
+                        <div class="featured-header">
+                            <h3 class="featured-title">Quick Access <span class="cms-indicator">quickAccessBoards</span></h3>
+                        </div>
+                        <div class="quick-access-grid">
+                            <div class="quick-card">
+                                <div class="quick-card-icon" style="background: #D1FAE5;">🎓</div>
+                                <h3>Enablement Hub</h3>
+                                <p>Training sessions, certifications, and learning paths</p>
+                            </div>
+                            <div class="quick-card">
+                                <div class="quick-card-icon" style="background: #FEE2E2;">⚔️</div>
+                                <h3>Battlecards</h3>
+                                <p>Competitive intelligence and positioning</p>
+                            </div>
+                            <div class="quick-card">
+                                <div class="quick-card-icon" style="background: #E0F2FE;">📈</div>
+                                <h3>Sales Resources</h3>
+                                <p>Decks, templates, and discovery guides</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Boards Grid -->
+                    <div class="featured-section">
+                        <div class="featured-header">
+                            <h3 class="featured-title">Browse by Board <span class="cms-indicator">hubCardsOrder</span></h3>
+                        </div>
+                        <div class="boards-grid">
+                            <div class="board-card">
+                                <div class="board-card-icon" style="background: #FEF3C7;">🎯</div>
+                                <div>
+                                    <div class="board-card-name">CoE</div>
+                                    <div class="board-card-count">60 items</div>
+                                </div>
+                            </div>
+                            <div class="board-card">
+                                <div class="board-card-icon" style="background: #EDE9FE;">📝</div>
+                                <div>
+                                    <div class="board-card-name">Content Types</div>
+                                    <div class="board-card-count">135 items</div>
+                                </div>
+                            </div>
+                            <div class="board-card">
+                                <div class="board-card-icon" style="background: #D1FAE5;">🎓</div>
+                                <div>
+                                    <div class="board-card-name">Enablement</div>
+                                    <div class="board-card-count">52 items</div>
+                                </div>
+                            </div>
+                            <div class="board-card">
+                                <div class="board-card-icon" style="background: #FEE2E2;">⚔️</div>
+                                <div>
+                                    <div class="board-card-name">Competitive</div>
+                                    <div class="board-card-count">26 items</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recently Added -->
+                    <div class="featured-section">
+                        <div class="featured-header">
+                            <h3 class="featured-title">Recently Added <span class="cms-indicator">recentlyAddedEnabled</span></h3>
+                            <span class="featured-link">View all →</span>
+                        </div>
+                        <div class="card-grid-3">
+                            <div class="card-enhanced-a" style="--content-primary: #10B981;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #D1FAE5; color: #047857;">
+                                        <span class="card-a-type-icon">🎓</span>
+                                        <span class="card-a-type-text">Training</span>
+                                    </span>
+                                    <span class="card-a-format">VIDEO</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Technical Buyer Enablement</h4>
+                                    <p class="card-a-desc">Engaging CIO/CTO stakeholders</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(16, 185, 129, 0.03), transparent);">
+                                    <span class="card-a-date">Today</span>
+                                    <span class="card-a-action" style="color: #10B981;">Watch →</span>
+                                </div>
+                            </div>
+                            <div class="card-enhanced-a" style="--content-primary: #EF4444;">
+                                <div class="card-a-header">
+                                    <span class="card-a-type" style="background: #FEE2E2; color: #DC2626;">
+                                        <span class="card-a-type-icon">⚔️</span>
+                                        <span class="card-a-type-text">Battlecard</span>
+                                    </span>
+                                    <span class="card-a-format">PDF</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Zendesk Sidekick Battle Card</h4>
+                                    <p class="card-a-desc">Competitive positioning vs Zendesk AI</p>
+                                </div>
+                                <div class="card-a-footer" style="background: linear-gradient(to right, rgba(239, 68, 68, 0.03), transparent);">
+                                    <span class="card-a-date">Yesterday</span>
+                                    <span class="card-a-action" style="color: #EF4444;">View →</span>
+                                </div>
+                            </div>
+                            <div class="card-enhanced-a">
+                                <div class="card-a-header">
+                                    <span class="card-a-type">
+                                        <span class="card-a-type-icon">📊</span>
+                                        <span class="card-a-type-text">Deck</span>
+                                    </span>
+                                    <span class="card-a-format">SLIDES</span>
+                                </div>
+                                <div class="card-a-body">
+                                    <h4 class="card-a-title">Enterprise QBR Template</h4>
+                                    <p class="card-a-desc">Quarterly business review deck</p>
+                                </div>
+                                <div class="card-a-footer">
+                                    <span class="card-a-date">2 days ago</span>
+                                    <span class="card-a-action">View →</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 4: SEARCH EXPERIENCE
+         ======================================== -->
+    <section id="search" class="section">
+        <div class="section-label">Search</div>
+        <h1 class="section-title">Prominent Centralized Search</h1>
+        <p class="section-desc">Search is the primary action - larger, centered, 640px max-width. Results show tags, boards, and assets with categorized sections.</p>
+
+        <div class="info-box success">
+            <h4>Key Design Changes</h4>
+            <ul>
+                <li><strong>Larger input:</strong> 15px font, 12px padding</li>
+                <li><strong>More width:</strong> max-width: 640px (up from 560px)</li>
+                <li><strong>Visual prominence:</strong> Focus ring with enablement green</li>
+                <li><strong>Categorized dropdown:</strong> Tags, Boards, Assets sections</li>
+            </ul>
+        </div>
+
+        <div style="max-width: 700px; margin: 0 auto;">
+            <div class="mock-search" style="position: relative; background: #1F2937; padding: 24px; border-radius: 12px;">
+                <svg class="mock-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+                <input type="text" class="mock-search-input" placeholder="Search boards, tags, content..." value="voice" style="border-color: var(--enablement-primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);">
+                <span class="mock-search-kbd">⌘K</span>
+
+                <!-- Search Dropdown -->
+                <div class="search-dropdown">
+                    <div class="search-section">
+                        <div class="search-section-header">Tags</div>
+                        <div class="search-result">
+                            <div class="search-result-icon tag-icon">#</div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">
+                                    Sidekick Voice
+                                    <span class="search-result-badge">8 items</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-result">
+                            <div class="search-result-icon tag-icon">#</div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">
+                                    voice
+                                    <span class="search-result-badge">24 items</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-section">
+                        <div class="search-section-header">Assets</div>
+                        <div class="search-result">
+                            <div class="search-result-icon" style="background: #FEF3C7;">📊</div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">Sidekick Voice: Demo, Pitch, Value</div>
+                                <div class="search-result-subtitle">Slides • Content Types</div>
+                            </div>
+                        </div>
+                        <div class="search-result">
+                            <div class="search-result-icon" style="background: #D1FAE5;">🎓</div>
+                            <div class="search-result-content">
+                                <div class="search-result-title">Sidekick Voice Deep Dive</div>
+                                <div class="search-result-subtitle">Video • Enablement</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 5: TAG RESULTS PAGE
+         ======================================== -->
+    <section id="tag-results" class="section">
+        <div class="section-label">Tag Results</div>
+        <h1 class="section-title">Tag/Category Results Page</h1>
+        <p class="section-desc">When a user clicks a tag from search, they see a filtered results page with related tags for exploration.</p>
+
+        <div class="page-mock">
+            <div class="mock-header">
+                <div class="mock-logo">G+</div>
+                <span class="mock-brand">GTM Library</span>
+                <div class="mock-search-container">
+                    <div class="mock-search">
+                        <svg class="mock-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" class="mock-search-input" placeholder="Search boards, tags, content...">
+                        <span class="mock-search-kbd">⌘K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mock-layout">
+                <div class="mock-sidebar">
+                    <div class="mock-sidebar-section">
+                        <div class="mock-sidebar-title">Boards</div>
+                        <div class="mock-nav-item active">
+                            <span class="mock-nav-dot" style="background: #8C69F0;"></span>
+                            Content Types
+                        </div>
+                        <div class="mock-nav-item">
+                            <span class="mock-nav-dot" style="background: #10B981;"></span>
+                            Enablement
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mock-main">
+                    <!-- Tag Results Header -->
+                    <div class="tag-results-header">
+                        <div class="tag-results-badge">
+                            <span class="tag-results-badge-icon">#</span>
+                            <span class="tag-results-badge-text">Sidekick Voice</span>
+                            <span class="tag-results-badge-clear">×</span>
+                        </div>
+                        <h1 class="tag-results-title">Sidekick Voice</h1>
+                        <p class="tag-results-meta">8 resources tagged with "Sidekick Voice" across 2 boards</p>
+
+                        <div class="related-tags">
+                            <span class="related-tags-label">Related:</span>
+                            <span class="related-tag">
+                                <span class="related-tag-hash">#</span>
+                                voice
+                            </span>
+                            <span class="related-tag">
+                                <span class="related-tag-hash">#</span>
+                                SK Chat & SMS
+                            </span>
+                            <span class="related-tag">
+                                <span class="related-tag-hash">#</span>
+                                Sidekick
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div class="card-grid-3">
+                        <div class="card-enhanced-a" style="--content-primary: #10B981;">
+                            <div class="card-a-header">
+                                <span class="card-a-type" style="background: #D1FAE5; color: #047857;">
+                                    <span class="card-a-type-icon">🎓</span>
+                                    <span class="card-a-type-text">Product Training</span>
+                                </span>
+                                <span class="card-a-format">VIDEO</span>
+                            </div>
+                            <div class="card-a-body">
+                                <h4 class="card-a-title">Sidekick Voice Deep Dive</h4>
+                                <p class="card-a-desc">Complete training on voice features</p>
+                            </div>
+                            <div class="card-a-footer" style="background: linear-gradient(to right, rgba(16, 185, 129, 0.03), transparent);">
+                                <span class="card-a-date">Dec 28</span>
+                                <span class="card-a-action" style="color: #10B981;">Watch →</span>
+                            </div>
+                        </div>
+
+                        <div class="card-enhanced-a">
+                            <div class="card-a-header">
+                                <span class="card-a-type">
+                                    <span class="card-a-type-icon">📊</span>
+                                    <span class="card-a-type-text">Deck</span>
+                                </span>
+                                <span class="card-a-format">SLIDES</span>
+                            </div>
+                            <div class="card-a-body">
+                                <h4 class="card-a-title">Sidekick Voice: Demo, Pitch, Value</h4>
+                                <p class="card-a-desc">Presentation on sidekick voice demo</p>
+                            </div>
+                            <div class="card-a-footer">
+                                <span class="card-a-date">Dec 25</span>
+                                <span class="card-a-action">View →</span>
+                            </div>
+                        </div>
+
+                        <div class="card-enhanced-a" style="--content-primary: #3B82F6;">
+                            <div class="card-a-header">
+                                <span class="card-a-type" style="background: #DBEAFE; color: #1D4ED8;">
+                                    <span class="card-a-type-icon">📘</span>
+                                    <span class="card-a-type-text">Guide</span>
+                                </span>
+                                <span class="card-a-format">DOC</span>
+                            </div>
+                            <div class="card-a-body">
+                                <h4 class="card-a-title">Voice Integration Playbook</h4>
+                                <p class="card-a-desc">Step-by-step guide for voice setup</p>
+                            </div>
+                            <div class="card-a-footer" style="background: linear-gradient(to right, rgba(59, 130, 246, 0.03), transparent);">
+                                <span class="card-a-date">Dec 20</span>
+                                <span class="card-a-action" style="color: #3B82F6;">View →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 6: DESIGN SYSTEM
+         ======================================== -->
+    <section id="design-system" class="section">
+        <div class="section-label">Design System</div>
+        <h1 class="section-title">Design System Documentation</h1>
+        <p class="section-desc">Complete reference for colors, typography, and taxonomy. 37 types (universal across all hubs), 16 formats from database.</p>
+
+        <!-- Hub Colors -->
+        <div class="ds-section">
+            <h3 class="ds-section-title">Hub Colors</h3>
+            <div class="color-grid">
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #10B981;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">Enablement Primary</div>
+                        <div class="color-swatch-value">#10B981</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #D1FAE5;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">Enablement Light</div>
+                        <div class="color-swatch-value">#D1FAE5</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #8C69F0;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">Content Primary</div>
+                        <div class="color-swatch-value">#8C69F0</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #EDE9FE;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">Content Light</div>
+                        <div class="color-swatch-value">#EDE9FE</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #F59E0B;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">CoE Primary</div>
+                        <div class="color-swatch-value">#F59E0B</div>
+                    </div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-swatch-preview" style="background: #FEF3C7;"></div>
+                    <div class="color-swatch-info">
+                        <div class="color-swatch-name">CoE Light</div>
+                        <div class="color-swatch-value">#FEF3C7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Types -->
+        <div class="ds-section">
+            <h3 class="ds-section-title">Content Types (37 Universal Types)</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">All types are now available across all hubs. Managed via /admin/manage/taxonomy</p>
+            <div class="type-grid">
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #FEE2E2; color: #EF4444;">⚔️ Battlecard</span>
+                    <span class="type-slug">battlecard</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;">📏 Benchmark</span>
+                    <span class="type-slug">benchmark</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;">✨ Best Practice</span>
+                    <span class="type-slug">best-practice</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #CFFAFE; color: #06B6D4;">🧮 Calculator</span>
+                    <span class="type-slug">calculator</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #D1FAE5; color: #10B981;">📈 Case Study</span>
+                    <span class="type-slug">case-study</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;">🏅 Certification</span>
+                    <span class="type-slug">certification</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #DBEAFE; color: #3B82F6;">📊 Dashboard</span>
+                    <span class="type-slug">dashboard</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #EDE9FE; color: #8C69F0;">📊 Deck</span>
+                    <span class="type-slug">deck</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #DBEAFE; color: #3B82F6;">📘 Guide</span>
+                    <span class="type-slug">guide</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #CFFAFE; color: #06B6D4;">🛠️ GTM Tool</span>
+                    <span class="type-slug">gtm-tool</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #EDE9FE; color: #8B5CF6;">🚀 GTM Training</span>
+                    <span class="type-slug">gtm-training</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;">📄 One-Pager</span>
+                    <span class="type-slug">one-pager</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #EDE9FE; color: #8B5CF6;">📚 Playbook</span>
+                    <span class="type-slug">playbook</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #D1FAE5; color: #10B981;">📦 Product Training</span>
+                    <span class="type-slug">product-training</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #EDE9FE; color: #8B5CF6;">📋 Template</span>
+                    <span class="type-slug">template</span>
+                </div>
+                <div class="type-item">
+                    <span class="type-badge-preview" style="background: #CFFAFE; color: #0891B2;">💎 Value Realization</span>
+                    <span class="type-slug">value-realization</span>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 16px;">+ 21 more types in taxonomy.ts</p>
+        </div>
+
+        <!-- Formats -->
+        <div class="ds-section">
+            <h3 class="ds-section-title">Formats (16 from Database)</h3>
+            <div class="format-grid">
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #FEF3C7;">📊</div>
+                    <div class="format-name">Slides</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #DBEAFE;">📄</div>
+                    <div class="format-name">Document</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #D1FAE5;">📈</div>
+                    <div class="format-name">Spreadsheet</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #FEE2E2;">📕</div>
+                    <div class="format-name">PDF</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #FEE2E2;">🎬</div>
+                    <div class="format-name">Video</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #CFFAFE;">🛠️</div>
+                    <div class="format-name">Tool</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #DBEAFE;">📘</div>
+                    <div class="format-name">Guide</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #FEE2E2;">🔴</div>
+                    <div class="format-name">Live Replay</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #EDE9FE;">🎓</div>
+                    <div class="format-name">Course</div>
+                </div>
+                <div class="format-item">
+                    <div class="format-icon-preview" style="background: #F1F5F9;">🔗</div>
+                    <div class="format-name">Web Link</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION 7: IMPLEMENTATION PLAN
+         ======================================== -->
+    <section id="implementation" class="section">
+        <div class="section-label">Implementation</div>
+        <h1 class="section-title">Implementation Plan</h1>
+        <p class="section-desc">Phased approach to implementing all design updates.</p>
+
+        <div class="plan-phase">
+            <div class="plan-phase-header">
+                <div class="plan-phase-number">1</div>
+                <h3 class="plan-phase-title">Card System Updates</h3>
+            </div>
+            <div class="plan-tasks">
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Implement Option A card (left accent + prominent type badge)</span>
+                    <span class="plan-task-file">AssetCard.tsx</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Type badge shows full text (no max-width truncation)</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Create CompactCard component for list view</span>
+                    <span class="plan-task-file">CompactCard.tsx</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Add view toggle (grid/list) to board pages</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="plan-phase">
+            <div class="plan-phase-header">
+                <div class="plan-phase-number">2</div>
+                <h3 class="plan-phase-title">Horizontal Pills Navigation</h3>
+            </div>
+            <div class="plan-tasks">
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Create HorizontalFilters component (Option A pills)</span>
+                    <span class="plan-task-file">HorizontalFilters.tsx</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Replace FilterSidebar with horizontal pills</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Update layout CSS (remove sidebar margin)</span>
+                    <span class="plan-task-file">globals.css</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="plan-phase">
+            <div class="plan-phase-header">
+                <div class="plan-phase-number">3</div>
+                <h3 class="plan-phase-title">Search Experience</h3>
+            </div>
+            <div class="plan-tasks">
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Enhance PageHeader search (larger, 640px max-width)</span>
+                    <span class="plan-task-file">PageHeader.tsx</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Add type/tag results to search dropdown</span>
+                    <span class="plan-task-file">api/search/route.ts</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Create tag results page</span>
+                    <span class="plan-task-file">library/tag/[slug]/page.tsx</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="plan-phase">
+            <div class="plan-phase-header">
+                <div class="plan-phase-number">4</div>
+                <h3 class="plan-phase-title">Homepage with CMS</h3>
+            </div>
+            <div class="plan-tasks">
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Create Homepage component with CMS sections</span>
+                    <span class="plan-task-file">app/page.tsx</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Add API for homepage config</span>
+                    <span class="plan-task-file">api/homepage-config/route.ts</span>
+                </div>
+                <div class="plan-task">
+                    <div class="plan-task-check"></div>
+                    <span class="plan-task-text">Create admin page for homepage management</span>
+                    <span class="plan-task-file">admin/homepage/page.tsx</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box success" style="margin-top: 32px;">
+            <h4>Key Files to Update</h4>
+            <ul>
+                <li><code>components/library/AssetCard.tsx</code> - Option A card design</li>
+                <li><code>components/library/CompactCard.tsx</code> - New compact card</li>
+                <li><code>components/library/HorizontalFilters.tsx</code> - Option A pills nav</li>
+                <li><code>components/library/PageHeader.tsx</code> - Prominent search</li>
+                <li><code>components/library/BoardPageContent.tsx</code> - Layout updates</li>
+                <li><code>app/globals.css</code> - CSS variables and layout</li>
+                <li><code>app/page.tsx</code> - Homepage with CMS</li>
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            // Update nav buttons
+            document.querySelectorAll('.doc-nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

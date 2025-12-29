@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Design Options - Final Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --enablement: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-lighter: #ECFDF5;
+            --content: #8C69F0;
+            --content-light: #EDE9FE;
+            --coe: #F59E0B;
+            --coe-light: #FEF3C7;
+            --bg: #F8FAFC;
+            --border: #E2E8F0;
+            --text: #0F172A;
+            --text-secondary: #64748B;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            padding: 40px;
+            color: var(--text);
+        }
+
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 40px; }
+
+        .section { margin-bottom: 60px; }
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--enablement);
+            border-radius: 2px;
+        }
+        .section-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .arrow-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 48px 0;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+        .recommendation h3 {
+            font-size: 14px;
+            color: #047857;
+            margin-bottom: 8px;
+        }
+        .recommendation p {
+            font-size: 13px;
+            color: #065F46;
+        }
+
+        /* ========================================
+           OPTION 1: Clean Top Gradient (Refined)
+           ======================================== */
+        .card-1 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .card-1:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color, var(--enablement)), var(--accent-light, #34D399));
+        }
+        .card-1-header {
+            padding: 16px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .card-1-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--badge-bg, var(--enablement-light));
+            color: var(--badge-color, var(--enablement));
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-1-format {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .card-1-body { padding: 12px 20px 16px; flex: 1; }
+        .card-1-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-1-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-1-footer {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .card-1-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-1:hover .card-1-action { opacity: 1; }
+
+        /* ========================================
+           OPTION 2: Tinted Header (Icon in Box)
+           ======================================== */
+        .card-2 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card-2:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-2-header {
+            padding: 14px 18px;
+            background: var(--header-bg, linear-gradient(135deg, var(--enablement-light) 0%, var(--enablement-lighter) 100%));
+            border-bottom: 1px solid var(--header-border, rgba(16, 185, 129, 0.12));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-2-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--badge-text, #047857);
+        }
+        .card-2-badge-icon {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .card-2-format {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        .card-2-body { padding: 14px 18px; flex: 1; }
+        .card-2-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-2-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-2-footer {
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+        }
+        .card-2-date {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .card-2-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ========================================
+           OPTION 3: Hybrid - Gradient Bar + Tinted Badge Area
+           ======================================== */
+        .card-3 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .card-3:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-color, var(--enablement));
+        }
+        .card-3-header {
+            padding: 14px 18px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .card-3-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--badge-bg, var(--enablement-light));
+            color: var(--badge-color, var(--enablement));
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-3-badge-icon {
+            font-size: 14px;
+        }
+        .card-3-format {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .card-3-body { padding: 12px 18px 14px; flex: 1; }
+        .card-3-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-3-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-3-footer {
+            padding: 0 18px 14px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .card-3-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-3:hover .card-3-action { opacity: 1; }
+
+        /* ========================================
+           OPTION 4: Minimal Clean (Badge Only Color)
+           ======================================== */
+        .card-4 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card-4:hover {
+            box-shadow: 0 8px 24px var(--shadow-color, rgba(16, 185, 129, 0.15));
+            transform: translateY(-2px);
+            border-color: var(--accent-color, var(--enablement));
+        }
+        .card-4-header {
+            padding: 16px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .card-4-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--badge-bg, var(--enablement-light));
+            color: var(--badge-color, var(--enablement));
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-4-format {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .card-4-body { padding: 12px 20px 16px; flex: 1; }
+        .card-4-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-4-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-4-footer {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .card-4-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-4:hover .card-4-action { opacity: 1; }
+
+        /* ========================================
+           OPTION 5: Full Header Color (Bold)
+           ======================================== */
+        .card-5 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card-5:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-5-header {
+            padding: 12px 18px;
+            background: var(--accent-color, var(--enablement));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-5-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-5-format {
+            font-size: 11px;
+            color: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 10px;
+        }
+        .card-5-body { padding: 14px 18px; flex: 1; }
+        .card-5-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-5-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-5-footer {
+            padding: 0 18px 14px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .card-5-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-5:hover .card-5-action { opacity: 1; }
+
+        /* ========================================
+           OPTION 6: Tinted Header + Icon Box (Softer)
+           ======================================== */
+        .card-6 {
+            height: 200px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card-6:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-6-header {
+            padding: 12px 16px;
+            background: var(--header-bg, var(--enablement-lighter));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-6-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-6-badge-icon {
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .card-6-badge-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--badge-text, #047857);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .card-6-format {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .card-6-body { padding: 14px 16px; flex: 1; }
+        .card-6-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-6-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-6-footer {
+            padding: 0 16px 14px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .card-6-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-color, var(--enablement));
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-6:hover .card-6-action { opacity: 1; }
+    </style>
+</head>
+<body>
+    <h1>Card Design Options - Final Selection</h1>
+    <p class="subtitle">Hover to see interactions. Based on your preference for Options 1 (top gradient) and 2 (color block header).</p>
+
+    <!-- Option 1: Clean Top Gradient -->
+    <div class="section">
+        <div class="section-title">Option 1: Clean Top Gradient</div>
+        <p class="section-desc">Thin 4px gradient bar at top. Clean, minimal. Type badge with solid background.</p>
+        <div class="card-grid">
+            <div class="card-1" style="--accent-color: #10B981; --accent-light: #34D399; --badge-bg: #D1FAE5; --badge-color: #10B981;">
+                <div class="card-1-header">
+                    <span class="card-1-badge">Product Training</span>
+                    <span class="card-1-format">Live Replay</span>
+                </div>
+                <div class="card-1-body">
+                    <div class="card-1-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-1-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-1-footer">
+                    <span class="card-1-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-1" style="--accent-color: #8B5CF6; --accent-light: #A78BFA; --badge-bg: #EDE9FE; --badge-color: #8B5CF6;">
+                <div class="card-1-header">
+                    <span class="card-1-badge">GTM Training</span>
+                    <span class="card-1-format">Live Replay</span>
+                </div>
+                <div class="card-1-body">
+                    <div class="card-1-title">SK for email + App Platform</div>
+                    <div class="card-1-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-1-footer">
+                    <span class="card-1-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-1" style="--accent-color: #EF4444; --accent-light: #F87171; --badge-bg: #FEE2E2; --badge-color: #EF4444;">
+                <div class="card-1-header">
+                    <span class="card-1-badge">Competitive</span>
+                    <span class="card-1-format">Live Replay</span>
+                </div>
+                <div class="card-1-body">
+                    <div class="card-1-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-1-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-1-footer">
+                    <span class="card-1-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-1" style="--accent-color: #F59E0B; --accent-light: #FBBF24; --badge-bg: #FEF3C7; --badge-color: #D97706;">
+                <div class="card-1-header">
+                    <span class="card-1-badge">Customer Meeting</span>
+                    <span class="card-1-format">Slides</span>
+                </div>
+                <div class="card-1-body">
+                    <div class="card-1-title">Enterprise QBR Template</div>
+                    <div class="card-1-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-1-footer">
+                    <span class="card-1-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Option 2: Tinted Header with Icon Box -->
+    <div class="section">
+        <div class="section-title">Option 2: Tinted Header + Icon Box</div>
+        <p class="section-desc">Full-width tinted header with icon in white box. More visual presence. Good for scanning.</p>
+        <div class="card-grid">
+            <div class="card-2" style="--header-bg: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); --header-border: rgba(16, 185, 129, 0.12); --badge-text: #047857; --accent-color: #10B981;">
+                <div class="card-2-header">
+                    <span class="card-2-badge"><span class="card-2-badge-icon">🎓</span> Product Training</span>
+                    <span class="card-2-format">Live Replay</span>
+                </div>
+                <div class="card-2-body">
+                    <div class="card-2-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-2-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-2-footer">
+                    <span class="card-2-date">Dec 28, 2025</span>
+                    <span class="card-2-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-2" style="--header-bg: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%); --header-border: rgba(139, 92, 246, 0.12); --badge-text: #6D28D9; --accent-color: #8B5CF6;">
+                <div class="card-2-header">
+                    <span class="card-2-badge"><span class="card-2-badge-icon">🚀</span> GTM Training</span>
+                    <span class="card-2-format">Live Replay</span>
+                </div>
+                <div class="card-2-body">
+                    <div class="card-2-title">SK for email + App Platform</div>
+                    <div class="card-2-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-2-footer">
+                    <span class="card-2-date">Dec 27, 2025</span>
+                    <span class="card-2-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-2" style="--header-bg: linear-gradient(135deg, #FEE2E2 0%, #FEF2F2 100%); --header-border: rgba(239, 68, 68, 0.12); --badge-text: #B91C1C; --accent-color: #EF4444;">
+                <div class="card-2-header">
+                    <span class="card-2-badge"><span class="card-2-badge-icon">⚔️</span> Competitive</span>
+                    <span class="card-2-format">Live Replay</span>
+                </div>
+                <div class="card-2-body">
+                    <div class="card-2-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-2-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-2-footer">
+                    <span class="card-2-date">Dec 20, 2025</span>
+                    <span class="card-2-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-2" style="--header-bg: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); --header-border: rgba(245, 158, 11, 0.12); --badge-text: #B45309; --accent-color: #F59E0B;">
+                <div class="card-2-header">
+                    <span class="card-2-badge"><span class="card-2-badge-icon">🎯</span> Customer Meeting</span>
+                    <span class="card-2-format">Slides</span>
+                </div>
+                <div class="card-2-body">
+                    <div class="card-2-title">Enterprise QBR Template</div>
+                    <div class="card-2-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-2-footer">
+                    <span class="card-2-date">Dec 15, 2025</span>
+                    <span class="card-2-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Option 3: Hybrid -->
+    <div class="section">
+        <div class="section-title">Option 3: Hybrid - Top Bar + Larger Badge</div>
+        <p class="section-desc">Combines thin top bar with a larger, more prominent badge that includes an icon.</p>
+        <div class="card-grid">
+            <div class="card-3" style="--accent-color: #10B981; --badge-bg: #D1FAE5; --badge-color: #047857;">
+                <div class="card-3-header">
+                    <span class="card-3-badge"><span class="card-3-badge-icon">🎓</span> Product Training</span>
+                    <span class="card-3-format">Live Replay</span>
+                </div>
+                <div class="card-3-body">
+                    <div class="card-3-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-3-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-3-footer">
+                    <span class="card-3-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-3" style="--accent-color: #8B5CF6; --badge-bg: #EDE9FE; --badge-color: #6D28D9;">
+                <div class="card-3-header">
+                    <span class="card-3-badge"><span class="card-3-badge-icon">🚀</span> GTM Training</span>
+                    <span class="card-3-format">Live Replay</span>
+                </div>
+                <div class="card-3-body">
+                    <div class="card-3-title">SK for email + App Platform</div>
+                    <div class="card-3-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-3-footer">
+                    <span class="card-3-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-3" style="--accent-color: #EF4444; --badge-bg: #FEE2E2; --badge-color: #B91C1C;">
+                <div class="card-3-header">
+                    <span class="card-3-badge"><span class="card-3-badge-icon">⚔️</span> Competitive</span>
+                    <span class="card-3-format">Live Replay</span>
+                </div>
+                <div class="card-3-body">
+                    <div class="card-3-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-3-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-3-footer">
+                    <span class="card-3-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-3" style="--accent-color: #F59E0B; --badge-bg: #FEF3C7; --badge-color: #B45309;">
+                <div class="card-3-header">
+                    <span class="card-3-badge"><span class="card-3-badge-icon">🎯</span> Customer Meeting</span>
+                    <span class="card-3-format">Slides</span>
+                </div>
+                <div class="card-3-body">
+                    <div class="card-3-title">Enterprise QBR Template</div>
+                    <div class="card-3-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-3-footer">
+                    <span class="card-3-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Option 4: Minimal Clean -->
+    <div class="section">
+        <div class="section-title">Option 4: Minimal Clean</div>
+        <p class="section-desc">No bars or headers. Badge provides all the color. Clean white cards with colored border on hover.</p>
+        <div class="card-grid">
+            <div class="card-4" style="--accent-color: #10B981; --badge-bg: #D1FAE5; --badge-color: #10B981; --shadow-color: rgba(16, 185, 129, 0.15);">
+                <div class="card-4-header">
+                    <span class="card-4-badge">Product Training</span>
+                    <span class="card-4-format">Live Replay</span>
+                </div>
+                <div class="card-4-body">
+                    <div class="card-4-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-4-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-4-footer">
+                    <span class="card-4-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-4" style="--accent-color: #8B5CF6; --badge-bg: #EDE9FE; --badge-color: #8B5CF6; --shadow-color: rgba(139, 92, 246, 0.15);">
+                <div class="card-4-header">
+                    <span class="card-4-badge">GTM Training</span>
+                    <span class="card-4-format">Live Replay</span>
+                </div>
+                <div class="card-4-body">
+                    <div class="card-4-title">SK for email + App Platform</div>
+                    <div class="card-4-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-4-footer">
+                    <span class="card-4-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-4" style="--accent-color: #EF4444; --badge-bg: #FEE2E2; --badge-color: #EF4444; --shadow-color: rgba(239, 68, 68, 0.15);">
+                <div class="card-4-header">
+                    <span class="card-4-badge">Competitive</span>
+                    <span class="card-4-format">Live Replay</span>
+                </div>
+                <div class="card-4-body">
+                    <div class="card-4-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-4-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-4-footer">
+                    <span class="card-4-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-4" style="--accent-color: #F59E0B; --badge-bg: #FEF3C7; --badge-color: #D97706; --shadow-color: rgba(245, 158, 11, 0.15);">
+                <div class="card-4-header">
+                    <span class="card-4-badge">Customer Meeting</span>
+                    <span class="card-4-format">Slides</span>
+                </div>
+                <div class="card-4-body">
+                    <div class="card-4-title">Enterprise QBR Template</div>
+                    <div class="card-4-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-4-footer">
+                    <span class="card-4-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Option 5: Bold Full Header -->
+    <div class="section">
+        <div class="section-title">Option 5: Bold Full Header</div>
+        <p class="section-desc">Solid color header. Maximum visual impact and type distinction. Good for quick scanning.</p>
+        <div class="card-grid">
+            <div class="card-5" style="--accent-color: #10B981;">
+                <div class="card-5-header">
+                    <span class="card-5-badge">🎓 Product Training</span>
+                    <span class="card-5-format">Live Replay</span>
+                </div>
+                <div class="card-5-body">
+                    <div class="card-5-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-5-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-5-footer">
+                    <span class="card-5-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-5" style="--accent-color: #8B5CF6;">
+                <div class="card-5-header">
+                    <span class="card-5-badge">🚀 GTM Training</span>
+                    <span class="card-5-format">Live Replay</span>
+                </div>
+                <div class="card-5-body">
+                    <div class="card-5-title">SK for email + App Platform</div>
+                    <div class="card-5-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-5-footer">
+                    <span class="card-5-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-5" style="--accent-color: #EF4444;">
+                <div class="card-5-header">
+                    <span class="card-5-badge">⚔️ Competitive</span>
+                    <span class="card-5-format">Live Replay</span>
+                </div>
+                <div class="card-5-body">
+                    <div class="card-5-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-5-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-5-footer">
+                    <span class="card-5-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-5" style="--accent-color: #F59E0B;">
+                <div class="card-5-header">
+                    <span class="card-5-badge">🎯 Customer Meeting</span>
+                    <span class="card-5-format">Slides</span>
+                </div>
+                <div class="card-5-body">
+                    <div class="card-5-title">Enterprise QBR Template</div>
+                    <div class="card-5-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-5-footer">
+                    <span class="card-5-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Option 6: Soft Tinted Header -->
+    <div class="section">
+        <div class="section-title">Option 6: Soft Tinted Header + Icon Box</div>
+        <p class="section-desc">Like Option 2 but with single-color tint (no gradient). Cleaner, more uniform look.</p>
+        <div class="card-grid">
+            <div class="card-6" style="--header-bg: #ECFDF5; --badge-text: #047857; --accent-color: #10B981;">
+                <div class="card-6-header">
+                    <span class="card-6-badge">
+                        <span class="card-6-badge-icon">🎓</span>
+                        <span class="card-6-badge-text">Product Training</span>
+                    </span>
+                    <span class="card-6-format">Live Replay</span>
+                </div>
+                <div class="card-6-body">
+                    <div class="card-6-title">Sidekick Standalone Tactical Enablement</div>
+                    <div class="card-6-desc">Presentation on sidekick standalone tactical</div>
+                </div>
+                <div class="card-6-footer">
+                    <span class="card-6-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-6" style="--header-bg: #F5F3FF; --badge-text: #6D28D9; --accent-color: #8B5CF6;">
+                <div class="card-6-header">
+                    <span class="card-6-badge">
+                        <span class="card-6-badge-icon">🚀</span>
+                        <span class="card-6-badge-text">GTM Training</span>
+                    </span>
+                    <span class="card-6-format">Live Replay</span>
+                </div>
+                <div class="card-6-body">
+                    <div class="card-6-title">SK for email + App Platform</div>
+                    <div class="card-6-desc">Presentation on sk email + app platform</div>
+                </div>
+                <div class="card-6-footer">
+                    <span class="card-6-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-6" style="--header-bg: #FEF2F2; --badge-text: #B91C1C; --accent-color: #EF4444;">
+                <div class="card-6-header">
+                    <span class="card-6-badge">
+                        <span class="card-6-badge-icon">⚔️</span>
+                        <span class="card-6-badge-text">Competitive</span>
+                    </span>
+                    <span class="card-6-format">Live Replay</span>
+                </div>
+                <div class="card-6-body">
+                    <div class="card-6-title">Flip Competitive + SK Voice Roadmap</div>
+                    <div class="card-6-desc">The folder "EH 9/4/25: Flip Competitive</div>
+                </div>
+                <div class="card-6-footer">
+                    <span class="card-6-action">Watch <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+            <div class="card-6" style="--header-bg: #FFFBEB; --badge-text: #B45309; --accent-color: #F59E0B;">
+                <div class="card-6-header">
+                    <span class="card-6-badge">
+                        <span class="card-6-badge-icon">🎯</span>
+                        <span class="card-6-badge-text">Customer Meeting</span>
+                    </span>
+                    <span class="card-6-format">Slides</span>
+                </div>
+                <div class="card-6-body">
+                    <div class="card-6-title">Enterprise QBR Template</div>
+                    <div class="card-6-desc">Quarterly business review deck</div>
+                </div>
+                <div class="card-6-footer">
+                    <span class="card-6-action">View <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

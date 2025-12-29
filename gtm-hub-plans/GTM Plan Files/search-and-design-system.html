@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Search Experience & Design System</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           GTM LIBRARY - SEARCH & DESIGN SYSTEM
+           ======================================== */
+
+        :root {
+            /* Hub Colors */
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --coe-hover: #FFFBEB;
+            --coe-accent: #B45309;
+
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --content-hover: #F5F3FF;
+            --content-accent: #6D28D9;
+
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+            --enablement-hover: #ECFDF5;
+            --enablement-accent: #047857;
+
+            /* Board Colors */
+            --product-primary: #3B82F6;
+            --competitive-primary: #EF4444;
+            --sales-primary: #0EA5E9;
+            --csm-primary: #8B5CF6;
+            --demo-primary: #06B6D4;
+            --proof-primary: #84CC16;
+
+            /* Neutrals */
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+
+            --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --sidebar-width: 240px;
+            --header-height: 64px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* ========================================
+           DOCUMENTATION STRUCTURE
+           ======================================== */
+        .doc-header {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            padding: 48px 40px;
+            color: white;
+        }
+
+        .doc-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .doc-header p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+        }
+
+        .doc-nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .doc-nav a {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .doc-nav a:hover { background: rgba(255,255,255,0.2); }
+
+        .doc-content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-divider {
+            margin: 64px 0 40px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--content-primary);
+            border-radius: 2px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .section-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 700px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%);
+            border: 1px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+        }
+
+        .info-box.success {
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            border-color: #86EFAC;
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+
+        .info-box.success h4 { color: #166534; }
+
+        .info-box ul {
+            margin: 0 0 0 20px;
+            font-size: 13px;
+            color: #1E3A8A;
+            line-height: 1.7;
+        }
+
+        .info-box.success ul { color: #166534; }
+
+        /* ========================================
+           1. PROMINENT SEARCH HEADER
+           ======================================== */
+        .header-mock {
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .header-v1 {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-right: 32px;
+            flex-shrink: 0;
+        }
+
+        .header-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--enablement-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* PROMINENT CENTERED SEARCH */
+        .header-search-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 0 40px;
+        }
+
+        .header-search {
+            width: 100%;
+            max-width: 640px;
+            position: relative;
+        }
+
+        .header-search-input {
+            width: 100%;
+            padding: 12px 48px 12px 48px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            font-size: 15px;
+            color: white;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .header-search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .header-search-input:focus {
+            background: rgba(255,255,255,0.18);
+            border-color: var(--enablement-primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .header-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .header-search-kbd {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            font-family: var(--font-mono);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn:hover { background: rgba(255,255,255,0.15); }
+
+        /* Search Dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .search-section {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .search-section:last-child { border-bottom: none; }
+
+        .search-section-header {
+            padding: 12px 20px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .search-result {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .search-result:hover { background: var(--bg); }
+
+        .search-result-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-result-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-result-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .search-result-badge {
+            padding: 3px 8px;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .search-result-arrow {
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .search-result:hover .search-result-arrow { opacity: 1; }
+
+        /* Tag result styling */
+        .tag-icon {
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* ========================================
+           2. TAG/CATEGORY RESULTS PAGE
+           ======================================== */
+        .page-mock {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .page-layout {
+            display: flex;
+        }
+
+        .page-sidebar {
+            width: 220px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 16px 12px;
+            min-height: 500px;
+        }
+
+        .page-main {
+            flex: 1;
+            padding: 24px 28px;
+        }
+
+        /* Tag Results Header */
+        .tag-results-header {
+            margin-bottom: 28px;
+        }
+
+        .tag-results-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--content-light);
+            border-radius: 24px;
+            margin-bottom: 16px;
+        }
+
+        .tag-results-badge-icon {
+            font-size: 14px;
+            color: var(--content-primary);
+        }
+
+        .tag-results-badge-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--content-primary);
+        }
+
+        .tag-results-badge-clear {
+            width: 18px;
+            height: 18px;
+            background: var(--content-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+
+        .tag-results-badge-clear:hover {
+            background: var(--content-accent);
+        }
+
+        .tag-results-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .tag-results-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Related Tags */
+        .related-tags {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .related-tags-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+
+        .related-tag {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .related-tag:hover {
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .related-tag-hash {
+            color: var(--text-muted);
+        }
+
+        /* Results Grid */
+        .results-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .results-sort {
+            padding: 8px 32px 8px 12px;
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            appearance: none;
+            font-family: var(--font);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--content-primary);
+            border-radius: 14px 0 0 14px;
+        }
+
+        .result-card:hover {
+            border-color: var(--content-primary);
+            box-shadow: 0 8px 24px rgba(140, 105, 240, 0.12);
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .result-card-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--type-bg, #EDE9FE);
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--type-color, #8C69F0);
+        }
+
+        .result-card-format {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .result-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            line-height: 1.35;
+        }
+
+        .result-card-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ========================================
+           3. DESIGN SYSTEM DOCUMENTATION
+           ======================================== */
+        .ds-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .ds-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Color Swatches */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .color-swatch {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .color-swatch-preview {
+            height: 64px;
+        }
+
+        .color-swatch-info {
+            padding: 12px 14px;
+            background: var(--bg);
+        }
+
+        .color-swatch-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .color-swatch-value {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        /* Type Badges Table */
+        .type-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .type-table th,
+        .type-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .type-table th {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: var(--bg);
+        }
+
+        .type-table td {
+            font-size: 13px;
+        }
+
+        .type-badge-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .type-badge-icon {
+            font-size: 11px;
+        }
+
+        /* Typography Scale */
+        .typo-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .typo-item {
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .typo-label {
+            width: 140px;
+            flex-shrink: 0;
+        }
+
+        .typo-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .typo-spec {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .typo-preview {
+            flex: 1;
+        }
+
+        /* Spacing Scale */
+        .spacing-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+        }
+
+        .spacing-item {
+            text-align: center;
+        }
+
+        .spacing-box {
+            background: var(--content-light);
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .spacing-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .spacing-name {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Format Icons */
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .format-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 16px;
+            background: var(--bg);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .format-icon-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .format-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .format-color {
+            font-size: 10px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        /* Board Colors */
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .board-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .board-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .board-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .board-color-value {
+            margin-left: auto;
+            font-size: 10px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        /* CSS Variable Code Block */
+        .code-block {
+            background: #1E293B;
+            border-radius: 12px;
+            padding: 20px 24px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: #E2E8F0;
+        }
+
+        .code-comment { color: #64748B; }
+        .code-property { color: #7DD3FC; }
+        .code-value { color: #A5F3FC; }
+    </style>
+</head>
+<body>
+    <!-- Documentation Header -->
+    <div class="doc-header">
+        <h1>Search Experience & Design System</h1>
+        <p>Prominent centralized search, tag/category results pages, and complete design system documentation</p>
+        <nav class="doc-nav">
+            <a href="#search-header">1. Search Header</a>
+            <a href="#tag-results">2. Tag Results Page</a>
+            <a href="#design-system">3. Design System</a>
+        </nav>
+    </div>
+
+    <div class="doc-content">
+
+        <!-- ========================================
+             1. PROMINENT SEARCH HEADER
+             ======================================== -->
+        <section id="search-header">
+            <div class="section-label">Section 1</div>
+            <h2 class="section-title">Prominent Centralized Search</h2>
+            <p class="section-desc">Search should be the primary action in the header - larger, centered, with visual prominence. The search is the "command center" for finding anything.</p>
+
+            <div class="info-box">
+                <h4>Design Changes</h4>
+                <ul>
+                    <li><strong>Larger input:</strong> 15px font, 12px padding (up from 14px/10px)</li>
+                    <li><strong>More width:</strong> max-width: 640px (up from 560px)</li>
+                    <li><strong>Visual prominence:</strong> Slightly lighter background, focus ring on active</li>
+                    <li><strong>Better dropdown:</strong> Larger icons (36px), more padding, clearer sections</li>
+                </ul>
+            </div>
+
+            <div class="header-mock">
+                <div class="header-v1">
+                    <div class="header-brand">
+                        <div class="header-logo">G+</div>
+                        <span class="header-title">GTM Library</span>
+                    </div>
+
+                    <div class="header-search-container">
+                        <div class="header-search">
+                            <svg class="header-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                            </svg>
+                            <input
+                                type="text"
+                                class="header-search-input"
+                                placeholder="Search boards, tags, content..."
+                                value="voice"
+                            >
+                            <span class="header-search-kbd">⌘K</span>
+
+                            <!-- Search Dropdown -->
+                            <div class="search-dropdown">
+                                <!-- Tags Section -->
+                                <div class="search-section">
+                                    <div class="search-section-header">Tags</div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon tag-icon">#</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">
+                                                SK Chat & SMS, SK Voice
+                                                <span class="search-result-badge">12 items</span>
+                                            </div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon tag-icon">#</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">
+                                                Sidekick Voice
+                                                <span class="search-result-badge">8 items</span>
+                                            </div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon tag-icon">#</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">
+                                                voice
+                                                <span class="search-result-badge">24 items</span>
+                                            </div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon tag-icon">#</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">
+                                                Ai Voice
+                                                <span class="search-result-badge">6 items</span>
+                                            </div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Assets Section -->
+                                <div class="search-section">
+                                    <div class="search-section-header">Assets</div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon" style="background: #FEF3C7;">📊</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">Sidekick Voice: Demo, Pitch, Value</div>
+                                            <div class="search-result-subtitle">Slides • Content Types</div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="search-result">
+                                        <div class="search-result-icon" style="background: #D1FAE5;">🎓</div>
+                                        <div class="search-result-content">
+                                            <div class="search-result-title">Sidekick Voice Deep Dive</div>
+                                            <div class="search-result-subtitle">Video • Enablement</div>
+                                        </div>
+                                        <svg class="search-result-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9 18l6-6-6-6"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="header-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box success">
+                <h4>Key Improvements</h4>
+                <ul>
+                    <li>Search input is <strong>visually dominant</strong> - largest element in header</li>
+                    <li>Tags show <strong>item counts</strong> in badges so users know what to expect</li>
+                    <li>Results show <strong>icons matching type</strong> (emoji) + format + board context</li>
+                    <li>Hover state shows <strong>arrow indicator</strong> for clickability</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ========================================
+             2. TAG/CATEGORY RESULTS PAGE
+             ======================================== -->
+        <section id="tag-results" class="section-divider">
+            <div class="section-label">Section 2</div>
+            <h2 class="section-title">Tag/Category Results Page</h2>
+            <p class="section-desc">When a user clicks a tag from search (instead of an asset), they see a filtered results page showing all content with that tag, plus related tags for exploration.</p>
+
+            <div class="page-mock">
+                <div class="header-mock" style="border-radius: 0;">
+                    <div class="header-v1">
+                        <div class="header-brand">
+                            <div class="header-logo">G+</div>
+                            <span class="header-title">GTM Library</span>
+                        </div>
+                        <div class="header-search-container">
+                            <div class="header-search">
+                                <svg class="header-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="M21 21l-4.35-4.35"></path>
+                                </svg>
+                                <input type="text" class="header-search-input" placeholder="Search boards, tags, content...">
+                                <span class="header-search-kbd">⌘K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-layout">
+                    <div class="page-sidebar">
+                        <div style="padding: 8px 10px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Boards</div>
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; font-size: 13px; color: var(--text); background: var(--content-light); border-radius: 6px; margin-bottom: 4px;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--content-primary);"></span>
+                            Content Types
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 9px 10px; font-size: 13px; color: var(--text);">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--enablement-primary);"></span>
+                            Enablement
+                        </div>
+                    </div>
+                    <div class="page-main">
+                        <!-- Tag Results Header -->
+                        <div class="tag-results-header">
+                            <div class="tag-results-badge">
+                                <span class="tag-results-badge-icon">#</span>
+                                <span class="tag-results-badge-text">Sidekick Voice</span>
+                                <span class="tag-results-badge-clear">×</span>
+                            </div>
+                            <h1 class="tag-results-title">Sidekick Voice</h1>
+                            <p class="tag-results-meta">8 resources tagged with "Sidekick Voice" across 2 boards</p>
+
+                            <!-- Related Tags -->
+                            <div class="related-tags">
+                                <span class="related-tags-label">Related:</span>
+                                <span class="related-tag">
+                                    <span class="related-tag-hash">#</span>
+                                    voice
+                                </span>
+                                <span class="related-tag">
+                                    <span class="related-tag-hash">#</span>
+                                    SK Chat & SMS
+                                </span>
+                                <span class="related-tag">
+                                    <span class="related-tag-hash">#</span>
+                                    AI Voice
+                                </span>
+                                <span class="related-tag">
+                                    <span class="related-tag-hash">#</span>
+                                    Sidekick
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Results Controls -->
+                        <div class="results-controls">
+                            <span class="results-count">8 results</span>
+                            <select class="results-sort">
+                                <option>Newest</option>
+                                <option>A-Z</option>
+                                <option>Most viewed</option>
+                            </select>
+                        </div>
+
+                        <!-- Results Grid -->
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #D1FAE5; --type-color: #047857;">
+                                        <span class="type-badge-icon">🎓</span>
+                                        Product Training
+                                    </span>
+                                    <span class="result-card-format">VIDEO</span>
+                                </div>
+                                <h4 class="result-card-title">Sidekick Voice Deep Dive</h4>
+                                <p class="result-card-desc">Complete training on voice features and implementation</p>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #EDE9FE; --type-color: #8C69F0;">
+                                        <span class="type-badge-icon">📊</span>
+                                        Deck
+                                    </span>
+                                    <span class="result-card-format">SLIDES</span>
+                                </div>
+                                <h4 class="result-card-title">Sidekick Voice: Demo, Pitch, Value</h4>
+                                <p class="result-card-desc">Presentation on sidekick voice demo and pitch</p>
+                            </div>
+
+                            <div class="result-card" style="--content-primary: var(--enablement-primary);">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #FEE2E2; --type-color: #DC2626;">
+                                        <span class="type-badge-icon">🔴</span>
+                                        Live Replay
+                                    </span>
+                                    <span class="result-card-format">VIDEO</span>
+                                </div>
+                                <h4 class="result-card-title">Voice Feature Launch Training</h4>
+                                <p class="result-card-desc">Recording from the voice feature launch session</p>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #DBEAFE; --type-color: #1D4ED8;">
+                                        <span class="type-badge-icon">📘</span>
+                                        Guide
+                                    </span>
+                                    <span class="result-card-format">DOC</span>
+                                </div>
+                                <h4 class="result-card-title">Voice Integration Playbook</h4>
+                                <p class="result-card-desc">Step-by-step guide for voice integration setup</p>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #FEF3C7; --type-color: #B45309;">
+                                        <span class="type-badge-icon">📄</span>
+                                        One-Pager
+                                    </span>
+                                    <span class="result-card-format">PDF</span>
+                                </div>
+                                <h4 class="result-card-title">Sidekick Voice Overview</h4>
+                                <p class="result-card-desc">Quick reference sheet for voice capabilities</p>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-card-header">
+                                    <span class="result-card-type" style="--type-bg: #FEE2E2; --type-color: #DC2626;">
+                                        <span class="type-badge-icon">⚔️</span>
+                                        Battlecard
+                                    </span>
+                                    <span class="result-card-format">PDF</span>
+                                </div>
+                                <h4 class="result-card-title">Voice Competitive Comparison</h4>
+                                <p class="result-card-desc">How Sidekick Voice compares to competitors</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             3. DESIGN SYSTEM
+             ======================================== -->
+        <section id="design-system" class="section-divider">
+            <div class="section-label">Section 3</div>
+            <h2 class="section-title">Design System Documentation</h2>
+            <p class="section-desc">Complete reference for colors, typography, spacing, icons, and component patterns used throughout GTM Library.</p>
+
+            <!-- Hub Colors -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Hub Colors</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">Three primary hubs with primary, light, hover, and accent variants.</p>
+
+                <div class="color-grid">
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #10B981;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">Enablement Primary</div>
+                            <div class="color-swatch-value">#10B981</div>
+                        </div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #D1FAE5;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">Enablement Light</div>
+                            <div class="color-swatch-value">#D1FAE5</div>
+                        </div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #8C69F0;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">Content Primary</div>
+                            <div class="color-swatch-value">#8C69F0</div>
+                        </div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #EDE9FE;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">Content Light</div>
+                            <div class="color-swatch-value">#EDE9FE</div>
+                        </div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #F59E0B;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">CoE Primary</div>
+                            <div class="color-swatch-value">#F59E0B</div>
+                        </div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-swatch-preview" style="background: #FEF3C7;"></div>
+                        <div class="color-swatch-info">
+                            <div class="color-swatch-name">CoE Light</div>
+                            <div class="color-swatch-value">#FEF3C7</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Board Colors -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Board Colors</h3>
+                <div class="board-grid">
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #F59E0B;"></span>
+                        <span class="board-name">CoE</span>
+                        <span class="board-color-value">#F59E0B</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #8C69F0;"></span>
+                        <span class="board-name">Content Types</span>
+                        <span class="board-color-value">#8C69F0</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #10B981;"></span>
+                        <span class="board-name">Enablement</span>
+                        <span class="board-color-value">#10B981</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #3B82F6;"></span>
+                        <span class="board-name">Product</span>
+                        <span class="board-color-value">#3B82F6</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #EF4444;"></span>
+                        <span class="board-name">Competitive</span>
+                        <span class="board-color-value">#EF4444</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #0EA5E9;"></span>
+                        <span class="board-name">Sales</span>
+                        <span class="board-color-value">#0EA5E9</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #8B5CF6;"></span>
+                        <span class="board-name">CSM</span>
+                        <span class="board-color-value">#8B5CF6</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #06B6D4;"></span>
+                        <span class="board-name">Demo</span>
+                        <span class="board-color-value">#06B6D4</span>
+                    </div>
+                    <div class="board-item">
+                        <span class="board-dot" style="background: #84CC16;"></span>
+                        <span class="board-name">Proof Points</span>
+                        <span class="board-color-value">#84CC16</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Type Badges -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Type Badges (31 Types)</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">Each type has an icon, color, and background. Organized by hub.</p>
+
+                <table class="type-table">
+                    <thead>
+                        <tr>
+                            <th>Hub</th>
+                            <th>Type</th>
+                            <th>Badge Preview</th>
+                            <th>Icon</th>
+                            <th>Color</th>
+                            <th>Background</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Content Hub -->
+                        <tr>
+                            <td rowspan="5" style="font-weight: 600; color: var(--content-primary);">Content</td>
+                            <td>Deck</td>
+                            <td><span class="type-badge-preview" style="background: #EDE9FE; color: #8C69F0;"><span class="type-badge-icon">📊</span>Deck</span></td>
+                            <td>📊</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#8C69F0</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#EDE9FE</td>
+                        </tr>
+                        <tr>
+                            <td>Battlecard</td>
+                            <td><span class="type-badge-preview" style="background: #FEE2E2; color: #EF4444;"><span class="type-badge-icon">⚔️</span>Battlecard</span></td>
+                            <td>⚔️</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#EF4444</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FEE2E2</td>
+                        </tr>
+                        <tr>
+                            <td>One-Pager</td>
+                            <td><span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;"><span class="type-badge-icon">📄</span>One-Pager</span></td>
+                            <td>📄</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#F59E0B</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FEF3C7</td>
+                        </tr>
+                        <tr>
+                            <td>Template</td>
+                            <td><span class="type-badge-preview" style="background: #EDE9FE; color: #8B5CF6;"><span class="type-badge-icon">📋</span>Template</span></td>
+                            <td>📋</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#8B5CF6</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#EDE9FE</td>
+                        </tr>
+                        <tr>
+                            <td>Guide</td>
+                            <td><span class="type-badge-preview" style="background: #DBEAFE; color: #3B82F6;"><span class="type-badge-icon">📘</span>Guide</span></td>
+                            <td>📘</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#3B82F6</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#DBEAFE</td>
+                        </tr>
+                        <!-- Enablement Hub -->
+                        <tr>
+                            <td rowspan="5" style="font-weight: 600; color: var(--enablement-primary);">Enablement</td>
+                            <td>Product Training</td>
+                            <td><span class="type-badge-preview" style="background: #D1FAE5; color: #10B981;"><span class="type-badge-icon">🎓</span>Product Training</span></td>
+                            <td>🎓</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#10B981</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#D1FAE5</td>
+                        </tr>
+                        <tr>
+                            <td>Technical Training</td>
+                            <td><span class="type-badge-preview" style="background: #E0E7FF; color: #6366F1;"><span class="type-badge-icon">🔧</span>Technical Training</span></td>
+                            <td>🔧</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#6366F1</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#E0E7FF</td>
+                        </tr>
+                        <tr>
+                            <td>GTM Training</td>
+                            <td><span class="type-badge-preview" style="background: #EDE9FE; color: #8B5CF6;"><span class="type-badge-icon">🚀</span>GTM Training</span></td>
+                            <td>🚀</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#8B5CF6</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#EDE9FE</td>
+                        </tr>
+                        <tr>
+                            <td>Certification</td>
+                            <td><span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;"><span class="type-badge-icon">🏆</span>Certification</span></td>
+                            <td>🏆</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#F59E0B</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FEF3C7</td>
+                        </tr>
+                        <tr>
+                            <td>Playbook</td>
+                            <td><span class="type-badge-preview" style="background: #FCE7F3; color: #EC4899;"><span class="type-badge-icon">📕</span>Playbook</span></td>
+                            <td>📕</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#EC4899</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FCE7F3</td>
+                        </tr>
+                        <!-- CoE Hub -->
+                        <tr>
+                            <td rowspan="4" style="font-weight: 600; color: var(--coe-primary);">CoE</td>
+                            <td>Customer Meeting</td>
+                            <td><span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;"><span class="type-badge-icon">🤝</span>Customer Meeting</span></td>
+                            <td>🤝</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#F59E0B</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FEF3C7</td>
+                        </tr>
+                        <tr>
+                            <td>Best Practice</td>
+                            <td><span class="type-badge-preview" style="background: #DBEAFE; color: #3B82F6;"><span class="type-badge-icon">✅</span>Best Practice</span></td>
+                            <td>✅</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#3B82F6</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#DBEAFE</td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard</td>
+                            <td><span class="type-badge-preview" style="background: #CFFAFE; color: #06B6D4;"><span class="type-badge-icon">📊</span>Dashboard</span></td>
+                            <td>📊</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#06B6D4</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#CFFAFE</td>
+                        </tr>
+                        <tr>
+                            <td>Customer Quote</td>
+                            <td><span class="type-badge-preview" style="background: #FEF3C7; color: #F59E0B;"><span class="type-badge-icon">💬</span>Customer Quote</span></td>
+                            <td>💬</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#F59E0B</td>
+                            <td style="font-family: var(--font-mono); font-size: 11px;">#FEF3C7</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Format Icons -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Format Icons (13 Formats)</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">SVG icons with brand colors for each file format. Defined in card-config.tsx.</p>
+
+                <div class="format-grid">
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #FEF3C7;">📊</div>
+                        <div class="format-name">Slides</div>
+                        <div class="format-color">#FBBC04</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #DBEAFE;">📄</div>
+                        <div class="format-name">Document</div>
+                        <div class="format-color">#4285F4</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #D1FAE5;">📗</div>
+                        <div class="format-name">Spreadsheet</div>
+                        <div class="format-color">#34A853</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #FEE2E2;">📕</div>
+                        <div class="format-name">PDF</div>
+                        <div class="format-color">#EA4335</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #FEE2E2;">🎬</div>
+                        <div class="format-name">Video</div>
+                        <div class="format-color">#EA4335</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #F1F5F9;">📰</div>
+                        <div class="format-name">Article</div>
+                        <div class="format-color">#64748B</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #CFFAFE;">🛠️</div>
+                        <div class="format-name">Tool</div>
+                        <div class="format-color">#06B6D4</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #DBEAFE;">📘</div>
+                        <div class="format-name">Guide</div>
+                        <div class="format-color">#3B82F6</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #EDE9FE;">✉️</div>
+                        <div class="format-name">Sequence</div>
+                        <div class="format-color">#8B5CF6</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #FEE2E2;">🔴</div>
+                        <div class="format-name">Live Replay</div>
+                        <div class="format-color">#DC2626</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #DBEAFE;">▶️</div>
+                        <div class="format-name">On Demand</div>
+                        <div class="format-color">#2563EB</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #EDE9FE;">🎓</div>
+                        <div class="format-name">Course</div>
+                        <div class="format-color">#7C3AED</div>
+                    </div>
+                    <div class="format-item">
+                        <div class="format-icon-preview" style="background: #F1F5F9;">🔗</div>
+                        <div class="format-name">Web Link</div>
+                        <div class="format-color">#6B7280</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typography -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Typography Scale</h3>
+                <div class="typo-scale">
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Page Title</div>
+                            <div class="typo-spec">24px / 700</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 24px; font-weight: 700;">Welcome to GTM Library</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Section Title</div>
+                            <div class="typo-spec">15-16px / 600</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 16px; font-weight: 600;">Key Takeaways</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Card Title</div>
+                            <div class="typo-spec">14-15px / 600</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 15px; font-weight: 600;">Sidekick Voice Deep Dive</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Body Text</div>
+                            <div class="typo-spec">14px / 400</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 14px; color: var(--text-secondary);">Complete training on voice features and implementation details for enterprise customers.</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Small Text</div>
+                            <div class="typo-spec">13px / 400-500</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 13px; color: var(--text-secondary);">Dec 28, 2025 • 47 min</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Type Badge</div>
+                            <div class="typo-spec">10-11px / 600 / UPPERCASE</div>
+                        </div>
+                        <div class="typo-preview"><span class="type-badge-preview" style="background: #D1FAE5; color: #10B981;">PRODUCT TRAINING</span></div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Section Label</div>
+                            <div class="typo-spec">10-11px / 600 / UPPERCASE</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">BOARDS</div>
+                    </div>
+                    <div class="typo-item">
+                        <div class="typo-label">
+                            <div class="typo-name">Format Label</div>
+                            <div class="typo-spec">10-11px / 500 / mono</div>
+                        </div>
+                        <div class="typo-preview" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted);">SLIDES</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacing -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">Spacing Scale</h3>
+                <div class="spacing-grid">
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 4px;"></div>
+                        <div class="spacing-value">4px</div>
+                        <div class="spacing-name">2xs</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 8px;"></div>
+                        <div class="spacing-value">8px</div>
+                        <div class="spacing-name">xs</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 12px;"></div>
+                        <div class="spacing-value">12px</div>
+                        <div class="spacing-name">sm</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 16px;"></div>
+                        <div class="spacing-value">16px</div>
+                        <div class="spacing-name">md</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 20px;"></div>
+                        <div class="spacing-value">20px</div>
+                        <div class="spacing-name">lg</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 24px;"></div>
+                        <div class="spacing-value">24px</div>
+                        <div class="spacing-name">xl</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 28px;"></div>
+                        <div class="spacing-value">28px</div>
+                        <div class="spacing-name">2xl</div>
+                    </div>
+                    <div class="spacing-item">
+                        <div class="spacing-box" style="height: 32px;"></div>
+                        <div class="spacing-value">32px</div>
+                        <div class="spacing-name">3xl</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSS Variables -->
+            <div class="ds-section">
+                <h3 class="ds-section-title">CSS Variables Reference</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">Copy these to globals.css for consistent theming.</p>
+
+                <div class="code-block">
+                    <pre><span class="code-comment">/* Hub Colors */</span>
+<span class="code-property">--enablement-primary:</span> <span class="code-value">#10B981</span>;
+<span class="code-property">--enablement-light:</span> <span class="code-value">#D1FAE5</span>;
+<span class="code-property">--enablement-hover:</span> <span class="code-value">#ECFDF5</span>;
+<span class="code-property">--enablement-accent:</span> <span class="code-value">#047857</span>;
+
+<span class="code-property">--content-primary:</span> <span class="code-value">#8C69F0</span>;
+<span class="code-property">--content-light:</span> <span class="code-value">#EDE9FE</span>;
+<span class="code-property">--content-hover:</span> <span class="code-value">#F5F3FF</span>;
+<span class="code-property">--content-accent:</span> <span class="code-value">#6D28D9</span>;
+
+<span class="code-property">--coe-primary:</span> <span class="code-value">#F59E0B</span>;
+<span class="code-property">--coe-light:</span> <span class="code-value">#FEF3C7</span>;
+<span class="code-property">--coe-hover:</span> <span class="code-value">#FFFBEB</span>;
+<span class="code-property">--coe-accent:</span> <span class="code-value">#B45309</span>;
+
+<span class="code-comment">/* Neutral */</span>
+<span class="code-property">--bg-page:</span> <span class="code-value">#F9FAFB</span>;
+<span class="code-property">--card-bg:</span> <span class="code-value">#FFFFFF</span>;
+<span class="code-property">--card-border:</span> <span class="code-value">#E5E7EB</span>;
+<span class="code-property">--text-primary:</span> <span class="code-value">#111827</span>;
+<span class="code-property">--text-secondary:</span> <span class="code-value">#4B5563</span>;
+<span class="code-property">--text-muted:</span> <span class="code-value">#9CA3AF</span>;
+
+<span class="code-comment">/* Layout */</span>
+<span class="code-property">--sidebar-width:</span> <span class="code-value">240px</span>;
+<span class="code-property">--header-height:</span> <span class="code-value">56px</span>;</pre>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

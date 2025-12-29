@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library - Visual Enhancement Mocks</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           GTM LIBRARY - VISUAL ENHANCEMENT MOCKS
+           Focus: Asset Cards + Secondary Nav
+           ======================================== */
+
+        :root {
+            /* Hub Colors */
+            --coe-primary: #F59E0B;
+            --coe-light: #FEF3C7;
+            --content-primary: #8C69F0;
+            --content-light: #EDE9FE;
+            --enablement-primary: #10B981;
+            --enablement-light: #D1FAE5;
+
+            /* Type Colors */
+            --type-deck: #8C69F0;
+            --type-deck-bg: #EDE9FE;
+            --type-battlecard: #EF4444;
+            --type-battlecard-bg: #FEE2E2;
+            --type-tool: #06B6D4;
+            --type-tool-bg: #CFFAFE;
+            --type-guide: #3B82F6;
+            --type-guide-bg: #DBEAFE;
+            --type-dashboard: #06B6D4;
+            --type-dashboard-bg: #CFFAFE;
+            --type-meeting: #F59E0B;
+            --type-meeting-bg: #FEF3C7;
+
+            /* Neutrals */
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+
+            --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 40px;
+        }
+
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .subtitle { font-size: 15px; color: var(--text-secondary); margin-bottom: 40px; }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin: 56px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-label::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--content-primary);
+            border-radius: 2px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .comparison-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-title.before::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #94A3B8;
+            border-radius: 50%;
+        }
+
+        .comparison-title.after::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+        }
+
+        /* ========================================
+           CURRENT CARD STYLE (Before)
+           ======================================== */
+        .card-current {
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 14px;
+            border-top: 5px solid var(--content-primary);
+            overflow: hidden;
+        }
+
+        .card-current-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px 0;
+            gap: 12px;
+        }
+
+        .card-current-badge {
+            display: inline-flex;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--type-deck-bg);
+            color: var(--type-deck);
+        }
+
+        .card-current-format {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px 6px 8px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+        }
+
+        .card-current-body {
+            padding: 14px 20px;
+            flex: 1;
+        }
+
+        .card-current-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .card-current-desc {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .card-current-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: #FAFAFA;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .card-current-date {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        .card-current-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--content-primary);
+        }
+
+        /* ========================================
+           ENHANCED CARD STYLE A - Bolder Type Focus
+           ======================================== */
+        .card-enhanced-a {
+            height: 210px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-a:hover {
+            border-color: var(--content-primary);
+            box-shadow: 0 12px 32px -8px rgba(140, 105, 240, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Accent strip on left instead of top */
+        .card-enhanced-a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--content-primary);
+        }
+
+        .card-a-header {
+            padding: 18px 20px 0 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        /* Large prominent type badge */
+        .card-a-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--type-deck-bg);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--type-deck);
+        }
+
+        .card-a-type-icon {
+            font-size: 12px;
+        }
+
+        /* Format as subtle text only */
+        .card-a-format {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .card-a-body {
+            padding: 14px 20px 16px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-a-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-a-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-a-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px 12px 24px;
+            border-top: 1px solid var(--border-light);
+            background: linear-gradient(to right, rgba(140, 105, 240, 0.03), transparent);
+        }
+
+        .card-a-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-a-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-a-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--content-primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-a:hover .card-a-action {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ========================================
+           ENHANCED CARD STYLE B - Visual Preview
+           ======================================== */
+        .card-enhanced-b {
+            height: 240px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-b:hover {
+            border-color: var(--coe-primary);
+            box-shadow: 0 16px 40px -12px rgba(245, 158, 11, 0.25);
+        }
+
+        /* Color block header with type */
+        .card-b-header {
+            padding: 16px 18px;
+            background: linear-gradient(135deg, var(--type-meeting-bg) 0%, rgba(254, 243, 199, 0.5) 100%);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-b-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #B45309;
+        }
+
+        .card-b-type-icon {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .card-b-format {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .card-b-body {
+            padding: 16px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-b-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .card-b-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .card-b-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px 16px;
+        }
+
+        .card-b-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-b-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--coe-primary);
+        }
+
+        /* ========================================
+           ENHANCED CARD STYLE C - Minimal with Icon
+           ======================================== */
+        .card-enhanced-c {
+            height: 180px;
+            display: flex;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .card-enhanced-c:hover {
+            border-color: var(--enablement-primary);
+            box-shadow: 0 8px 24px -8px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Icon/Visual column */
+        .card-c-visual {
+            width: 80px;
+            background: linear-gradient(180deg, var(--enablement-light) 0%, rgba(209, 250, 229, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .card-c-icon {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-c-content {
+            flex: 1;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-c-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .card-c-type {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--enablement-primary);
+        }
+
+        .card-c-format {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .card-c-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .card-c-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .card-c-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            margin-top: auto;
+        }
+
+        .card-c-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .card-c-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--enablement-primary);
+        }
+
+        /* ========================================
+           ENHANCED CARD STYLE D - Dense/Compact
+           ======================================== */
+        .card-enhanced-d {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .card-enhanced-d:hover {
+            border-color: var(--type-battlecard);
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.02), transparent);
+        }
+
+        .card-enhanced-d::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            background: var(--type-battlecard);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .card-d-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .card-d-type-col {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding-left: 8px;
+        }
+
+        .card-d-type-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--type-battlecard-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .card-d-type-label {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--type-battlecard);
+        }
+
+        .card-d-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-d-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+
+        .card-d-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-d-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-d-action {
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--type-battlecard);
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .card-enhanced-d:hover .card-d-action {
+            opacity: 1;
+        }
+
+        /* ========================================
+           SECONDARY NAV - CURRENT
+           ======================================== */
+        .nav-demo {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .nav-current {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-current-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-current-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .nav-current-tags {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-current-tag {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+        .nav-current-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--content-primary);
+            margin-top: 2px;
+        }
+
+        .nav-current-label {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ========================================
+           SECONDARY NAV - ENHANCED A: Horizontal Pills
+           ======================================== */
+        .nav-enhanced-a {
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-a-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-a-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .nav-a-pill {
+            padding: 6px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-a-pill:hover {
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .nav-a-pill.active {
+            background: var(--content-light);
+            border-color: var(--content-primary);
+            color: var(--content-primary);
+        }
+
+        .nav-a-pill-count {
+            font-size: 11px;
+            background: rgba(140, 105, 240, 0.15);
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        .nav-a-pill.active .nav-a-pill-count {
+            background: rgba(140, 105, 240, 0.25);
+        }
+
+        /* ========================================
+           SECONDARY NAV - ENHANCED B: Dropdown
+           ======================================== */
+        .nav-enhanced-b {
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-b-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .nav-b-dropdown {
+            position: relative;
+        }
+
+        .nav-b-trigger {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .nav-b-trigger:hover {
+            border-color: var(--content-primary);
+        }
+
+        .nav-b-selected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .nav-b-badge {
+            background: var(--content-light);
+            color: var(--content-primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .nav-b-chevron {
+            color: var(--text-muted);
+        }
+
+        .nav-b-clear {
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-b-clear:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ========================================
+           SECONDARY NAV - ENHANCED C: Tabs
+           ======================================== */
+        .nav-enhanced-c {
+            padding: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-c-tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 16px;
+        }
+
+        .nav-c-tab {
+            padding: 14px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-c-tab:hover {
+            color: var(--text);
+        }
+
+        .nav-c-tab.active {
+            color: var(--content-primary);
+            background: var(--card-bg);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .nav-c-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--content-primary);
+        }
+
+        .nav-c-count {
+            font-size: 11px;
+            background: var(--bg);
+            padding: 2px 7px;
+            border-radius: 8px;
+            color: var(--text-muted);
+        }
+
+        .nav-c-tab.active .nav-c-count {
+            background: var(--content-light);
+            color: var(--content-primary);
+        }
+
+        /* ========================================
+           SECONDARY NAV - ENHANCED D: Compact Chips
+           ======================================== */
+        .nav-enhanced-d {
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-d-chips {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-d-chip {
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .nav-d-chip:hover {
+            background: var(--bg);
+        }
+
+        .nav-d-chip.active {
+            background: var(--content-light);
+            border-color: rgba(140, 105, 240, 0.3);
+            color: var(--content-primary);
+        }
+
+        .nav-d-chip.inactive {
+            color: var(--text-muted);
+            text-decoration: line-through;
+            text-decoration-color: var(--border);
+        }
+
+        .nav-d-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-d-btn {
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .nav-d-btn:hover {
+            color: var(--content-primary);
+            background: var(--content-light);
+        }
+
+        /* ========================================
+           CARD GRID DEMOS
+           ======================================== */
+        .card-grid-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .card-grid-demo-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .card-row-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        /* ========================================
+           INFO BOXES
+           ======================================== */
+        .info-box {
+            background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%);
+            border: 1px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box ul {
+            margin: 0 0 0 20px;
+            font-size: 13px;
+            color: #1E3A8A;
+            line-height: 1.7;
+        }
+
+        .info-box li {
+            margin: 6px 0;
+        }
+
+        .highlight {
+            background: rgba(140, 105, 240, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* ========================================
+           FULL PAGE DEMO
+           ======================================== */
+        .page-demo {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        .page-demo-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-demo-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-demo-icon {
+            width: 12px;
+            height: 12px;
+            background: var(--coe-primary);
+            border-radius: 50%;
+        }
+
+        .page-demo-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .page-demo-count {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .page-demo-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-demo-sort {
+            padding: 7px 32px 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+            cursor: pointer;
+            appearance: none;
+            font-family: var(--font);
+        }
+
+        .page-demo-view {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .page-demo-view-btn {
+            padding: 7px 10px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .page-demo-view-btn.active {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .page-demo-content {
+            padding: 24px;
+        }
+
+        .page-demo-section {
+            margin-bottom: 32px;
+        }
+
+        .page-demo-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+    </style>
+</head>
+<body>
+    <h1>Visual Enhancement Mocks</h1>
+    <p class="subtitle">Design-only improvements to asset cards and secondary navigation - maintaining structure, elevating aesthetics</p>
+
+    <div class="info-box">
+        <h4>Design Goals</h4>
+        <ul>
+            <li><strong>Better Type Distinction:</strong> Make asset types (Deck, Battlecard, Tool, etc.) more visually prominent</li>
+            <li><strong>Reduce Monotony:</strong> Add visual variety through color, layout, and hierarchy</li>
+            <li><strong>Compact Secondary Nav:</strong> Reduce vertical footprint while maintaining filtering functionality</li>
+            <li><strong>Maintain Framework:</strong> Same data, same structure, just elevated visuals</li>
+        </ul>
+    </div>
+
+    <!-- ========================================
+         CARD ENHANCEMENTS
+         ======================================== -->
+    <div class="section-label">Asset Card Variations</div>
+
+    <div class="comparison-grid">
+        <div class="comparison-box">
+            <div class="comparison-title before">Current Card</div>
+            <div class="card-current">
+                <div class="card-current-header">
+                    <span class="card-current-badge">DECK</span>
+                    <span class="card-current-format">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#FBBC04"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                        Slides
+                    </span>
+                </div>
+                <div class="card-current-body">
+                    <h4 class="card-current-title">GTM Kickoff Presentation Q1 2025</h4>
+                    <p class="card-current-desc">Complete sales deck for quarterly planning</p>
+                </div>
+                <div class="card-current-footer">
+                    <span class="card-current-date">Dec 28, 2025</span>
+                    <span class="card-current-action">View →</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-box">
+            <div class="comparison-title after">Option A: Left Accent + Prominent Type</div>
+            <div class="card-enhanced-a">
+                <div class="card-a-header">
+                    <span class="card-a-type">
+                        <span class="card-a-type-icon">📊</span>
+                        Deck
+                    </span>
+                    <span class="card-a-format">SLIDES</span>
+                </div>
+                <div class="card-a-body">
+                    <h4 class="card-a-title">GTM Kickoff Presentation Q1 2025</h4>
+                    <p class="card-a-desc">Complete sales deck for quarterly planning sessions with regional breakdown</p>
+                </div>
+                <div class="card-a-footer">
+                    <div class="card-a-meta">
+                        <span class="card-a-date">Dec 28, 2025</span>
+                    </div>
+                    <span class="card-a-action">View →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-grid">
+        <div class="comparison-box">
+            <div class="comparison-title after">Option B: Color Block Header</div>
+            <div class="card-enhanced-b">
+                <div class="card-b-header">
+                    <span class="card-b-type">
+                        <span class="card-b-type-icon">🎯</span>
+                        Customer Meeting
+                    </span>
+                    <span class="card-b-format">Slides</span>
+                </div>
+                <div class="card-b-body">
+                    <h4 class="card-b-title">Enterprise QBR Template</h4>
+                    <p class="card-b-desc">Quarterly business review deck for strategic accounts</p>
+                </div>
+                <div class="card-b-footer">
+                    <span class="card-b-date">Dec 28, 2025</span>
+                    <span class="card-b-action">View →</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-box">
+            <div class="comparison-title after">Option C: Icon Sidebar</div>
+            <div class="card-enhanced-c">
+                <div class="card-c-visual">
+                    <span class="card-c-icon">🎓</span>
+                </div>
+                <div class="card-c-content">
+                    <div class="card-c-header">
+                        <span class="card-c-type">Product Training</span>
+                        <span class="card-c-format">Video</span>
+                    </div>
+                    <h4 class="card-c-title">Sidekick Voice Deep Dive</h4>
+                    <p class="card-c-desc">Complete training on voice features</p>
+                    <div class="card-c-footer">
+                        <span class="card-c-date">Dec 28, 2025</span>
+                        <span class="card-c-action">Watch →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-label">Compact Card Variation (for Dense Views)</div>
+
+    <div class="card-row-demo" style="max-width: 600px;">
+        <div class="card-enhanced-d">
+            <div class="card-d-row">
+                <div class="card-d-type-col">
+                    <span class="card-d-type-icon">⚔️</span>
+                    <span class="card-d-type-label">Battlecard</span>
+                </div>
+                <div class="card-d-content">
+                    <h4 class="card-d-title">Zendesk Competitive Battlecard</h4>
+                    <div class="card-d-meta">
+                        <span class="card-d-meta-item">Document</span>
+                        <span class="card-d-meta-item">Dec 28</span>
+                    </div>
+                </div>
+                <span class="card-d-action">View →</span>
+            </div>
+        </div>
+        <div class="card-enhanced-d" style="--type-battlecard: #06B6D4; --type-battlecard-bg: #CFFAFE;">
+            <div class="card-d-row">
+                <div class="card-d-type-col">
+                    <span class="card-d-type-icon">🛠️</span>
+                    <span class="card-d-type-label">Tool</span>
+                </div>
+                <div class="card-d-content">
+                    <h4 class="card-d-title">ROI Calculator - Enterprise</h4>
+                    <div class="card-d-meta">
+                        <span class="card-d-meta-item">Spreadsheet</span>
+                        <span class="card-d-meta-item">Dec 15</span>
+                    </div>
+                </div>
+                <span class="card-d-action" style="color: #06B6D4;">View →</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         SECONDARY NAV ENHANCEMENTS
+         ======================================== -->
+    <div class="section-label">Secondary Navigation Variations</div>
+
+    <div class="info-box">
+        <h4>Current Problem</h4>
+        <ul>
+            <li>Vertical checkbox list takes <span class="highlight">~200px+ vertical space</span> for 6 tags</li>
+            <li>Feels like a form, not navigation</li>
+            <li>Horizontal alternatives can reduce to <span class="highlight">~50px height</span></li>
+        </ul>
+    </div>
+
+    <div class="comparison-grid">
+        <div class="comparison-box">
+            <div class="comparison-title before">Current: Vertical Checkboxes (~180px)</div>
+            <div class="nav-demo">
+                <div class="nav-current">
+                    <div class="nav-current-header">
+                        <div class="nav-current-title">Board's Tags</div>
+                        <div class="nav-current-tags">
+                            <label class="nav-current-tag">
+                                <input type="checkbox" class="nav-current-checkbox" checked>
+                                <span class="nav-current-label">CoE Essentials</span>
+                            </label>
+                            <label class="nav-current-tag">
+                                <input type="checkbox" class="nav-current-checkbox" checked>
+                                <span class="nav-current-label">Meeting Best Practice Examples</span>
+                            </label>
+                            <label class="nav-current-tag">
+                                <input type="checkbox" class="nav-current-checkbox" checked>
+                                <span class="nav-current-label">Internal Best Practice</span>
+                            </label>
+                            <label class="nav-current-tag">
+                                <input type="checkbox" class="nav-current-checkbox">
+                                <span class="nav-current-label">Product Dashboards</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-box">
+            <div class="comparison-title after">Option A: Horizontal Pills (~50px)</div>
+            <div class="nav-demo">
+                <div class="nav-enhanced-a">
+                    <div class="nav-a-row">
+                        <span class="nav-a-label">Sections</span>
+                        <span class="nav-a-pill active">
+                            CoE Essentials
+                            <span class="nav-a-pill-count">12</span>
+                        </span>
+                        <span class="nav-a-pill active">
+                            Meeting Examples
+                            <span class="nav-a-pill-count">8</span>
+                        </span>
+                        <span class="nav-a-pill active">
+                            Internal BP
+                            <span class="nav-a-pill-count">15</span>
+                        </span>
+                        <span class="nav-a-pill">
+                            Dashboards
+                            <span class="nav-a-pill-count">6</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-grid">
+        <div class="comparison-box">
+            <div class="comparison-title after">Option B: Dropdown (~45px)</div>
+            <div class="nav-demo">
+                <div class="nav-enhanced-b">
+                    <span class="nav-b-label">Showing:</span>
+                    <div class="nav-b-dropdown">
+                        <div class="nav-b-trigger">
+                            <span class="nav-b-selected">
+                                3 sections
+                                <span class="nav-b-badge">35 items</span>
+                            </span>
+                            <span class="nav-b-chevron">▾</span>
+                        </div>
+                    </div>
+                    <span class="nav-b-clear">Show all</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-box">
+            <div class="comparison-title after">Option C: Tab Style (~48px)</div>
+            <div class="nav-demo">
+                <div class="nav-enhanced-c">
+                    <div class="nav-c-tabs">
+                        <span class="nav-c-tab active">
+                            All
+                            <span class="nav-c-count">41</span>
+                        </span>
+                        <span class="nav-c-tab">
+                            Essentials
+                            <span class="nav-c-count">12</span>
+                        </span>
+                        <span class="nav-c-tab">
+                            Meetings
+                            <span class="nav-c-count">8</span>
+                        </span>
+                        <span class="nav-c-tab">
+                            Best Practice
+                            <span class="nav-c-count">15</span>
+                        </span>
+                        <span class="nav-c-tab">
+                            Dashboards
+                            <span class="nav-c-count">6</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-box" style="max-width: 100%; margin-top: 24px;">
+        <div class="comparison-title after">Option D: Compact Toggle Chips (~42px)</div>
+        <div class="nav-demo">
+            <div class="nav-enhanced-d">
+                <div class="nav-d-chips">
+                    <span class="nav-d-chip active">CoE Essentials</span>
+                    <span class="nav-d-chip active">Meeting Examples</span>
+                    <span class="nav-d-chip active">Internal BP</span>
+                    <span class="nav-d-chip inactive">Dashboards</span>
+                </div>
+                <div class="nav-d-actions">
+                    <span class="nav-d-btn">Select all</span>
+                    <span class="nav-d-btn">Clear</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         FULL PAGE DEMO
+         ======================================== -->
+    <div class="section-label">Full Page Concept: Cards + Compact Nav Combined</div>
+
+    <div class="page-demo">
+        <!-- Compact Nav -->
+        <div class="nav-enhanced-a" style="border-bottom: 1px solid var(--border);">
+            <div class="nav-a-row">
+                <span class="nav-a-label">Sections</span>
+                <span class="nav-a-pill active">
+                    CoE Essentials
+                    <span class="nav-a-pill-count">12</span>
+                </span>
+                <span class="nav-a-pill active">
+                    Meeting Examples
+                    <span class="nav-a-pill-count">8</span>
+                </span>
+                <span class="nav-a-pill active">
+                    Internal BP
+                    <span class="nav-a-pill-count">15</span>
+                </span>
+                <span class="nav-a-pill">
+                    Dashboards
+                    <span class="nav-a-pill-count">6</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="page-demo-header">
+            <div class="page-demo-title">
+                <span class="page-demo-icon"></span>
+                <span class="page-demo-name">CoE</span>
+                <span class="page-demo-count">41 items</span>
+            </div>
+            <div class="page-demo-controls">
+                <select class="page-demo-sort">
+                    <option>Newest</option>
+                    <option>A-Z</option>
+                </select>
+                <div class="page-demo-view">
+                    <button class="page-demo-view-btn active">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        </svg>
+                    </button>
+                    <button class="page-demo-view-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="page-demo-content">
+            <div class="page-demo-section">
+                <h3 class="page-demo-section-title">CoE Essentials</h3>
+                <div class="card-grid-demo">
+                    <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                        <div class="card-a-header">
+                            <span class="card-a-type" style="background: #FEF3C7; color: #B45309;">
+                                <span class="card-a-type-icon">🎯</span>
+                                Customer Meeting
+                            </span>
+                            <span class="card-a-format">SLIDES</span>
+                        </div>
+                        <div class="card-a-body">
+                            <h4 class="card-a-title">Enterprise QBR Template</h4>
+                            <p class="card-a-desc">Quarterly business review deck for strategic accounts</p>
+                        </div>
+                        <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                            <span class="card-a-date">Dec 28, 2025</span>
+                            <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                        </div>
+                    </div>
+
+                    <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                        <div class="card-a-header">
+                            <span class="card-a-type" style="background: #CFFAFE; color: #0E7490;">
+                                <span class="card-a-type-icon">📊</span>
+                                Dashboard
+                            </span>
+                            <span class="card-a-format">SPREADSHEET</span>
+                        </div>
+                        <div class="card-a-body">
+                            <h4 class="card-a-title">Weekly Performance Tracker</h4>
+                            <p class="card-a-desc">Track key metrics across all customer segments</p>
+                        </div>
+                        <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                            <span class="card-a-date">Dec 27, 2025</span>
+                            <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                        </div>
+                    </div>
+
+                    <div class="card-enhanced-a" style="--content-primary: #F59E0B;">
+                        <div class="card-a-header">
+                            <span class="card-a-type" style="background: #DBEAFE; color: #1D4ED8;">
+                                <span class="card-a-type-icon">📘</span>
+                                Guide
+                            </span>
+                            <span class="card-a-format">DOCUMENT</span>
+                        </div>
+                        <div class="card-a-body">
+                            <h4 class="card-a-title">Customer Onboarding Playbook</h4>
+                            <p class="card-a-desc">Step-by-step guide for new customer success</p>
+                        </div>
+                        <div class="card-a-footer" style="background: linear-gradient(to right, rgba(245, 158, 11, 0.03), transparent);">
+                            <span class="card-a-date">Dec 26, 2025</span>
+                            <span class="card-a-action" style="color: #F59E0B;">View →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-demo-section">
+                <h3 class="page-demo-section-title">Meeting Best Practice Examples</h3>
+                <div class="card-grid-demo">
+                    <div class="card-enhanced-b" style="height: 220px;">
+                        <div class="card-b-header" style="background: linear-gradient(135deg, #FFEDD5 0%, rgba(255, 237, 213, 0.5) 100%); border-color: rgba(249, 115, 22, 0.15);">
+                            <span class="card-b-type" style="color: #C2410C;">
+                                <span class="card-b-type-icon">👥</span>
+                                Prospect Meeting
+                            </span>
+                            <span class="card-b-format">Video</span>
+                        </div>
+                        <div class="card-b-body">
+                            <h4 class="card-b-title">First Call Excellence Recording</h4>
+                            <p class="card-b-desc">Example of a high-converting discovery call</p>
+                        </div>
+                        <div class="card-b-footer">
+                            <span class="card-b-date">Dec 20, 2025</span>
+                            <span class="card-b-action" style="color: #F97316;">Watch →</span>
+                        </div>
+                    </div>
+
+                    <div class="card-enhanced-b" style="height: 220px;">
+                        <div class="card-b-header">
+                            <span class="card-b-type">
+                                <span class="card-b-type-icon">🎯</span>
+                                Customer Meeting
+                            </span>
+                            <span class="card-b-format">Slides</span>
+                        </div>
+                        <div class="card-b-body">
+                            <h4 class="card-b-title">Annual Review Deck - ACME Corp</h4>
+                            <p class="card-b-desc">Successful annual business review presentation</p>
+                        </div>
+                        <div class="card-b-footer">
+                            <span class="card-b-date">Dec 18, 2025</span>
+                            <span class="card-b-action">View →</span>
+                        </div>
+                    </div>
+
+                    <div class="card-enhanced-b" style="height: 220px;">
+                        <div class="card-b-header" style="background: linear-gradient(135deg, #D1FAE5 0%, rgba(209, 250, 229, 0.5) 100%); border-color: rgba(16, 185, 129, 0.15);">
+                            <span class="card-b-type" style="color: #047857;">
+                                <span class="card-b-type-icon">✅</span>
+                                Best Practice
+                            </span>
+                            <span class="card-b-format">Document</span>
+                        </div>
+                        <div class="card-b-body">
+                            <h4 class="card-b-title">Meeting Prep Checklist</h4>
+                            <p class="card-b-desc">Essential preparation steps for customer meetings</p>
+                        </div>
+                        <div class="card-b-footer">
+                            <span class="card-b-date">Dec 15, 2025</span>
+                            <span class="card-b-action" style="color: #10B981;">View →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         RECOMMENDATIONS
+         ======================================== -->
+    <div class="section-label">Implementation Recommendations</div>
+
+    <div class="info-box" style="background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%); border-color: #86EFAC;">
+        <h4 style="color: #166534;">Recommended Changes</h4>
+        <ul style="color: #166534;">
+            <li><strong>Cards:</strong> Use <span class="highlight">Option A (Left Accent)</span> - subtle but creates clear visual hierarchy without major layout changes</li>
+            <li><strong>Navigation:</strong> Use <span class="highlight">Option A (Horizontal Pills)</span> or <span class="highlight">Option D (Compact Chips)</span> - reduces ~150px vertical space</li>
+            <li><strong>Type Badges:</strong> Increase size slightly, add icons, use more saturated colors</li>
+            <li><strong>Format Labels:</strong> De-emphasize format (monospace, muted) - type is more important for scanning</li>
+            <li><strong>Section Headers:</strong> Add subtle bottom border + more spacing to create visual breaks between sections</li>
+        </ul>
+    </div>
+
+    <div class="info-box" style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border-color: #FCD34D;">
+        <h4 style="color: #92400E;">CSS-Only Changes (No React Updates)</h4>
+        <ul style="color: #92400E;">
+            <li>Move accent from top border to left border</li>
+            <li>Increase type badge padding and font size</li>
+            <li>Add gradient tint to card footer matching hub color</li>
+            <li>Show "View →" on hover only (cleaner default state)</li>
+            <li>Reduce format pill visual weight (smaller, grayer)</li>
+            <li>Add subtle hover shadow with hub-colored tint</li>
+        </ul>
+    </div>
+</body>
+</html>
