@@ -54,14 +54,13 @@ export function BoardPageContent({
   boardTags: boardTagsFromAPI,
   defaultView = 'grid',
 }: BoardPageContentProps) {
-  // Internal tag selection state (horizontal pills manage their own state)
-  // Uses slugs for internal state to match asset.tags
+  // Internal tag selection state - uses slugs as keys for consistency
   const [internalSelectedTags, setInternalSelectedTags] = useState<string[]>([]);
 
-  // Board tag data - use slugs for matching, names/displayNames for display
+  // Get all board tag slugs for internal tracking
   const boardTagSlugs = boardTagsFromAPI?.map(t => t.slug) || [];
-
-  // Map slug -> display name for showing in UI
+  
+  // Display map: slug -> displayName (or name as fallback)
   const boardTagDisplayMap = useMemo(() => {
     const map: Record<string, string> = {};
     boardTagsFromAPI?.forEach(t => {
@@ -70,29 +69,38 @@ export function BoardPageContent({
     return map;
   }, [boardTagsFromAPI]);
 
-  // Count assets per tag (using slugs for comparison)
+  // Helper: Check if an asset tag matches a board tag (by slug OR name)
+  const assetTagMatchesBoardTag = (assetTag: string, boardTag: TagData): boolean => {
+    const assetTagLower = assetTag.toLowerCase();
+    return (
+      assetTagLower === boardTag.slug.toLowerCase() ||
+      assetTagLower === boardTag.name.toLowerCase()
+    );
+  };
+
+  // Count assets per tag (matching by both slug and name)
   const assetCountByTag = useMemo(() => {
     const counts: Record<string, number> = {};
-    boardTagSlugs.forEach(slug => {
-      counts[slug] = assets.filter(asset =>
-        asset.tags.some(t => t.toLowerCase() === slug.toLowerCase())
+    boardTagsFromAPI?.forEach(boardTag => {
+      counts[boardTag.slug] = assets.filter(asset =>
+        asset.tags.some(assetTag => assetTagMatchesBoardTag(assetTag, boardTag))
       ).length;
     });
     return counts;
-  }, [assets, boardTagSlugs]);
+  }, [assets, boardTagsFromAPI]);
 
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'stack'>(defaultView);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   // Toggle section expansion
-  const toggleSection = (tag: string) => {
+  const toggleSection = (slug: string) => {
     setExpandedSections(prev => {
       const next = new Set(prev);
-      if (next.has(tag)) {
-        next.delete(tag);
+      if (next.has(slug)) {
+        next.delete(slug);
       } else {
-        next.add(tag);
+        next.add(slug);
       }
       return next;
     });
@@ -101,47 +109,47 @@ export function BoardPageContent({
   // Use internal selected tags, default to all if empty
   const effectiveSelectedTags = internalSelectedTags.length > 0 ? internalSelectedTags : [...boardTagSlugs];
 
-  // Toggle a tag in the pills
-  const toggleTag = (tagName: string) => {
+  // Toggle a tag in the pills (uses slug)
+  const toggleTag = (tagSlug: string) => {
     if (internalSelectedTags.length === 0) {
       // Currently showing all - switch to just this one
-      setInternalSelectedTags([tagName]);
-    } else if (internalSelectedTags.includes(tagName)) {
+      setInternalSelectedTags([tagSlug]);
+    } else if (internalSelectedTags.includes(tagSlug)) {
       // Remove this tag
-      const newTags = internalSelectedTags.filter(t => t !== tagName);
+      const newTags = internalSelectedTags.filter(t => t !== tagSlug);
       setInternalSelectedTags(newTags); // If empty, will show all
     } else {
       // Add this tag
-      setInternalSelectedTags([...internalSelectedTags, tagName]);
+      setInternalSelectedTags([...internalSelectedTags, tagSlug]);
     }
   };
 
-  // Check if a tag is active
-  const isTagActive = (tagName: string) => {
+  // Check if a tag is active (by slug)
+  const isTagActive = (tagSlug: string) => {
     if (internalSelectedTags.length === 0) return true; // All selected
-    return internalSelectedTags.includes(tagName);
+    return internalSelectedTags.includes(tagSlug);
   };
 
-  // Group assets by their tags that match board tags (using slugs)
+  // Group assets by their tags that match board tags (matching by both slug and name)
   const assetsByTag = useMemo(() => {
     const grouped: Record<string, Asset[]> = {};
-    boardTagSlugs.forEach(slug => {
-      grouped[slug] = [];
+    boardTagsFromAPI?.forEach(boardTag => {
+      grouped[boardTag.slug] = [];
     });
     assets.forEach(asset => {
       asset.tags.forEach(assetTag => {
-        const matchingBoardSlug = boardTagSlugs.find(
-          slug => slug.toLowerCase() === assetTag.toLowerCase()
+        const matchingBoardTag = boardTagsFromAPI?.find(bt => 
+          assetTagMatchesBoardTag(assetTag, bt)
         );
-        if (matchingBoardSlug && grouped[matchingBoardSlug]) {
-          if (!grouped[matchingBoardSlug].some(a => a.id === asset.id)) {
-            grouped[matchingBoardSlug].push(asset);
+        if (matchingBoardTag && grouped[matchingBoardTag.slug]) {
+          if (!grouped[matchingBoardTag.slug].some(a => a.id === asset.id)) {
+            grouped[matchingBoardTag.slug].push(asset);
           }
         }
       });
     });
     return grouped;
-  }, [assets, boardTagSlugs]);
+  }, [assets, boardTagsFromAPI]);
 
   // Sort assets
   const sortAssets = (assetsToSort: Asset[]): Asset[] => {
@@ -220,179 +228,134 @@ export function BoardPageContent({
             </span>
           </button>
 
-          {/* Tag pills */}
-          {boardTagSlugs.map(slug => {
-            const isActive = isTagActive(slug) && internalSelectedTags.length > 0;
-            const count = assetCountByTag[slug] || 0;
-
-            return (
-              <button
-                key={slug}
-                onClick={() => toggleTag(slug)}
+          {/* Tag pills - display name but track by slug */}
+          {boardTagsFromAPI?.map(tag => (
+            <button
+              key={tag.slug}
+              onClick={() => toggleTag(tag.slug)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 500,
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? board.color : '#F1F5F9',
+                color: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'white' : '#64748B',
+              }}
+            >
+              {boardTagDisplayMap[tag.slug]}
+              <span
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  background: isActive ? board.color : '#F1F5F9',
-                  color: isActive ? 'white' : '#64748B',
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
+                  color: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'white' : '#64748B',
                 }}
               >
-                {boardTagDisplayMap[slug] || slug}
-                <span
-                  style={{
-                    fontSize: '11px',
-                    padding: '2px 6px',
-                    borderRadius: '10px',
-                    background: isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
-                    color: isActive ? 'white' : '#64748B',
-                  }}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
+                {assetCountByTag[tag.slug] || 0}
+              </span>
+            </button>
+          ))}
           </div>
         )}
 
-        {/* Board Header with Controls */}
+        {/* Sort and View Controls */}
         <div
-          className="flex items-center justify-between"
-          style={{ padding: '16px 0 20px' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '16px 0',
+          }}
         >
-        {/* Left: Board Title */}
-        <div className="flex items-center gap-3">
-          <span
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: board.color }}
-          />
-          <h1 className="text-xl font-bold" style={{ color: '#0F172A' }}>
-            {board.name}
-          </h1>
-          <span
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: '#F1F5F9', color: '#64748B' }}
-          >
-            {assets.length} items
-          </span>
-        </div>
-
-        {/* Right: Sort Dropdown and View Toggle */}
-        <div className="flex items-center" style={{ gap: '12px' }}>
-          {/* Sort Dropdown */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-            style={{
-              padding: '8px 32px 8px 12px',
-              border: '1px solid #E2E8F0',
-              borderRadius: '8px',
-              fontSize: '13px',
-              fontFamily: 'inherit',
-              background: "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 10px center",
-              cursor: 'pointer',
-              appearance: 'none',
-              color: '#0F172A',
-            }}
-          >
-            <option value="newest">Newest</option>
-            <option value="name">A-Z</option>
-          </select>
-
-          {/* View Toggle Buttons */}
-          <div
-            className="flex"
-            style={{
-              border: '1px solid #E2E8F0',
-              borderRadius: '8px',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Grid View Button */}
-            <button
-              onClick={() => setViewMode('grid')}
-              style={{
-                padding: '8px 12px',
-                background: viewMode === 'grid' ? '#F1F5F9' : 'white',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              title="Card view"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={viewMode === 'grid' ? '#0F172A' : '#94A3B8'}
-                strokeWidth="2"
-              >
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-              </svg>
-            </button>
-
-            {/* Stack/List View Button */}
-            <button
-              onClick={() => setViewMode('stack')}
-              style={{
-                padding: '8px 12px',
-                background: viewMode === 'stack' ? '#F1F5F9' : 'white',
-                border: 'none',
-                borderLeft: '1px solid #E2E8F0',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              title="List view"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={viewMode === 'stack' ? '#0F172A' : '#94A3B8'}
-                strokeWidth="2"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '18px' }}>{board.icon}</span>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#0F172A', margin: 0 }}>
+              {board.name}
+            </h2>
+            <span style={{ fontSize: '14px', color: '#64748B' }}>
+              {assets.length} items
+            </span>
           </div>
-        </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Sort dropdown */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: '8px',
+                border: '1px solid #E2E8F0',
+                background: 'white',
+                fontSize: '13px',
+                color: '#64748B',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="newest">Newest</option>
+              <option value="name">Name</option>
+            </select>
+
+            {/* View toggle */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <button
+                onClick={() => setViewMode('grid')}
+                style={{
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewMode === 'grid' ? '#E2E8F0' : 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('stack')}
+                style={{
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: viewMode === 'stack' ? '#E2E8F0' : 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Tag-based Sections */}
+      {/* Content */}
       {hasAnyAssets ? (
         <>
+          {/* Render sections for each visible tag */}
           {visibleSlugs.map((slug, index) => {
-            const tagAssets = sortAssets(assetsByTag[slug] || []);
+            const tagAssets = assetsByTag[slug] || [];
             if (tagAssets.length === 0) return null;
 
-            const isFirstSection = index === 0 || visibleSlugs.slice(0, index).every(s => (assetsByTag[s] || []).length === 0);
-
-            // For first section in grid view, show hero cards for first 2 items
-            const heroAssets = isFirstSection && viewMode === 'grid' ? tagAssets.slice(0, 2) : [];
-            const regularAssets = isFirstSection && viewMode === 'grid' ? tagAssets.slice(2) : tagAssets;
+            const hasPreviousSections = visibleSlugs.slice(0, index).some(s => (assetsByTag[s] || []).length > 0);
 
             return (
               <section key={slug} style={{ marginBottom: '32px' }}>
-                {!isFirstSection && (
+                {hasPreviousSections && (
                   <div
                     style={{
                       borderTop: '1px solid #E2E8F0',
@@ -408,34 +371,14 @@ export function BoardPageContent({
                     marginBottom: '16px',
                   }}
                 >
-                  {boardTagDisplayMap[slug] || slug}
+                  {boardTagDisplayMap[slug]}
                 </h3>
-
-                {/* Hero Cards for first section */}
-                {heroAssets.length > 0 && (
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: '20px',
-                      marginBottom: regularAssets.length > 0 ? '20px' : 0,
-                    }}
-                  >
-                    {heroAssets.map(asset => (
-                      <HeroCard
-                        key={asset.id}
-                        {...asset}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Regular Cards */}
                 {viewMode === 'grid' ? (
-                  regularAssets.length > 0 && (() => {
+                  (() => {
+                    const sortedAssets = sortAssets(tagAssets);
                     const isExpanded = expandedSections.has(slug);
-                    const visibleAssets = isExpanded ? regularAssets : regularAssets.slice(0, INITIAL_GRID_COUNT);
-                    const hiddenCount = regularAssets.length - INITIAL_GRID_COUNT;
+                    const visibleAssets = isExpanded ? sortedAssets : sortedAssets.slice(0, INITIAL_GRID_COUNT);
+                    const hiddenCount = sortedAssets.length - INITIAL_GRID_COUNT;
                     const showExpandButton = hiddenCount > 0;
 
                     return (
@@ -499,9 +442,10 @@ export function BoardPageContent({
                   })()
                 ) : (
                   (() => {
+                    const sortedAssets = sortAssets(tagAssets);
                     const isExpanded = expandedSections.has(slug);
-                    const visibleAssets = isExpanded ? tagAssets : tagAssets.slice(0, INITIAL_LIST_COUNT);
-                    const hiddenCount = tagAssets.length - INITIAL_LIST_COUNT;
+                    const visibleAssets = isExpanded ? sortedAssets : sortedAssets.slice(0, INITIAL_LIST_COUNT);
+                    const hiddenCount = sortedAssets.length - INITIAL_LIST_COUNT;
                     const showExpandButton = hiddenCount > 0;
 
                     return (
@@ -583,18 +527,16 @@ export function BoardPageContent({
             );
           })}
 
-          {/* Assets without matching tags - show in "Other" section */}
+          {/* "Other" section for untagged assets */}
           {(() => {
-            const untaggedAssets = assets.filter(asset => {
-              const hasMatchingTag = asset.tags.some(assetTag =>
-                boardTagSlugs.some(slug => slug.toLowerCase() === assetTag.toLowerCase())
-              );
-              return !hasMatchingTag;
-            });
+            const taggedAssetIds = new Set(
+              Object.values(assetsByTag).flat().map(a => a.id)
+            );
+            const untaggedAssets = assets.filter(a => !taggedAssetIds.has(a.id));
 
             if (untaggedAssets.length === 0) return null;
 
-            const hasPreviousSections = visibleSlugs.some(s => (assetsByTag[s] || []).length > 0);
+            const hasPreviousSections = visibleSlugs.some(slug => (assetsByTag[slug] || []).length > 0);
 
             return (
               <section style={{ marginBottom: '32px' }}>
