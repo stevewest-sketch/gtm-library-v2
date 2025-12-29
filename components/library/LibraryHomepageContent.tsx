@@ -33,452 +33,282 @@ interface Board {
   description?: string;
 }
 
-interface FeaturedBoardData {
-  id: string;
-  slug: string;
-  title: string;
-  description: string;
-  icon: string;
-  color: string;
-  resourceCount: number;
-  lastUpdated: string | null;
-  items: Asset[];
-}
-
 interface LibraryHomepageContentProps {
   recentAssets: Asset[];
   boards: Board[];
   totalItems: number;
   newThisWeek: number;
-  featuredBoard?: FeaturedBoardData | null;
-  heroTitle?: string;
-  heroSubtitle?: string;
-  showHubCards?: boolean;
-  newThresholdDays?: number;
 }
 
-// Hub configuration
-const HUB_CONFIG = {
-  coe: {
-    name: 'CoE Hub',
-    icon: '🎯',
-    description: 'Centers of Excellence resources and best practices.',
-    gradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+// Quick Access cards data
+const QUICK_ACCESS = [
+  {
+    id: 'enablement',
+    title: 'Enablement Hub',
+    description: 'Training sessions, certifications, and learning paths',
+    icon: '🎓',
+    iconBg: '#D1FAE5',
+    href: '/library/board/enablement',
   },
-  content: {
-    name: 'Content Hub',
-    icon: '📦',
-    description: 'Sales content, decks, and customer-facing resources.',
-    gradient: 'linear-gradient(135deg, #8C69F0 0%, #7C3AED 100%)',
+  {
+    id: 'competitive',
+    title: 'Battlecards',
+    description: 'Competitive intelligence and positioning',
+    icon: '⚔️',
+    iconBg: '#FEE2E2',
+    href: '/library/board/competitive',
   },
-  enablement: {
-    name: 'Enablement Hub',
-    icon: '🚀',
-    description: 'Training sessions and skill-building resources.',
-    gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+  {
+    id: 'sales',
+    title: 'Sales Resources',
+    description: 'Decks, templates, and discovery guides',
+    icon: '📈',
+    iconBg: '#E0F2FE',
+    href: '/library/board/sales',
   },
-};
-
-// Format date for display
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  } catch {
-    return '';
-  }
-}
-
-// Check if item is "new" based on threshold
-function isNew(createdAt: string | undefined, thresholdDays: number): boolean {
-  if (!createdAt) return false;
-  const created = new Date(createdAt);
-  const threshold = new Date();
-  threshold.setDate(threshold.getDate() - thresholdDays);
-  return created > threshold;
-}
+];
 
 export function LibraryHomepageContent({
   recentAssets,
   boards,
   totalItems,
   newThisWeek,
-  featuredBoard,
-  heroTitle = 'GTM Hub',
-  heroSubtitle = 'Your central hub for selling, supporting, and growing with Gladly.',
-  showHubCards = true,
-  newThresholdDays = 7,
 }: LibraryHomepageContentProps) {
-  const [hubHover, setHubHover] = useState<string | null>(null);
+  const [quickHover, setQuickHover] = useState<string | null>(null);
+  const [boardHover, setBoardHover] = useState<string | null>(null);
 
   // Show first 6 recent assets
   const displayedRecent = recentAssets.slice(0, 6);
-  const hubCardsOrder = ['coe', 'content', 'enablement'];
 
   return (
     <div style={{ marginLeft: '-28px', marginRight: '-28px', marginTop: '-20px' }}>
-      {/* Hero Section */}
-      <section
-        style={{
-          background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)',
-          padding: '48px 40px 64px',
-          textAlign: 'center',
-        }}
-      >
-        <h1
+      {/* Main Content Area */}
+      <div style={{ padding: '24px 28px' }}>
+        {/* Hero Section */}
+        <div
           style={{
-            fontSize: '40px',
-            fontWeight: 700,
+            background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)',
+            borderRadius: '16px',
+            padding: '40px',
+            marginBottom: '32px',
             color: 'white',
-            marginBottom: '10px',
-            letterSpacing: '-0.5px',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          {heroTitle}
-        </h1>
-        <p
-          style={{
-            fontSize: '16px',
-            color: '#94A3B8',
-            marginBottom: '40px',
-          }}
-        >
-          {heroSubtitle}
-        </p>
+          {/* Background glow effect */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-50%',
+              right: '-20%',
+              width: '400px',
+              height: '400px',
+              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
 
-        {/* Hub Cards */}
-        {showHubCards && (
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <h1
+              style={{
+                fontSize: '28px',
+                fontWeight: 700,
+                marginBottom: '8px',
+              }}
+            >
+              Welcome to GTM Library
+            </h1>
+            <p
+              style={{
+                fontSize: '15px',
+                color: 'rgba(255, 255, 255, 0.7)',
+                marginBottom: '24px',
+                maxWidth: '500px',
+              }}
+            >
+              Your central hub for sales enablement, content resources, and best practices.
+            </p>
+
+            {/* Stats */}
+            <div style={{ display: 'flex', gap: '32px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '28px', fontWeight: 700, color: 'white' }}>
+                  {boards.length}
+                </span>
+                <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                  Boards
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '28px', fontWeight: 700, color: 'white' }}>
+                  {totalItems}
+                </span>
+                <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                  Resources
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '28px', fontWeight: 700, color: 'white' }}>
+                  {newThisWeek}
+                </span>
+                <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                  Added This Week
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Access Section */}
+        <section style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Quick Access
+            </h3>
+          </div>
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '20px',
-              maxWidth: '900px',
-              margin: '0 auto',
+              gap: '16px',
             }}
           >
-            {hubCardsOrder.map((hubId) => {
-              const config = HUB_CONFIG[hubId as keyof typeof HUB_CONFIG];
-              if (!config) return null;
-              const board = boards.find(b => b.slug === hubId);
-              return (
-                <Link
-                  key={hubId}
-                  href={board ? `/library/board/${board.slug}` : `/library?hub=${hubId}`}
-                  onMouseEnter={() => setHubHover(hubId)}
-                  onMouseLeave={() => setHubHover(null)}
-                  style={{
-                    background: hubHover === hubId ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.05)',
-                    border: hubHover === hubId ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '14px',
-                    padding: '24px',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    textDecoration: 'none',
-                    transform: hubHover === hubId ? 'translateY(-3px)' : 'translateY(0)',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '11px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '16px',
-                      fontSize: '22px',
-                      background: config.gradient,
-                    }}
-                  >
-                    {config.icon}
-                  </div>
-                  <h3
-                    style={{
-                      fontSize: '18px',
-                      fontWeight: 600,
-                      color: 'white',
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {config.name}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      color: '#94A3B8',
-                      lineHeight: 1.5,
-                      margin: 0,
-                    }}
-                  >
-                    {config.description}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* Content Area */}
-      <div style={{ padding: '32px 40px' }}>
-        {/* Featured Board Section */}
-        {featuredBoard && featuredBoard.items.length > 0 && (
-          <section style={{ marginBottom: '40px' }}>
-            {/* Section Header */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '16px',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    padding: '5px 10px',
-                    background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-                    borderRadius: '16px',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: '#92400E',
-                  }}
-                >
-                  <span>⭐</span> Featured
-                </span>
-                <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                  Spotlight
-                </h2>
-              </div>
+            {QUICK_ACCESS.map((item) => (
               <Link
-                href={`/library/board/${featuredBoard.slug}`}
+                key={item.id}
+                href={item.href}
+                onMouseEnter={() => setQuickHover(item.id)}
+                onMouseLeave={() => setQuickHover(null)}
                 style={{
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#8C69F0',
+                  background: 'white',
+                  border: `1px solid ${quickHover === item.id ? '#8C69F0' : 'var(--card-border)'}`,
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
                   textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                View Board →
-              </Link>
-            </div>
-
-            {/* Featured Board Card */}
-            <div
-              style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
-                borderRadius: '14px',
-                overflow: 'hidden',
-              }}
-            >
-              {/* Board Header */}
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)',
-                  padding: '20px 24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
+                  transition: 'all 0.15s ease',
+                  transform: quickHover === item.id ? 'translateY(-2px)' : 'none',
+                  boxShadow: quickHover === item.id ? '0 4px 16px rgba(0, 0, 0, 0.08)' : 'none',
                 }}
               >
                 <div
                   style={{
-                    width: '48px',
-                    height: '48px',
-                    background: 'linear-gradient(135deg, #8C69F0 0%, #7C3AED 100%)',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
+                    fontSize: '20px',
+                    background: item.iconBg,
                   }}
                 >
-                  {featuredBoard.icon}
+                  {item.icon}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <h3
-                    style={{
-                      fontSize: '18px',
-                      fontWeight: 700,
-                      color: 'white',
-                      marginBottom: '3px',
-                    }}
-                  >
-                    {featuredBoard.title}
-                  </h3>
-                  {featuredBoard.description && (
-                    <p style={{ fontSize: '13px', color: '#94A3B8', margin: 0 }}>
-                      {featuredBoard.description}
-                    </p>
-                  )}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '20px', fontWeight: 700, color: 'white' }}>
-                      {featuredBoard.resourceCount}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: '11px',
-                        color: '#94A3B8',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                      }}
-                    >
-                      Resources
-                    </div>
-                  </div>
-                  {featuredBoard.lastUpdated && (
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: '20px', fontWeight: 700, color: 'white' }}>
-                        {formatDate(featuredBoard.lastUpdated)}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: '11px',
-                          color: '#94A3B8',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        Updated
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+                <h3 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  {item.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-              {/* Board Content */}
-              <div style={{ padding: '20px 24px' }}>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                    gap: '16px',
-                  }}
-                >
-                  {featuredBoard.items.map((item) => (
-                    <AssetCard
-                      key={item.id}
-                      id={item.id}
-                      slug={item.slug}
-                      title={item.title}
-                      shortDescription={item.shortDescription}
-                      hub={item.hub}
-                      format={item.format}
-                      type={item.type}
-                      publishDate={item.publishDate}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Recently Added Section */}
-        <section style={{ marginBottom: '40px' }}>
-          {/* Section Header */}
+        {/* Browse by Board Section */}
+        <section style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Browse by Board
+            </h3>
+          </div>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '16px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '12px',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                Recently Added
-              </h2>
-              <span
+            {boards.map((board) => (
+              <Link
+                key={board.id}
+                href={`/library/board/${board.slug}`}
+                onMouseEnter={() => setBoardHover(board.id)}
+                onMouseLeave={() => setBoardHover(null)}
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '4px 10px',
-                  background: '#DCFCE7',
+                  background: 'white',
+                  border: `1px solid ${boardHover === board.id ? '#8C69F0' : 'var(--card-border)'}`,
                   borderRadius: '12px',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  color: '#166534',
+                  padding: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  textDecoration: 'none',
+                  transition: 'all 0.15s ease',
+                  boxShadow: boardHover === board.id ? '0 4px 12px rgba(0, 0, 0, 0.06)' : 'none',
                 }}
               >
-                <span
+                <div
                   style={{
-                    width: '6px',
-                    height: '6px',
-                    background: '#22C55E',
-                    borderRadius: '50%',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '18px',
+                    background: board.lightColor,
+                    flexShrink: 0,
                   }}
-                />
-                Live Feed
-              </span>
-            </div>
-            <Link
-              href="/library/browse"
-              style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#8C69F0',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-            >
-              View All →
-            </Link>
+                >
+                  {board.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                    {board.name}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                    {board.count} items
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Recently Added Section */}
+        <section style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Recently Added
+            </h3>
           </div>
 
-          {/* Recently Added Grid */}
+          {/* Asset Card Grid - uses same AssetCard as board pages */}
           {displayedRecent.length > 0 ? (
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gridTemplateColumns: 'repeat(3, 1fr)',
                 gap: '16px',
               }}
             >
-              {displayedRecent.map((item) => (
-                <div key={item.id} style={{ position: 'relative' }}>
-                  {/* New indicator */}
-                  {isNew(item.publishDate, newThresholdDays) && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        width: '8px',
-                        height: '8px',
-                        background: '#22C55E',
-                        borderRadius: '50%',
-                        boxShadow: '0 0 0 3px rgba(34, 197, 94, 0.2)',
-                        zIndex: 10,
-                      }}
-                    />
-                  )}
-                  <AssetCard
-                    id={item.id}
-                    slug={item.slug}
-                    title={item.title}
-                    shortDescription={item.shortDescription}
-                    hub={item.hub}
-                    format={item.format}
-                    type={item.type}
-                    publishDate={item.publishDate}
-                  />
-                </div>
+              {displayedRecent.map((asset) => (
+                <AssetCard
+                  key={asset.id}
+                  id={asset.id}
+                  slug={asset.slug}
+                  title={asset.title}
+                  shortDescription={asset.shortDescription}
+                  hub={asset.hub}
+                  format={asset.format}
+                  type={asset.type}
+                  publishDate={asset.publishDate}
+                />
               ))}
             </div>
           ) : (
