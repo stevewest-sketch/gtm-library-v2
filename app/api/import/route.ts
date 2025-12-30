@@ -41,7 +41,7 @@ interface ImportResult {
   updated?: boolean;
 }
 
-function parseCSVLine(line: string): string[] {
+function parseCSVLine(line: string, delimiter: string = ','): string[] {
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
@@ -56,7 +56,7 @@ function parseCSVLine(line: string): string[] {
       } else {
         inQuotes = !inQuotes;
       }
-    } else if (char === ',' && !inQuotes) {
+    } else if (char === delimiter && !inQuotes) {
       result.push(current.trim());
       current = '';
     } else {
@@ -66,6 +66,14 @@ function parseCSVLine(line: string): string[] {
   result.push(current.trim());
 
   return result;
+}
+
+// Detect whether the file uses tabs or commas as delimiter
+function detectDelimiter(headerLine: string): string {
+  const tabCount = (headerLine.match(/\t/g) || []).length;
+  const commaCount = (headerLine.match(/,/g) || []).length;
+  // If there are more tabs than commas, it's likely TSV
+  return tabCount > commaCount ? '\t' : ',';
 }
 
 function normalizeHub(hub: string): string {
@@ -216,8 +224,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'CSV must have header and at least one data row' }, { status: 400 });
     }
 
+    // Detect delimiter from header line (tab vs comma)
+    const delimiter = detectDelimiter(lines[0]);
+    console.log('Detected delimiter:', delimiter === '\t' ? 'TAB' : 'COMMA');
+
     // Parse header
-    const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
+    const headers = parseCSVLine(lines[0], delimiter).map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
+    console.log('Parsed headers:', headers);
     const colMap: Record<string, number> = {};
     const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration', 'publishedat', 'publisheddate'];
 
@@ -240,7 +253,7 @@ export async function POST(request: NextRequest) {
       const line = lines[i];
       if (!line.trim()) continue;
 
-      const values = parseCSVLine(line);
+      const values = parseCSVLine(line, delimiter);
       const getValue = (col: string): string => {
         const idx = colMap[col];
         return idx !== undefined ? (values[idx] || '').trim() : '';
