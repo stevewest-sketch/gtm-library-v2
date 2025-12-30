@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { getFormatConfig, getTypeBadge, getHubColors, getTypeHeaderColors } from '@/lib/card-config';
 import { ALL_TYPES } from '@/lib/taxonomy';
+import { useTaxonomy } from '@/lib/taxonomy-context';
 
 interface AssetCardProps {
   id: string;
@@ -30,6 +31,45 @@ function getTypeIcon(type: string | undefined): string {
   return typeConfig?.icon || '📄';
 }
 
+// Hook to get type badge with database fallback
+function useTypeBadgeWithDb(type: string | undefined) {
+  const { types } = useTaxonomy();
+
+  if (!type) return null;
+
+  const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
+
+  // Check database types first
+  if (types[normalizedType]) {
+    return types[normalizedType];
+  }
+
+  // Fall back to static config
+  return getTypeBadge(type);
+}
+
+// Hook to get format config with database fallback
+function useFormatConfigWithDb(format: string) {
+  const { formats } = useTaxonomy();
+
+  const normalizedFormat = format.toLowerCase().replace(/\s+/g, '-');
+
+  // Check database formats first
+  if (formats[normalizedFormat]) {
+    const dbFormat = formats[normalizedFormat];
+    // Return in the same format as getFormatConfig
+    const staticConfig = getFormatConfig(dbFormat.iconType || format);
+    return {
+      ...staticConfig,
+      label: dbFormat.label,
+      color: dbFormat.color,
+    };
+  }
+
+  // Fall back to static config
+  return getFormatConfig(format);
+}
+
 // Format date for display
 function formatDate(dateString?: string): string {
   if (!dateString) return '';
@@ -53,8 +93,8 @@ export function AssetCard({
 }: AssetCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const hubColors = getHubColors(hub);
-  const formatConfig = getFormatConfig(format);
-  const typeBadge = type ? getTypeBadge(type) : null;
+  const formatConfig = useFormatConfigWithDb(format);
+  const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
@@ -262,8 +302,8 @@ export function CompactCard({
 }: CompactCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const hubColors = getHubColors(hub);
-  const formatConfig = getFormatConfig(format);
-  const typeBadge = type ? getTypeBadge(type) : null;
+  const formatConfig = useFormatConfigWithDb(format);
+  const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
@@ -463,8 +503,8 @@ export function HeroCard({
 }: HeroCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const hubColors = getHubColors(hub);
-  const formatConfig = getFormatConfig(format);
-  const typeBadge = type ? getTypeBadge(type) : null;
+  const formatConfig = useFormatConfigWithDb(format);
+  const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
   const typeIcon = getTypeIcon(type);
 
@@ -656,8 +696,8 @@ export function AssetListItem({
   href,
 }: AssetListItemProps) {
   const hubColors = getHubColors(hub);
-  const formatConfig = getFormatConfig(format);
-  const typeBadge = type ? getTypeBadge(type) : null;
+  const formatConfig = useFormatConfigWithDb(format);
+  const typeBadge = useTypeBadgeWithDb(type);
 
   const assetUrl = href || `/asset/${slug}`;
 
