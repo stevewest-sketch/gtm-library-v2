@@ -133,6 +133,9 @@ export default async function HubPage({ params }: HubPageProps) {
     primaryLink: asset.primaryLink || undefined,
   }));
 
+  // Show "Recently Added" section for enablement hub
+  const showRecentlyAdded = hubId === 'enablement';
+
   return (
     <HubLayout
       activeHub={hubId}
@@ -147,6 +150,7 @@ export default async function HubPage({ params }: HubPageProps) {
         hub={hubConfig}
         assets={assets}
         hubTags={hubTagsData}
+        showRecentlyAdded={showRecentlyAdded}
       />
     </HubLayout>
   );

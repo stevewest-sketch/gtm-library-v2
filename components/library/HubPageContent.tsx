@@ -46,6 +46,7 @@ interface HubPageContentProps {
   selectedTags: string[];
   hubTags?: TagData[];
   defaultView?: 'grid' | 'stack';
+  showRecentlyAdded?: boolean; // Show "Recently Added" hero section at top
 }
 
 export function HubPageContent({
@@ -53,6 +54,7 @@ export function HubPageContent({
   assets,
   hubTags: hubTagsFromAPI,
   defaultView = 'grid',
+  showRecentlyAdded = false,
 }: HubPageContentProps) {
   // Internal tag selection state - uses slugs as keys for consistency
   const [internalSelectedTags, setInternalSelectedTags] = useState<string[]>([]);
@@ -342,6 +344,64 @@ export function HubPageContent({
           </div>
         </div>
       </div>
+
+      {/* Recently Added Section - Hero layout for newest content */}
+      {showRecentlyAdded && hasAnyAssets && internalSelectedTags.length === 0 && (
+        <section style={{ marginBottom: '40px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '20px',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={hub.color} strokeWidth="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+            </svg>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: 0 }}>
+              Recently Added
+            </h2>
+          </div>
+
+          {/* Top 2 hero cards - 50/50 split */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '20px',
+              marginBottom: '20px',
+            }}
+          >
+            {assets.slice(0, 2).map(asset => (
+              <HeroCard
+                key={asset.id}
+                id={asset.id}
+                slug={asset.slug}
+                title={asset.title}
+                description={asset.description}
+                shortDescription={asset.shortDescription}
+                hub={asset.hub}
+                format={asset.format}
+                type={asset.type}
+                publishDate={asset.publishDate}
+              />
+            ))}
+          </div>
+
+          {/* Next 4 cards in standard grid */}
+          {assets.length > 2 && (
+            <div className="card-grid">
+              {assets.slice(2, 6).map(asset => (
+                <AssetCard
+                  key={asset.id}
+                  {...asset}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Content */}
       {hasAnyAssets ? (

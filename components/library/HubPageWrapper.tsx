@@ -38,9 +38,10 @@ interface HubPageWrapperProps {
   hub: HubConfig;
   assets: Asset[];
   hubTags?: TagData[];
+  showRecentlyAdded?: boolean;
 }
 
-export function HubPageWrapper({ hubId, hub, assets, hubTags }: HubPageWrapperProps) {
+export function HubPageWrapper({ hubId, hub, assets, hubTags, showRecentlyAdded }: HubPageWrapperProps) {
   const { selectedTags } = useFilterContext();
 
   return (
@@ -50,6 +51,7 @@ export function HubPageWrapper({ hubId, hub, assets, hubTags }: HubPageWrapperPr
       assets={assets}
       selectedTags={selectedTags}
       hubTags={hubTags}
+      showRecentlyAdded={showRecentlyAdded}
     />
   );
 }
