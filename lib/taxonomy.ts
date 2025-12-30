@@ -102,6 +102,12 @@ export const FORMATS = {
     description: 'External web pages',
     fileTypes: ['External URLs', 'web apps'],
   },
+  'meeting-asset': {
+    icon: '📋',
+    label: 'Meeting Asset',
+    description: 'Meeting preparation materials',
+    fileTypes: ['Documents', 'slides'],
+  },
 } as const;
 
 export type FormatId = keyof typeof FORMATS;
@@ -187,6 +193,13 @@ export const ALL_TYPES = {
     icon: '⭐',
     color: '#F59E0B',
     bg: '#FEF3C7',
+  },
+  'customer-example': {
+    label: 'Customer Example',
+    description: 'Real customer examples',
+    icon: '🏆',
+    color: '#10B981',
+    bg: '#D1FAE5',
   },
   'customer-meeting-asset': {
     label: 'Customer Meeting Asset',
@@ -370,6 +383,13 @@ export const ALL_TYPES = {
     icon: '📈',
     color: '#10B981',
     bg: '#D1FAE5',
+  },
+  'prospect-example': {
+    label: 'Prospect Example',
+    description: 'Real prospect examples',
+    icon: '🎯',
+    color: '#8B5CF6',
+    bg: '#EDE9FE',
   },
   'prospect-meeting-asset': {
     label: 'Prospect Meeting Asset',
