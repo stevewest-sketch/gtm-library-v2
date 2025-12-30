@@ -46,11 +46,12 @@ const importConfigs: Record<ImportType, {
     description: 'Import catalog entries (slides, documents, videos, etc.)',
     exportUrl: '/api/export',
     importUrl: '/api/import',
-    columns: 'title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags',
+    columns: 'title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,publishedAt',
     notes: `<strong>Required:</strong> title, hub<br />
 <strong>Optional:</strong> slug (auto-generated from title if blank)<br />
 <strong>Hub values:</strong> CoE, Content, Enablement<br />
-<strong>Tags format:</strong> Pipe-separated, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">sales|gladly|Meeting Examples</code>`,
+<strong>Tags format:</strong> Pipe-separated, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">sales|gladly|Meeting Examples</code><br />
+<strong>publishedAt:</strong> Date for ordering (YYYY-MM-DD or MM/DD/YYYY), e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">2024-12-15</code>`,
   },
   tags: {
     label: 'Tags',

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { HubLayout, HubPageWrapper } from "@/components/library";
 import { db, catalogEntries, assetBoards, boards, boardTags, tags } from "@/lib/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 // Force dynamic rendering to avoid database calls at build time
 export const dynamic = 'force-dynamic';
@@ -52,7 +52,7 @@ async function getHubWithTagsAndAssets(hubSlug: string) {
     .where(eq(boardTags.boardId, hubRecord.id))
     .orderBy(boardTags.sortOrder);
 
-  // Get assets associated with this hub
+  // Get assets associated with this hub, ordered by publishedAt (newest first)
   const assets = await db
     .selectDistinct({
       id: catalogEntries.id,
@@ -71,6 +71,7 @@ async function getHubWithTagsAndAssets(hubSlug: string) {
       shares: catalogEntries.shares,
       status: catalogEntries.status,
       createdAt: catalogEntries.createdAt,
+      publishedAt: catalogEntries.publishedAt,
     })
     .from(catalogEntries)
     .innerJoin(assetBoards, eq(catalogEntries.id, assetBoards.assetId))
@@ -79,7 +80,8 @@ async function getHubWithTagsAndAssets(hubSlug: string) {
         eq(catalogEntries.status, 'published'),
         eq(assetBoards.boardId, hubRecord.id)
       )
-    );
+    )
+    .orderBy(desc(catalogEntries.publishedAt), desc(catalogEntries.createdAt));
 
   return {
     hub: hubRecord as HubData,
@@ -127,7 +129,7 @@ export default async function HubPage({ params }: HubPageProps) {
     views: asset.views || undefined,
     shares: asset.shares || undefined,
     durationMinutes: asset.durationMinutes || undefined,
-    publishDate: asset.createdAt?.toISOString() || undefined,
+    publishDate: asset.publishedAt?.toISOString() || asset.createdAt?.toISOString() || undefined,
     primaryLink: asset.primaryLink || undefined,
   }));
 

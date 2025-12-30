@@ -27,6 +27,7 @@ interface ParsedRow {
   date: string; // For Enablement - session/event date
   presenters: string; // Pipe-separated list of presenters
   duration: string; // Duration in minutes
+  publishedAt: string; // Published date for ordering assets
 }
 
 interface ImportResult {
@@ -191,7 +192,7 @@ export async function POST(request: NextRequest) {
     // Parse header
     const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
     const colMap: Record<string, number> = {};
-    const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration'];
+    const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration', 'publishedat', 'publisheddate'];
 
     headers.forEach((h, i) => {
       if (expectedCols.includes(h)) {
@@ -245,6 +246,7 @@ export async function POST(request: NextRequest) {
         date: getValue('date') || getValue('eventdate'), // Support both column names
         presenters: getValue('presenters'),
         duration: getValue('duration'),
+        publishedAt: getValue('publishedat') || getValue('publisheddate'), // Support both column names
       });
     }
 
@@ -373,6 +375,7 @@ export async function POST(request: NextRequest) {
         eventDate: parseDate(row.date),
         presenters: parsePresenters(row.presenters),
         durationMinutes: parseDuration(row.duration),
+        publishedAt: parseDate(row.publishedAt),
         status: 'published',
       }));
 
@@ -443,6 +446,10 @@ export async function POST(request: NextRequest) {
           if (row.duration) {
             const parsedDuration = parseDuration(row.duration);
             if (parsedDuration !== null) updateData.durationMinutes = parsedDuration;
+          }
+          if (row.publishedAt) {
+            const parsedPublishedAt = parseDate(row.publishedAt);
+            if (parsedPublishedAt) updateData.publishedAt = parsedPublishedAt;
           }
 
           await db.update(catalogEntries)

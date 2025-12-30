@@ -77,6 +77,7 @@ interface AssetData {
   boards: string[];
   tags: string[];
   primaryLink: string;
+  publishedAt: string; // Date picker for ordering assets
   resourceLinks: ResourceLink[];
   trainingContent: {
     videoUrl: string;
@@ -110,6 +111,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     boards: [],
     tags: [],
     primaryLink: '',
+    publishedAt: new Date().toISOString().split('T')[0], // Default to today
     resourceLinks: [],
     trainingContent: {
       videoUrl: '',
@@ -192,6 +194,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           boards: data.boards?.map((b: string | { slug: string }) => typeof b === 'string' ? b : b.slug) || [],
           tags: data.tags || [],
           primaryLink: data.primaryLink || '',
+          publishedAt: data.publishedAt ? new Date(data.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
           resourceLinks: [
             ...(data.videoUrl ? [{ id: 'video', type: 'video', label: 'Video', url: data.videoUrl, copyable: true }] : []),
             ...(data.slidesUrl ? [{ id: 'slides', type: 'slides', label: 'Slides', url: data.slidesUrl, copyable: true }] : []),
@@ -386,6 +389,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         types: formData.type ? [formData.type] : [],
         status: formData.status,
         primaryLink: formData.primaryLink,
+        publishedAt: formData.publishedAt ? new Date(formData.publishedAt) : null,
         tags: formData.tags,
         boardSlugs: formData.boards,
         tagNames: formData.tags,
@@ -924,26 +928,48 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
 
-              {/* Primary Link */}
-              <div style={{ marginTop: '20px' }}>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
-                  Primary Link
-                </label>
-                <input
-                  type="url"
-                  value={formData.primaryLink}
-                  onChange={(e) => handleInputChange('primaryLink', e.target.value)}
-                  placeholder="https://..."
-                  style={{
-                    width: '100%',
-                    padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                  }}
-                />
-                <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
-                  The main link for this asset (Google Drive, Slides, etc.)
+              {/* Primary Link and Published Date Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '20px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Primary Link
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.primaryLink}
+                    onChange={(e) => handleInputChange('primaryLink', e.target.value)}
+                    placeholder="https://..."
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                    }}
+                  />
+                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                    The main link for this asset (Google Drive, Slides, etc.)
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                    Published Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.publishedAt}
+                    onChange={(e) => handleInputChange('publishedAt', e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '11px 14px',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                    }}
+                  />
+                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                    Used to order assets (newest first)
+                  </div>
                 </div>
               </div>
             </div>
