@@ -92,21 +92,48 @@ function normalizeFormat(format: string): string {
   const formatMap: Record<string, string> = {
     'tool': 'tool',
     'document': 'document',
+    'doc': 'document',
     'video': 'video',
     'slides': 'slides',
     'slide': 'slides',
     'pdf': 'pdf',
     'sheet': 'sheet',
-    'on-demand': 'video',
+    'spreadsheet': 'spreadsheet',
+    'on-demand': 'on-demand',
+    'on demand': 'on-demand',
+    'live-replay': 'live-replay',
+    'live replay': 'live-replay',
     'training': 'training',
-    'one pager': 'one pager',
-    'one-pager': 'one pager',
+    'one pager': 'one-pager',
+    'one-pager': 'one-pager',
     'battlecard': 'battlecard',
     'template': 'template',
     'guide': 'guide',
     'link': 'link',
+    'web-link': 'web-link',
+    'web link': 'web-link',
+    'article': 'article',
+    'sequence': 'sequence',
+    'course': 'course',
+    'meeting-asset': 'meeting-asset',
+    'meeting asset': 'meeting-asset',
+    'playbook': 'playbook',
+    'proof-point': 'proof-point',
+    'proof point': 'proof-point',
+    'report': 'report',
   };
-  return formatMap[f] || f;
+  // If not in map, convert spaces to dashes (e.g., "Meeting Asset" -> "meeting-asset")
+  return formatMap[f] || f.replace(/\s+/g, '-');
+}
+
+// Normalize type values (convert display names to slugs)
+function normalizeType(type: string): string {
+  if (!type) return '';
+  const t = type.toLowerCase().trim();
+  // If already a slug (contains dashes), return as-is
+  if (t.includes('-')) return t;
+  // Convert display name to slug (e.g., "Customer Example" -> "customer-example")
+  return t.replace(/\s+/g, '-');
 }
 
 function parseTagsString(tagsStr: string | undefined): string[] {
@@ -241,7 +268,7 @@ export async function POST(request: NextRequest) {
         transcriptUrl: getValue('transcripturl'),
         hub: normalizeHub(getValue('hub')),
         format: normalizeFormat(getValue('format') || 'document'),
-        type: getValue('type'),
+        type: normalizeType(getValue('type')),
         tags: getValue('tags'),
         date: getValue('date') || getValue('eventdate'), // Support both column names
         presenters: getValue('presenters'),
