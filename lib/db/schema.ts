@@ -40,6 +40,11 @@ export const catalogEntries = pgTable('catalog_entries', {
   howtos: jsonb('howtos').$type<{ title: string; content: string }[]>(),
   tips: text('tips').array(),
 
+  // Proof Point / CoE-specific fields
+  metric: text('metric'), // e.g., "87% AI Resolution Rate", "41% ↓ Chat AHT"
+  metricLabel: text('metric_label'), // e.g., "AI Resolution Rate", "Chat Handle Time Reduction"
+  metricSource: text('metric_source'), // e.g., "Rothy's Case Study", "Allbirds Metrics"
+
   // Content sections (for rich detail pages)
   pageSections: jsonb('page_sections').$type<PageSection[]>(),
 
@@ -81,17 +86,29 @@ export type PageSection =
 export type CatalogEntry = typeof catalogEntries.$inferSelect;
 export type NewCatalogEntry = typeof catalogEntries.$inferInsert;
 
+// Hub stats for hero section
+export interface HubStat {
+  label: string;  // e.g., "Resources", "New This Week"
+  value?: string; // Static value, or null for computed
+  computed?: 'total' | 'recent'; // If set, compute dynamically
+}
+
 // Boards table (manually managed)
 export const boards = pgTable('boards', {
   id: uuid('id').primaryKey().defaultRandom(),
   slug: text('slug').unique().notNull(),
   name: text('name').notNull(),
+  description: text('description'), // Hub description for hero section
   icon: text('icon'), // emoji
   color: text('color').notNull(),
   lightColor: text('light_color').notNull(),
   accentColor: text('accent_color').notNull(),
   defaultView: text('default_view').default('grid'), // 'grid' | 'stack'
   sortOrder: integer('sort_order').default(0),
+
+  // Hero section configuration
+  heroStats: jsonb('hero_stats').$type<HubStat[]>(), // Stats shown in hub hero section
+
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

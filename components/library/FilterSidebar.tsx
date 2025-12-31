@@ -67,10 +67,11 @@ export function FilterSidebar({
 
   return (
     <aside
-      className="bg-white border-r overflow-y-auto custom-scrollbar flex-shrink-0"
+      className="border-r overflow-y-auto custom-scrollbar flex-shrink-0"
       style={{
         width: 'var(--filter-width)',
         borderColor: 'var(--card-border)',
+        background: 'var(--card-bg)',
         padding: '20px 16px',
         position: 'sticky',
         top: 0,
@@ -136,7 +137,9 @@ export function FilterSidebar({
         <div className="pt-3 border-t" style={{ borderColor: 'var(--card-border)' }}>
           <button
             onClick={clearAllFilters}
-            className="w-full py-2 text-[12px] font-medium rounded-md transition-all hover:bg-gray-100 flex items-center justify-center gap-1.5"
+            className="w-full py-2 text-[12px] font-medium rounded-md transition-all flex items-center justify-center gap-1.5"
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--hover-bg)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
             style={{ color: 'var(--text-muted)' }}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

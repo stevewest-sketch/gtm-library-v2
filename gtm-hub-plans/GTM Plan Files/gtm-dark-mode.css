@@ -1,0 +1,396 @@
+/* ========================================
+   GTM LIBRARY DARK MODE CSS
+   Copy this into your global styles or 
+   create a separate dark-mode.css file
+   ======================================== */
+
+/* --- CSS VARIABLES (DARK THEME) --- */
+:root {
+    /* Background Hierarchy */
+    --bg-base: #0D0D12;
+    --bg-surface: #16161D;
+    --bg-elevated: #1E1E28;
+    --bg-hover: #252530;
+    
+    /* Text Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0B0;
+    --text-muted: #6B6B7B;
+    
+    /* Borders */
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.10);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    
+    /* Accent Colors (Hub-Specific) */
+    --accent-content: #8C69F0;
+    --accent-enablement: #00B800;
+    --accent-coe: #F59E0B;
+    --accent-proof: #3B82F6;
+    --accent-competitive: #EF4444;
+    
+    /* Accent Light Variants */
+    --accent-content-light: #A88BF5;
+    --accent-enablement-light: #4ADE80;
+    --accent-coe-light: #FBBF24;
+    --accent-proof-light: #60A5FA;
+    --accent-competitive-light: #F87171;
+    
+    /* Shadows */
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+}
+
+/* --- BASE --- */
+body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+}
+
+/* --- UNIFIED ASSET CARD --- */
+.asset-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+}
+
+.asset-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Hub-specific hover borders */
+[data-hub="content"] .asset-card:hover,
+.content-hub .asset-card:hover { 
+    border-color: var(--accent-content); 
+}
+[data-hub="enablement"] .asset-card:hover,
+.enablement-hub .asset-card:hover { 
+    border-color: var(--accent-enablement); 
+}
+[data-hub="coe"] .asset-card:hover,
+.coe-hub .asset-card:hover { 
+    border-color: var(--accent-coe); 
+}
+[data-hub="proof"] .asset-card:hover,
+.proof-hub .asset-card:hover { 
+    border-color: var(--accent-proof); 
+}
+
+/* Card internals */
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.card-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.card-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.card-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+}
+
+.card-badge.type {
+    background: rgba(140, 105, 240, 0.15);
+    color: var(--accent-content-light);
+}
+
+.card-badge.format {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+}
+
+.card-badge.new {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ADE80;
+}
+
+.card-badge.featured {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--accent-coe-light);
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.card-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    flex-grow: 1;
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.card-action {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-content-light);
+}
+
+/* Hub-specific action colors */
+[data-hub="enablement"] .card-action,
+.enablement-hub .card-action { 
+    color: var(--accent-enablement-light); 
+}
+[data-hub="coe"] .card-action,
+.coe-hub .card-action { 
+    color: var(--accent-coe-light); 
+}
+[data-hub="proof"] .card-action,
+.proof-hub .card-action { 
+    color: var(--accent-proof-light); 
+}
+
+/* --- CARD GRID --- */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+/* --- SECTION HEADER --- */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-icon {
+    font-size: 24px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.section-count {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+/* --- NAVIGATION / FILTERS --- */
+.nav-bar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-pill {
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.nav-pill:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+.nav-pill.active {
+    background: var(--accent-content);
+    color: white;
+    border-color: var(--accent-content);
+}
+
+/* --- HERO --- */
+.hero {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 48px 24px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.hero p {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+/* --- TRAINING CARD (Enablement) --- */
+.training-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.training-card:hover {
+    border-color: var(--accent-enablement);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.training-card-header {
+    background: var(--bg-elevated);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.training-date {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.training-type {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0, 184, 0, 0.15);
+    color: var(--accent-enablement-light);
+}
+
+.training-card-body {
+    padding: 16px;
+}
+
+.training-card h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.training-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.training-action {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-enablement-light);
+}
+
+/* --- PROOF CARD --- */
+.proof-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.proof-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--accent-proof);
+}
+
+.proof-metric {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-proof-light);
+    margin-bottom: 4px;
+}
+
+.proof-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.proof-source {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* --- COMPACT CARD --- */
+.compact-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    transition: all 0.2s ease;
+}
+
+.compact-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--accent-content);
+}
+
+.compact-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.compact-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+}

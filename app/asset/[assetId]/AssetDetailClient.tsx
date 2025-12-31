@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { CrossLinkPanel } from '@/components/library/CrossLinkPanel';
 
 // Helper to get embed URL for various document/content types
 function getPreviewEmbedUrl(url: string): { embedUrl: string; type: 'gslides' | 'gdocs' | 'gsheets' | 'gdrive' | 'figma' | 'canva' | 'miro' | 'pdf' | null; label: string } {
@@ -175,6 +176,12 @@ interface AssetDetailClientProps {
   shareableLink: string;
   assetBoardsData: { id: string; slug: string; name: string; color: string | null }[];
   assetTagsData: { id: string; slug: string; name: string }[];
+  crossLinks?: {
+    relatedAssets: { id: string; slug: string; title: string; shortDescription: string | null; format: string; type: string | null; hub: string }[];
+    proofPoints: { id: string; slug: string; title: string; shortDescription: string | null; format: string; type: string | null; hub: string }[];
+    training: { id: string; slug: string; title: string; shortDescription: string | null; format: string; type: string | null; hub: string }[];
+    customerExamples: { id: string; slug: string; title: string; shortDescription: string | null; format: string; type: string | null; hub: string }[];
+  };
 }
 
 export function AssetDetailClient({
@@ -189,6 +196,7 @@ export function AssetDetailClient({
   shareableLink,
   assetBoardsData,
   assetTagsData,
+  crossLinks,
 }: AssetDetailClientProps) {
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [takeawaysExpanded, setTakeawaysExpanded] = useState(true);
@@ -350,14 +358,14 @@ export function AssetDetailClient({
           position: 'sticky',
           top: '64px', // Below the fixed page header
           zIndex: 40,
-          background: 'var(--bg-page, #F9FAFB)',
+          background: 'var(--bg-page)',
           marginLeft: '-28px',
           marginRight: '-28px',
           paddingLeft: '28px',
           paddingRight: '28px',
           paddingTop: '16px',
           paddingBottom: '16px',
-          borderBottom: '1px solid #E5E7EB',
+          borderBottom: '1px solid var(--card-border)',
         }}
       >
         {/* Header Row with Type Badge and Share Button */}
@@ -384,14 +392,14 @@ export function AssetDetailClient({
               {hubName}
             </span>
             {/* Title */}
-            <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.3 }}>
+            <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
               {asset.title}
             </h1>
             {/* Description - truncated */}
             {asset.description && (
               <p style={{
                 fontSize: '13px',
-                color: '#6B7280',
+                color: 'var(--text-secondary)',
                 lineHeight: 1.5,
                 margin: '6px 0 0 0',
                 display: '-webkit-box',
@@ -450,12 +458,12 @@ export function AssetDetailClient({
                   onClick={() => scrollToSection(section.id)}
                   style={{
                     padding: '6px 14px',
-                    background: isActive ? hubStyle.primary : 'white',
-                    border: `1px solid ${isActive ? hubStyle.primary : '#E5E7EB'}`,
+                    background: isActive ? hubStyle.primary : 'var(--card-bg)',
+                    border: `1px solid ${isActive ? hubStyle.primary : 'var(--card-border)'}`,
                     borderRadius: '20px',
                     fontSize: '13px',
                     fontWeight: 500,
-                    color: isActive ? 'white' : '#4B5563',
+                    color: isActive ? 'white' : 'var(--text-secondary)',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                   }}
@@ -468,9 +476,9 @@ export function AssetDetailClient({
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) {
-                      e.currentTarget.style.background = 'white';
-                      e.currentTarget.style.borderColor = '#E5E7EB';
-                      e.currentTarget.style.color = '#4B5563';
+                      e.currentTarget.style.background = 'var(--card-bg)';
+                      e.currentTarget.style.borderColor = 'var(--card-border)';
+                      e.currentTarget.style.color = 'var(--text-secondary)';
                     }
                   }}
                 >
@@ -500,8 +508,8 @@ export function AssetDetailClient({
             <div
               id="preview-section"
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 overflow: 'hidden',
                 marginBottom: '24px',
@@ -511,7 +519,7 @@ export function AssetDetailClient({
                 style={{
                   position: 'relative',
                   aspectRatio: '16/10',
-                  background: '#F9FAFB',
+                  background: 'var(--bg-elevated)',
                 }}
               >
                 <iframe
@@ -530,10 +538,10 @@ export function AssetDetailClient({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '14px 18px',
-                  borderTop: '1px solid #E5E7EB',
+                  borderTop: '1px solid var(--card-border)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4B5563' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
@@ -573,11 +581,11 @@ export function AssetDetailClient({
                       alignItems: 'center',
                       gap: '6px',
                       padding: '8px 14px',
-                      background: '#F3F4F6',
+                      background: 'var(--hover-bg)',
                       border: 'none',
                       borderRadius: '6px',
                       fontSize: '13px',
-                      color: '#4B5563',
+                      color: 'var(--text-secondary)',
                       cursor: 'pointer',
                     }}
                   >
@@ -600,8 +608,8 @@ export function AssetDetailClient({
             <div
               id="video-section"
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 overflow: 'hidden',
                 marginBottom: '24px',
@@ -716,10 +724,10 @@ export function AssetDetailClient({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '14px 18px',
-                  borderTop: '1px solid #E5E7EB',
+                  borderTop: '1px solid var(--card-border)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#4B5563' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
@@ -737,11 +745,11 @@ export function AssetDetailClient({
                         alignItems: 'center',
                         gap: '6px',
                         padding: '8px 14px',
-                        background: '#F3F4F6',
+                        background: 'var(--hover-bg)',
                         border: 'none',
                         borderRadius: '6px',
                         fontSize: '13px',
-                        color: '#4B5563',
+                        color: 'var(--text-secondary)',
                         cursor: 'pointer',
                         textDecoration: 'none',
                       }}
@@ -761,11 +769,11 @@ export function AssetDetailClient({
                       alignItems: 'center',
                       gap: '6px',
                       padding: '8px 14px',
-                      background: '#F3F4F6',
+                      background: 'var(--hover-bg)',
                       border: 'none',
                       borderRadius: '6px',
                       fontSize: '13px',
-                      color: '#4B5563',
+                      color: 'var(--text-secondary)',
                       cursor: 'pointer',
                     }}
                   >
@@ -788,8 +796,8 @@ export function AssetDetailClient({
             <div
               id="takeaways-section"
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 marginBottom: '20px',
                 overflow: 'hidden',
@@ -801,10 +809,10 @@ export function AssetDetailClient({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '18px 22px',
-                  borderBottom: takeawaysExpanded ? '1px solid #F3F4F6' : 'none',
+                  borderBottom: takeawaysExpanded ? '1px solid var(--card-border)' : 'none',
                 }}
               >
-                <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>Key Takeaways</h2>
+                <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>Key Takeaways</h2>
                 <button
                   onClick={() => setTakeawaysExpanded(!takeawaysExpanded)}
                   style={{
@@ -813,11 +821,11 @@ export function AssetDetailClient({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: '#F3F4F6',
+                    background: 'var(--hover-bg)',
                     border: 'none',
                     borderRadius: '6px',
                     cursor: 'pointer',
-                    color: '#4B5563',
+                    color: 'var(--text-secondary)',
                     transform: takeawaysExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
                     transition: 'transform 0.2s ease',
                   }}
@@ -848,7 +856,7 @@ export function AssetDetailClient({
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
-                      <div style={{ fontSize: '14px', color: '#4B5563', lineHeight: 1.6 }}>{takeaway}</div>
+                      <div style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{takeaway}</div>
                     </div>
                   ))}
                 </div>
@@ -861,8 +869,8 @@ export function AssetDetailClient({
             <div
               id="howto-section"
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 marginBottom: '20px',
                 overflow: 'hidden',
@@ -874,10 +882,10 @@ export function AssetDetailClient({
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '18px 22px',
-                  borderBottom: howToExpanded ? '1px solid #F3F4F6' : 'none',
+                  borderBottom: howToExpanded ? '1px solid var(--card-border)' : 'none',
                 }}
               >
-                <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#111827' }}>How To</h2>
+                <h2 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>How To</h2>
                 <button
                   onClick={() => setHowToExpanded(!howToExpanded)}
                   style={{
@@ -886,11 +894,11 @@ export function AssetDetailClient({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: '#F3F4F6',
+                    background: 'var(--hover-bg)',
                     border: 'none',
                     borderRadius: '6px',
                     cursor: 'pointer',
-                    color: '#4B5563',
+                    color: 'var(--text-secondary)',
                     transform: howToExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
                     transition: 'transform 0.2s ease',
                   }}
@@ -922,10 +930,10 @@ export function AssetDetailClient({
                         {index + 1}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                           {step.title}
                         </h4>
-                        <p style={{ fontSize: '14px', color: '#4B5563', lineHeight: 1.6 }}>{step.content}</p>
+                        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{step.content}</p>
                       </div>
                     </div>
                   ))}
@@ -984,6 +992,63 @@ export function AssetDetailClient({
             </div>
           )}
 
+          {/* Cross-Link Panels - Only show when content exists */}
+          {crossLinks && (
+            (crossLinks.relatedAssets.length > 0 ||
+             crossLinks.proofPoints.length > 0 ||
+             crossLinks.training.length > 0 ||
+             crossLinks.customerExamples.length > 0) && (
+              <div style={{ marginTop: '32px' }}>
+                <h2
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    color: 'var(--text-primary)',
+                    marginBottom: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={hubStyle.primary} strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  You May Also Like
+                </h2>
+
+                <CrossLinkPanel
+                  title="Related Assets"
+                  icon="🔗"
+                  assets={crossLinks.relatedAssets}
+                  accentColor={hubStyle.primary}
+                />
+
+                <CrossLinkPanel
+                  title="Supporting Proof Points"
+                  icon="📊"
+                  assets={crossLinks.proofPoints}
+                  accentColor={hubStyle.primary}
+                />
+
+                <CrossLinkPanel
+                  title="Recommended Training"
+                  icon="🎓"
+                  assets={crossLinks.training}
+                  accentColor={hubStyle.primary}
+                />
+
+                <CrossLinkPanel
+                  title="Customer Examples"
+                  icon="🏆"
+                  assets={crossLinks.customerExamples}
+                  accentColor={hubStyle.primary}
+                />
+              </div>
+            )
+          )}
+
         </div>
 
         {/* Sidebar Column */}
@@ -993,15 +1058,15 @@ export function AssetDetailClient({
             <div
               id="materials-section"
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 overflow: 'hidden',
                 marginBottom: '20px',
               }}
             >
-              <div style={{ padding: '18px 20px', borderBottom: '1px solid #E5E7EB', background: '#FAFAFA' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>Links</h3>
+              <div style={{ padding: '18px 20px', borderBottom: '1px solid var(--card-border)', background: 'var(--bg-elevated)' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>Links</h3>
               </div>
               <div style={{ padding: '12px' }}>
                 {actualVideoUrl && (
@@ -1012,7 +1077,7 @@ export function AssetDetailClient({
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       marginBottom: '8px',
                     }}
                   >
@@ -1034,8 +1099,8 @@ export function AssetDetailClient({
                       </svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Recording</div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{formattedDuration || 'Video'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '2px' }}>Recording</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{formattedDuration || 'Video'}</div>
                     </div>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -1047,8 +1112,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                         }}
@@ -1069,8 +1134,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           textDecoration: 'none',
                         }}
@@ -1092,7 +1157,7 @@ export function AssetDetailClient({
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       marginBottom: '8px',
                     }}
                   >
@@ -1116,8 +1181,8 @@ export function AssetDetailClient({
                       </svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Presentation</div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Slides</div>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '2px' }}>Presentation</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Slides</div>
                     </div>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -1129,8 +1194,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                         }}
@@ -1151,8 +1216,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           textDecoration: 'none',
                         }}
@@ -1174,7 +1239,7 @@ export function AssetDetailClient({
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       marginBottom: '8px',
                     }}
                   >
@@ -1199,8 +1264,8 @@ export function AssetDetailClient({
                       </svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Key Document</div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Document</div>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '2px' }}>Key Document</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Document</div>
                     </div>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -1212,8 +1277,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                         }}
@@ -1234,8 +1299,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           textDecoration: 'none',
                         }}
@@ -1257,7 +1322,7 @@ export function AssetDetailClient({
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       marginBottom: '8px',
                     }}
                   >
@@ -1283,8 +1348,8 @@ export function AssetDetailClient({
                       </svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Transcript</div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>AI-generated</div>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '2px' }}>Transcript</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>AI-generated</div>
                     </div>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -1296,8 +1361,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                         }}
@@ -1318,8 +1383,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           textDecoration: 'none',
                         }}
@@ -1341,7 +1406,7 @@ export function AssetDetailClient({
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       marginBottom: '8px',
                     }}
                   >
@@ -1366,10 +1431,10 @@ export function AssetDetailClient({
                       </svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '2px' }}>
                         {previewEmbed.label || 'Primary Asset'}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Document</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Document</div>
                     </div>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -1381,8 +1446,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                         }}
@@ -1403,8 +1468,8 @@ export function AssetDetailClient({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           textDecoration: 'none',
                         }}
@@ -1424,8 +1489,8 @@ export function AssetDetailClient({
             {/* Metadata */}
             <div
               style={{
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '12px',
                 padding: '20px',
               }}
@@ -1436,7 +1501,7 @@ export function AssetDetailClient({
                   fontWeight: 600,
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',
-                  color: '#9CA3AF',
+                  color: 'var(--text-muted)',
                   marginBottom: '16px',
                 }}
               >
@@ -1444,7 +1509,7 @@ export function AssetDetailClient({
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Hub</span>
+                  <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Hub</span>
                   <span
                     style={{
                       display: 'inline-flex',
@@ -1465,34 +1530,34 @@ export function AssetDetailClient({
                 </div>
                 {asset.types && asset.types.length > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Type</span>
-                    <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500, textTransform: 'capitalize' }}>
+                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Type</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500, textTransform: 'capitalize' }}>
                       {asset.types[0]}
                     </span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Format</span>
-                  <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500, textTransform: 'capitalize' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Format</span>
+                  <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500, textTransform: 'capitalize' }}>
                     {asset.format || 'Document'}
                   </span>
                 </div>
                 {formattedDuration && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Duration</span>
-                    <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>{formattedDuration}</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Duration</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500 }}>{formattedDuration}</span>
                   </div>
                 )}
                 {asset.views !== null && asset.views !== undefined && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Views</span>
-                    <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>{asset.views}</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Views</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500 }}>{asset.views}</span>
                   </div>
                 )}
                 {assetBoardsData.length > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Boards</span>
-                    <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500 }}>
+                    <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Boards</span>
+                    <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500 }}>
                       {assetBoardsData.map((b) => b.name).join(', ')}
                     </span>
                   </div>
@@ -1501,8 +1566,8 @@ export function AssetDetailClient({
 
               {/* Tags */}
               {((asset.tags && asset.tags.length > 0) || assetTagsData.length > 0) && (
-                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #E5E7EB' }}>
-                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginBottom: '8px', width: '100%' }}>Tags</div>
+                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', width: '100%' }}>Tags</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {(assetTagsData.length > 0 ? assetTagsData.map((t) => t.name) : asset.tags || []).map((tag, index) => (
                       <span
@@ -1510,9 +1575,9 @@ export function AssetDetailClient({
                         style={{
                           fontSize: '11px',
                           padding: '4px 10px',
-                          background: '#F3F4F6',
+                          background: 'var(--hover-bg)',
                           borderRadius: '4px',
-                          color: '#4B5563',
+                          color: 'var(--text-secondary)',
                         }}
                       >
                         {tag}

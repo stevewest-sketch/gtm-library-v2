@@ -31,6 +31,7 @@ export async function GET(
         name: tags.name,
         slug: tags.slug,
         color: tags.color,
+        category: tags.category,
         sortOrder: boardTags.sortOrder,
         displayName: boardTags.displayName,
       })

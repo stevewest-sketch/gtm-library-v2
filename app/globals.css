@@ -116,8 +116,128 @@
   --card-radius: 12px;
   --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.1);
 
+  /* Interactive States */
+  --bg-elevated: #FFFFFF;
+  --hover-bg: #F3F4F6;
+  --active-bg: #E5E7EB;
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.2);
+
   /* Font */
   --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Dark Mode - System Preference Detection */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Background Hierarchy (from dark mode design system) */
+    --bg-base: #0D0D12;
+    --bg-surface: #16161D;
+    --bg-elevated: #1E1E28;
+    --bg-hover: #252530;
+
+    /* Map to existing variable names for compatibility */
+    --bg-page: var(--bg-base);
+    --bg-dark: var(--bg-base);
+    --card-bg: var(--bg-surface);
+    --footer-bg: var(--bg-surface);
+    --hover-bg: var(--bg-hover);
+    --active-bg: #2D2D3A;
+
+    /* Text Colors */
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0A0B0;
+    --text-muted: #6B6B7B;
+    --format-text: #6B6B7B;
+
+    /* Border Hierarchy */
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.10);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    --card-border: var(--border-default);
+
+    /* Hub Accent Colors (Dark Mode) */
+    --accent-content: #8C69F0;
+    --accent-enablement: #00B800;
+    --accent-coe: #F59E0B;
+    --accent-proof: #3B82F6;
+    --accent-competitive: #EF4444;
+
+    /* Hub Accent Light Variants (for text on dark backgrounds) */
+    --accent-content-light: #A88BF5;
+    --accent-enablement-light: #4ADE80;
+    --accent-coe-light: #FBBF24;
+    --accent-proof-light: #60A5FA;
+    --accent-competitive-light: #F87171;
+
+    /* UI States */
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --error: #EF4444;
+
+    /* Text inverse (for light text on colored backgrounds) */
+    --text-inverse: #0D0D12;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --card-shadow-hover: var(--shadow-md);
+
+    /* Radius (Design Tokens) */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-pill: 20px;
+
+    /* Badge Design System - Compact Card Badges (from mockup) */
+    --badge-radius: 4px;
+    --badge-padding: 3px 8px;
+    --badge-font-size: 10px;
+
+    --badge-type-bg: rgba(140, 105, 240, 0.15);
+    --badge-type-border: transparent;
+    --badge-type-text: var(--accent-content-light);
+
+    --badge-format-bg: var(--bg-hover);
+    --badge-format-border: transparent;
+    --badge-format-text: var(--text-muted);
+
+    --badge-hub-bg: rgba(0, 155, 0, 0.15);
+    --badge-hub-border: transparent;
+    --badge-hub-text: var(--accent-enablement-light);
+
+    --badge-tag-bg: rgba(245, 158, 11, 0.15);
+    --badge-tag-border: transparent;
+    --badge-tag-text: var(--accent-coe-light);
+
+    /* Status Badges (New, Featured) */
+    --badge-new-bg: rgba(34, 197, 94, 0.15);
+    --badge-new-text: var(--success);
+    --badge-featured-bg: rgba(245, 158, 11, 0.15);
+    --badge-featured-text: var(--accent-coe-light);
+
+    /* Proof Point Badge */
+    --badge-proof-bg: rgba(59, 130, 246, 0.15);
+    --badge-proof-text: var(--accent-proof-light);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.2s ease;
+    --transition-slow: 0.3s ease;
+
+    /* Focus States */
+    --focus-ring: 0 0 0 3px rgba(140, 105, 240, 0.15);
+    --focus-ring-enablement: 0 0 0 3px rgba(0, 184, 0, 0.15);
+    --focus-ring-coe: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    --focus-ring-proof: 0 0 0 3px rgba(59, 130, 246, 0.15);
+
+    /* Scrollbar for dark mode */
+    --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+  }
 }
 
 @theme inline {
@@ -180,12 +300,12 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--scrollbar-thumb-hover);
 }
 
 /* Hide scrollbar but keep functionality */
@@ -221,7 +341,7 @@ body {
 .tabs {
   display: flex;
   gap: 4px;
-  background: #F9FAFB;
+  background: var(--hover-bg);
   padding: 4px;
   border-radius: 8px;
 }
@@ -230,7 +350,7 @@ body {
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #4B5563;
+  color: var(--text-secondary);
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -239,12 +359,12 @@ body {
 }
 
 .tab:hover {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .tab.active {
-  background: #FFFFFF;
-  color: #8C69F0;
+  background: var(--card-bg);
+  color: var(--content-primary);
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
@@ -257,7 +377,7 @@ body {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 14px;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 /* Card Grid - v7 design */
@@ -294,28 +414,32 @@ body {
 
 .sort-select {
   padding: 7px 32px 7px 12px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--card-border);
   border-radius: 6px;
   font-size: 13px;
   font-family: inherit;
-  background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+  background-color: var(--card-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  color: var(--text-primary);
   cursor: pointer;
   appearance: none;
 }
 
 .view-btn {
   padding: 7px 14px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--card-border);
   border-radius: 6px;
   font-size: 13px;
-  background: #FFFFFF;
+  background: var(--card-bg);
   cursor: pointer;
-  color: #4B5563;
+  color: var(--text-secondary);
   transition: background 0.15s ease;
 }
 
 .view-btn:hover {
-  background: #F3F4F6;
+  background: var(--hover-bg);
 }
 
 /* Filter Sidebar Styles - v7 design */
@@ -328,7 +452,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #9CA3AF;
+  color: var(--text-muted);
   margin-bottom: 14px;
 }
 
@@ -339,7 +463,7 @@ body {
   padding: 8px 0;
   cursor: pointer;
   font-size: 14px;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .filter-checkbox input[type="checkbox"] {
@@ -366,7 +490,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .filter-group-header:hover {
@@ -386,7 +510,7 @@ body {
 .filter-group-chevron {
   width: 18px;
   height: 18px;
-  color: #9CA3AF;
+  color: var(--text-muted);
   transition: transform 0.2s ease;
 }
 
@@ -412,4 +536,590 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ========================================
+   HERO SECTION (Hub Pages)
+   ======================================== */
+.hero {
+  background: var(--bg-surface, var(--card-bg));
+  border-bottom: 1px solid var(--border-subtle, var(--card-border));
+  padding: 48px 24px;
+}
+
+.hero.content-hub {
+  border-bottom-color: var(--accent-content, #8C69F0);
+}
+.hero.enablement-hub {
+  border-bottom-color: var(--accent-enablement, #00B800);
+}
+.hero.coe-hub {
+  border-bottom-color: var(--accent-coe, #F59E0B);
+}
+.hero.proof-hub {
+  border-bottom-color: var(--accent-proof, #3B82F6);
+}
+.hero.competitive-hub {
+  border-bottom-color: var(--accent-competitive, #EF4444);
+}
+
+.hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.hero p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.hero-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.hero-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-content-light, #A88BF5);
+}
+
+.hero-stat-label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Hub-specific stat colors */
+.enablement-hub .hero-stat-value { color: var(--accent-enablement-light, #4ADE80); }
+.coe-hub .hero-stat-value { color: var(--accent-coe-light, #FBBF24); }
+.proof-hub .hero-stat-value { color: var(--accent-proof-light, #60A5FA); }
+.competitive-hub .hero-stat-value { color: var(--accent-competitive-light, #F87171); }
+
+/* ========================================
+   NAVIGATION BAR (Sticky Jump Nav)
+   ======================================== */
+.nav-bar {
+  background: var(--bg-surface, var(--card-bg));
+  border-bottom: 1px solid var(--border-subtle, var(--card-border));
+  padding: 16px 24px;
+  position: sticky;
+  top: var(--header-height, 64px);
+  z-index: 100;
+}
+
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ========================================
+   NAV PILLS (Filter Buttons)
+   ======================================== */
+.nav-pill {
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 10px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-elevated, #1E1E28);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-pill:hover {
+  background: var(--bg-hover, #252530);
+  color: var(--text-primary);
+  border-color: var(--border-hover, rgba(255, 255, 255, 0.15));
+}
+
+.nav-pill.active {
+  background: var(--accent-content, #8C69F0);
+  color: white;
+  border-color: var(--accent-content, #8C69F0);
+}
+
+/* Hub-specific active states */
+.enablement-hub .nav-pill.active {
+  background: var(--accent-enablement, #00B800);
+  border-color: var(--accent-enablement, #00B800);
+}
+.coe-hub .nav-pill.active {
+  background: var(--accent-coe, #F59E0B);
+  border-color: var(--accent-coe, #F59E0B);
+}
+.proof-hub .nav-pill.active {
+  background: var(--accent-proof, #3B82F6);
+  border-color: var(--accent-proof, #3B82F6);
+}
+.competitive-hub .nav-pill.active {
+  background: var(--accent-competitive, #EF4444);
+  border-color: var(--accent-competitive, #EF4444);
+}
+
+/* ========================================
+   SECTION HEADERS
+   ======================================== */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.section-icon {
+  font-size: 24px;
+}
+
+.section-step {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.section-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: auto;
+  padding: 4px 10px;
+  background: var(--bg-hover, rgba(255, 255, 255, 0.06));
+  border-radius: 12px;
+}
+
+/* ========================================
+   SEARCH BAR ENHANCEMENTS
+   ======================================== */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-elevated, #1E1E28);
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.10));
+  border-radius: var(--radius-lg, 14px);
+  padding: 12px 16px;
+  gap: 12px;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.search-bar:focus-within {
+  border-color: var(--accent-content, #8C69F0);
+  box-shadow: var(--focus-ring, 0 0 0 3px rgba(140, 105, 240, 0.15));
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-shortcut {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  background: var(--bg-hover, #252530);
+  border-radius: 4px;
+}
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--text-muted);
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+/* ========================================
+   CARD GRID LAYOUTS
+   ======================================== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.card-grid.compact {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+.mb-8 { margin-bottom: 32px; }
+
+/* ========================================
+   UNIFIED ASSET CARD (from Mockup)
+   ======================================== */
+.asset-card {
+  background: var(--bg-surface, var(--card-bg));
+  border: 1px solid var(--border-default, var(--card-border));
+  border-radius: var(--radius-lg, 14px);
+  padding: 20px;
+  transition: all var(--transition-base, 0.2s ease);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.asset-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hub-specific hover accent colors */
+.content-hub .asset-card:hover { border-color: var(--accent-content, #8C69F0); }
+.enablement-hub .asset-card:hover { border-color: var(--accent-enablement, #00B800); }
+.coe-hub .asset-card:hover { border-color: var(--accent-coe, #F59E0B); }
+.proof-hub .asset-card:hover { border-color: var(--accent-proof, #3B82F6); }
+.competitive-hub .asset-card:hover { border-color: var(--accent-competitive, #EF4444); }
+
+/* Card Header Row */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.card-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Card Body */
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12px;
+  flex-grow: 1;
+}
+
+/* Card Footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle, var(--card-border));
+}
+
+.card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.card-action {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-content-light, #A88BF5);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity var(--transition-fast, 0.15s ease);
+}
+
+/* Hub-specific action colors */
+.enablement-hub .card-action { color: var(--accent-enablement-light, #4ADE80); }
+.coe-hub .card-action { color: var(--accent-coe-light, #FBBF24); }
+.proof-hub .card-action { color: var(--accent-proof-light, #60A5FA); }
+.competitive-hub .card-action { color: var(--accent-competitive-light, #F87171); }
+
+/* ========================================
+   CARD BADGE SYSTEM (Compact Design from Mockup)
+   ======================================== */
+.card-badge {
+  font-size: var(--badge-font-size, 10px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: var(--badge-padding, 3px 8px);
+  border-radius: var(--badge-radius, 4px);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.card-badge.type {
+  background: var(--badge-type-bg);
+  color: var(--badge-type-text);
+}
+
+.card-badge.format {
+  background: var(--badge-format-bg);
+  color: var(--badge-format-text);
+}
+
+.card-badge.new {
+  background: var(--badge-new-bg);
+  color: var(--badge-new-text);
+}
+
+.card-badge.featured {
+  background: var(--badge-featured-bg);
+  color: var(--badge-featured-text);
+}
+
+/* ========================================
+   PROOF CARD COMPONENT (from Mockup)
+   ======================================== */
+.proof-card {
+  background: var(--bg-surface, var(--card-bg));
+  border: 1px solid var(--border-default, var(--card-border));
+  border-radius: var(--radius-md, 10px);
+  padding: 16px;
+  transition: all var(--transition-base, 0.2s ease);
+  cursor: pointer;
+}
+
+.proof-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--accent-proof, #3B82F6);
+}
+
+.proof-metric {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-proof-light, #60A5FA);
+  margin-bottom: 4px;
+}
+
+.proof-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.proof-source {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========================================
+   TRAINING CARD COMPONENT (from Mockup)
+   ======================================== */
+.training-card {
+  background: var(--bg-surface, var(--card-bg));
+  border: 1px solid var(--border-default, var(--card-border));
+  border-radius: var(--radius-lg, 14px);
+  overflow: hidden;
+  transition: all var(--transition-base, 0.2s ease);
+  cursor: pointer;
+}
+
+.training-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--accent-enablement, #00B800);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.training-card-header {
+  background: var(--bg-elevated, #1E1E28);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.training-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.training-type {
+  font-size: var(--badge-font-size, 10px);
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: var(--badge-padding, 3px 8px);
+  border-radius: var(--badge-radius, 4px);
+  background: var(--badge-hub-bg);
+  color: var(--badge-hub-text);
+}
+
+.training-card-body {
+  padding: 16px;
+}
+
+.training-card-body h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.training-card-body p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.training-presenter {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.training-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.training-action {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-enablement-light, #4ADE80);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.training-duration {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ========================================
+   COMPACT CARD VARIANT (from Mockup)
+   ======================================== */
+.compact-card {
+  background: var(--bg-surface, var(--card-bg));
+  border: 1px solid var(--border-default, var(--card-border));
+  border-radius: var(--radius-md, 10px);
+  padding: 14px 16px;
+  transition: all var(--transition-base, 0.2s ease);
+  cursor: pointer;
+}
+
+.compact-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--accent-content, #8C69F0);
+}
+
+.compact-card h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.compact-card p {
+  font-size: 12px;
+  color: var(--text-muted);
 }

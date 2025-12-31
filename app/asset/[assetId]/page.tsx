@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { catalogEntries, assetBoards, boards, assetTags, tags } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { AssetDetailClient } from "./AssetDetailClient";
+import { getCrossLinks } from "@/lib/queries/cross-links";
 
 // Force dynamic rendering to avoid database calls at build time
 export const dynamic = 'force-dynamic';
@@ -92,6 +93,15 @@ export default async function AssetPage({ params }: AssetPageProps) {
   // Shareable link
   const shareableLink = `https://gtm.gladly.com/asset/${asset.slug}`;
 
+  // Fetch cross-links for this asset
+  const crossLinks = await getCrossLinks({
+    assetId: asset.id,
+    tags: assetTagsData.map(t => t.slug),
+    currentHub: asset.hub,
+    currentTypes: asset.types,
+    manualRelatedAssets: asset.relatedAssets,
+  });
+
   return (
     <HubLayout
       showSidebar={true}
@@ -119,6 +129,7 @@ export default async function AssetPage({ params }: AssetPageProps) {
         shareableLink={shareableLink}
         assetBoardsData={assetBoardsData}
         assetTagsData={assetTagsData}
+        crossLinks={crossLinks}
       />
     </HubLayout>
   );

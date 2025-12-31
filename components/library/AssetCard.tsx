@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { getFormatConfig, getTypeBadge, getHubColors, getTypeHeaderColors } from '@/lib/card-config';
-import { ALL_TYPES } from '@/lib/taxonomy';
+import { getFormatConfig, getTypeBadge, getHubColors } from '@/lib/card-config';
 import { useTaxonomy } from '@/lib/taxonomy-context';
 
 interface AssetCardProps {
@@ -21,6 +19,8 @@ interface AssetCardProps {
   durationMinutes?: number;
   publishDate?: string;
   href?: string;
+  featured?: boolean;
+  isNew?: boolean; // Computed based on publishDate < 7 days
 }
 
 // Hook to get type badge with database fallback
@@ -40,23 +40,6 @@ function useTypeBadgeWithDb(type: string | undefined) {
   return getTypeBadge(type);
 }
 
-// Hook to get type icon - checks database first, then static config
-function useTypeIcon(type: string | undefined): string {
-  const { types } = useTaxonomy();
-
-  if (!type) return '📄';
-
-  const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
-
-  // Check database types first for icon
-  if (types[normalizedType]?.icon) {
-    return types[normalizedType].icon;
-  }
-
-  // Fall back to static taxonomy config
-  const typeConfig = ALL_TYPES[normalizedType as keyof typeof ALL_TYPES];
-  return typeConfig?.icon || '📄';
-}
 
 // Hook to get format config with database fallback
 function useFormatConfigWithDb(format: string) {
@@ -91,6 +74,20 @@ function formatDate(dateString?: string): string {
   }
 }
 
+// Hub accent colors for hover states (matches CSS variables)
+const HUB_ACCENT_COLORS: Record<string, string> = {
+  content: '#8C69F0',
+  enablement: '#00B800',
+  coe: '#F59E0B',
+  proof: '#3B82F6',
+  competitive: '#EF4444',
+  product: '#3B82F6',
+  sales: '#0EA5E9',
+  csm: '#8B5CF6',
+  sc: '#EC4899',
+  demo: '#06B6D4',
+};
+
 export function AssetCard({
   slug,
   title,
@@ -100,184 +97,64 @@ export function AssetCard({
   type,
   publishDate,
   href,
+  featured,
+  isNew,
 }: AssetCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  const hubColors = getHubColors(hub);
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
-  const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
+  // Hub class for CSS-based hover styling
+  const hubClass = `${hub.toLowerCase()}-hub`;
+
   return (
     <Link
       href={assetUrl}
-      className="block no-underline"
+      className={`asset-card block no-underline ${hubClass}`}
+      data-hub={hub.toLowerCase()}
       style={{
         height: '220px',
         minHeight: '220px',
         maxHeight: '220px',
-        display: 'flex',
-        flexDirection: 'column',
-        background: 'white',
-        border: '1px solid #E2E8F0',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        transition: 'all 0.2s ease',
-        cursor: 'pointer',
-        textDecoration: 'none',
-        color: 'inherit',
-        boxShadow: isHovered ? '0 8px 24px rgba(0, 0, 0, 0.1)' : 'none',
-        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Version D Header: Emoji + Stacked Type/Format */}
-      <div
-        style={{
-          padding: '14px 18px',
-          background: headerColors.headerBg,
-          borderBottom: `1px solid ${headerColors.headerBorder}`,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          flexShrink: 0,
-        }}
-      >
-        {/* Emoji - Slightly Smaller */}
-        <span
-          style={{
-            fontSize: '20px',
-            lineHeight: 1,
-          }}
-        >
-          {typeIcon}
-        </span>
-        {/* Stacked Type + Format - Slightly Larger */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2px',
-          }}
-        >
+      {/* Card Header - Badges Row */}
+      <div className="card-header" style={{ flexShrink: 0 }}>
+        <div className="card-badges">
+          {/* Type Badge */}
           <span
-            style={{
-              fontSize: '14px',
-              fontWeight: 700,
-              color: headerColors.badgeText,
-              letterSpacing: '0.3px',
-              textTransform: 'uppercase',
-            }}
+            className="card-badge type"
+            style={{ color: typeBadge?.color || undefined }}
           >
             {typeBadge?.label || 'Resource'}
           </span>
-          <span
-            style={{
-              fontSize: '12px',
-              fontWeight: 500,
-              color: headerColors.badgeText,
-              opacity: 0.7,
-            }}
-          >
+
+          {/* Format Badge */}
+          <span className="card-badge format">
             {formatConfig.label}
           </span>
+
+          {/* Status Badges inline */}
+          {isNew && <span className="card-badge new">New</span>}
+          {featured && <span className="card-badge featured">Featured</span>}
         </div>
       </div>
 
-      {/* Card Body */}
-      <div
-        style={{
-          padding: '14px 18px',
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          minHeight: 0,
-          overflow: 'hidden',
-        }}
-      >
-        {/* Title container - fixed height, flex to align title to bottom */}
-        <div
-          style={{
-            minHeight: '42px', // 15px * 1.4 line-height * 2 lines = 42px
-            display: 'flex',
-            alignItems: 'flex-end',
-          }}
-        >
-          <h4
-            style={{
-              fontSize: '15px',
-              fontWeight: 600,
-              color: '#0F172A',
-              lineHeight: 1.4,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              margin: 0,
-            }}
-          >
-            {title}
-          </h4>
-        </div>
-
-        {/* Short Description - 13px, 1 line */}
+      {/* Card Body - Title + Description */}
+      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        <h4 className="card-title" style={{ margin: 0 }}>{title}</h4>
         {shortDescription && (
-          <p
-            style={{
-              fontSize: '13px',
-              color: '#64748B',
-              lineHeight: 1.4,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              margin: 0,
-              marginTop: '6px',
-            }}
-          >
-            {shortDescription}
-          </p>
+          <p className="card-description" style={{ margin: 0 }}>{shortDescription}</p>
         )}
       </div>
 
-      {/* Card Footer - Date left, CTA right, always visible */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 18px',
-          flexShrink: 0,
-          marginTop: 'auto',
-          borderTop: '1px solid #E2E8F0',
-        }}
-      >
-        {/* Date */}
-        <span
-          style={{
-            fontSize: '13px',
-            color: '#64748B',
-          }}
-        >
-          {formattedDate}
-        </span>
-
-        {/* Action Button - Always visible */}
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            fontSize: '13px',
-            fontWeight: 600,
-            color: typeBadge?.color || hubColors.primary,
-          }}
-        >
+      {/* Card Footer */}
+      <div className="card-footer">
+        <span className="card-meta">{formattedDate}</span>
+        <span className="card-action">
           {isVideo ? 'Watch' : 'View'}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -315,115 +192,45 @@ export function CompactCard({
   publishDate,
   href,
 }: CompactCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  const hubColors = getHubColors(hub);
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
-  const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
+  // Hub class for CSS-based hover styling
+  const hubClass = `${hub.toLowerCase()}-hub`;
+
   return (
     <Link
       href={assetUrl}
-      className="block no-underline"
+      className={`compact-card block no-underline ${hubClass}`}
+      data-hub={hub.toLowerCase()}
       style={{
         display: 'flex',
-        alignItems: 'stretch',
-        background: 'white',
-        border: '1px solid #E2E8F0',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'all 0.15s ease',
-        textDecoration: 'none',
-        color: 'inherit',
-        boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.08)' : 'none',
+        alignItems: 'center',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Left: Version D type indicator panel - Emoji + Stacked Type/Format */}
-      <div
-        style={{
-          width: '140px',
-          flexShrink: 0,
-          padding: '14px 16px',
-          background: headerColors.headerBg,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          borderRight: `1px solid ${headerColors.headerBorder}`,
-          transition: 'all 0.15s ease',
-        }}
-      >
-        {/* Emoji - Slightly Smaller */}
-        <span
-          style={{
-            fontSize: '18px',
-            lineHeight: 1,
-            flexShrink: 0,
-          }}
-        >
-          {typeIcon}
+      {/* Left: Badges */}
+      <div className="card-badges" style={{ flexShrink: 0, marginRight: '16px' }}>
+        <span className="card-badge type" style={{ color: typeBadge?.color || undefined }}>
+          {typeBadge?.label || 'Resource'}
         </span>
-        {/* Stacked Type + Format - Slightly Larger */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2px',
-          }}
-        >
-          <span
-            style={{
-              fontSize: '12px',
-              fontWeight: 700,
-              color: headerColors.badgeText,
-              letterSpacing: '0.3px',
-              textTransform: 'uppercase',
-              lineHeight: 1.3,
-            }}
-          >
-            {typeBadge?.label || 'Resource'}
-          </span>
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 500,
-              color: headerColors.badgeText,
-              opacity: 0.7,
-            }}
-          >
-            {formatConfig.label}
-          </span>
-        </div>
+        <span className="card-badge format">{formatConfig.label}</span>
       </div>
 
       {/* Center: Title + Description */}
-      <div
-        style={{
-          flex: 1,
-          padding: '12px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          minWidth: 0,
-          background: isHovered ? '#FAFBFC' : 'transparent',
-          transition: 'background 0.15s ease',
-        }}
-      >
+      <div style={{ flex: 1, minWidth: 0 }}>
         <span
           style={{
             fontSize: '14px',
             fontWeight: 600,
-            color: '#0F172A',
+            color: 'var(--text-primary)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            display: 'block',
           }}
         >
           {title}
@@ -432,10 +239,11 @@ export function CompactCard({
           <span
             style={{
               fontSize: '12px',
-              color: '#64748B',
+              color: 'var(--text-muted)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              display: 'block',
               marginTop: '2px',
             }}
           >
@@ -444,38 +252,25 @@ export function CompactCard({
         )}
       </div>
 
-      {/* Right: Date + Action (format moved to left panel) */}
+      {/* Right: Date + Action */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '16px',
-          padding: '12px 16px',
           flexShrink: 0,
-          borderLeft: '1px solid #F1F5F9',
+          marginLeft: '16px',
         }}
       >
         {/* Date */}
         {formattedDate && (
-          <span style={{ fontSize: '12px', color: '#64748B', minWidth: '90px' }}>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', minWidth: '80px' }}>
             {formattedDate}
           </span>
         )}
 
         {/* Action */}
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            fontSize: '13px',
-            fontWeight: 600,
-            color: typeBadge?.color || hubColors.primary,
-            opacity: isHovered ? 1 : 0.4,
-            transition: 'opacity 0.15s ease',
-            minWidth: '60px',
-          }}
-        >
+        <span className="card-action" style={{ minWidth: '60px' }}>
           {isVideo ? 'Watch' : 'View'}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -514,122 +309,47 @@ export function HeroCard({
   publishDate,
   href,
 }: HeroCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  const hubColors = getHubColors(hub);
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
-  const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
   const formattedDate = formatDate(publishDate);
 
+  // Hub class for CSS-based hover styling
+  const hubClass = `${hub.toLowerCase()}-hub`;
+
   return (
     <Link
       href={assetUrl}
-      className="block no-underline"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        background: 'white',
-        border: '1px solid #E2E8F0',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        transition: 'all 0.2s ease',
-        cursor: 'pointer',
-        textDecoration: 'none',
-        color: 'inherit',
-        boxShadow: isHovered ? '0 12px 32px rgba(0, 0, 0, 0.12)' : '0 2px 8px rgba(0, 0, 0, 0.04)',
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`asset-card block no-underline ${hubClass}`}
+      data-hub={hub.toLowerCase()}
+      style={{ padding: '24px' }}
     >
-      {/* Version D Header: Emoji + Stacked Type/Format */}
-      <div
-        style={{
-          padding: '20px 24px',
-          background: headerColors.headerBg,
-          borderBottom: `1px solid ${headerColors.headerBorder}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px',
-        }}
-      >
-        {/* Emoji + Stacked Type/Format */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Emoji - Slightly Smaller */}
+      {/* Header: Badges Row */}
+      <div className="card-header" style={{ marginBottom: '16px' }}>
+        <div className="card-badges" style={{ flex: 1 }}>
+          {/* Type Badge - Slightly larger for hero */}
           <span
-            style={{
-              fontSize: '28px',
-              lineHeight: 1,
-            }}
+            className="card-badge type"
+            style={{ fontSize: '11px', padding: '4px 10px', color: typeBadge?.color || undefined }}
           >
-            {typeIcon}
+            {typeBadge?.label || 'Resource'}
           </span>
-          {/* Stacked Type + Format - Slightly Larger */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '16px',
-                fontWeight: 700,
-                color: headerColors.badgeText,
-                letterSpacing: '0.3px',
-                textTransform: 'uppercase',
-              }}
-            >
-              {typeBadge?.label || 'Resource'}
-            </span>
-            <span
-              style={{
-                fontSize: '13px',
-                fontWeight: 500,
-                color: headerColors.badgeText,
-                opacity: 0.7,
-              }}
-            >
-              {formatConfig.label}
-            </span>
-          </div>
+          <span className="card-badge format" style={{ fontSize: '11px', padding: '4px 10px' }}>
+            {formatConfig.label}
+          </span>
         </div>
-
-        {/* Featured Badge */}
-        <span
-          style={{
-            fontSize: '10px',
-            fontWeight: 600,
-            color: headerColors.badgeText,
-            background: 'rgba(255,255,255,0.6)',
-            padding: '4px 10px',
-            borderRadius: '12px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-          }}
-        >
-          Featured
-        </span>
+        <span className="card-badge featured" style={{ flexShrink: 0 }}>Featured</span>
       </div>
 
       {/* Card Body */}
-      <div
-        style={{
-          padding: '20px 24px',
-          flex: 1,
-        }}
-      >
+      <div style={{ flex: 1 }}>
         <h3
           style={{
             fontSize: '18px',
             fontWeight: 600,
-            color: '#0F172A',
+            color: 'var(--text-primary)',
             lineHeight: 1.4,
             margin: 0,
             marginBottom: shortDescription ? '8px' : 0,
@@ -638,46 +358,16 @@ export function HeroCard({
           {title}
         </h3>
         {shortDescription && (
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#64748B',
-              lineHeight: 1.5,
-              margin: 0,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          >
+          <p className="card-description" style={{ margin: 0, fontSize: '14px' }}>
             {shortDescription}
           </p>
         )}
       </div>
 
       {/* Card Footer */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '16px 24px',
-          borderTop: '1px solid #E2E8F0',
-        }}
-      >
-        <span style={{ fontSize: '13px', color: '#64748B' }}>
-          {formattedDate}
-        </span>
-        <span
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '14px',
-            fontWeight: 600,
-            color: typeBadge?.color || hubColors.primary,
-          }}
-        >
+      <div className="card-footer" style={{ paddingTop: '16px', marginTop: '16px' }}>
+        <span className="card-meta">{formattedDate}</span>
+        <span className="card-action" style={{ fontSize: '14px', gap: '6px' }}>
           {isVideo ? 'Watch' : 'View'}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -722,7 +412,7 @@ export function AssetListItem({
       href={assetUrl}
       className="list-item block no-underline"
       style={{
-        background: 'white',
+        background: 'var(--card-bg)',
         border: '1px solid var(--card-border)',
         borderLeft: `5px solid ${hubColors.primary}`,
         borderRadius: '12px',
@@ -738,14 +428,14 @@ export function AssetListItem({
       onMouseEnter={(e) => {
         const item = e.currentTarget;
         item.style.borderColor = hubColors.primary;
-        item.style.background = '#FAFBFC';
+        item.style.background = 'var(--hover-bg)';
         item.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)';
       }}
       onMouseLeave={(e) => {
         const item = e.currentTarget;
         item.style.borderColor = 'var(--card-border)';
         item.style.borderLeftColor = hubColors.primary;
-        item.style.background = 'white';
+        item.style.background = 'var(--card-bg)';
         item.style.boxShadow = 'none';
       }}
     >
@@ -777,7 +467,7 @@ export function AssetListItem({
           flex: 1,
           fontSize: '14px',
           fontWeight: 600,
-          color: '#111827',
+          color: 'var(--text-primary)',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -802,7 +492,7 @@ export function AssetListItem({
             alignItems: 'center',
             gap: '6px',
             padding: '5px 10px 5px 6px',
-            background: '#F8FAFC',
+            background: 'var(--hover-bg)',
             borderRadius: '6px',
             whiteSpace: 'nowrap',
             flexShrink: 0,
@@ -813,7 +503,7 @@ export function AssetListItem({
             style={{
               fontSize: '11px',
               fontWeight: 600,
-              color: '#6B7280',
+              color: 'var(--text-muted)',
               whiteSpace: 'nowrap',
             }}
           >
@@ -832,6 +522,119 @@ export function AssetListItem({
           View →
         </span>
       </div>
+    </Link>
+  );
+}
+
+// ============================================
+// TRAINING CARD COMPONENT (Enablement Hub)
+// Based on dark mode design system
+// ============================================
+
+interface TrainingCardProps {
+  id: string;
+  slug: string;
+  title: string;
+  shortDescription?: string;
+  type?: string;
+  eventDate?: string;
+  durationMinutes?: number;
+  presenters?: string[];
+  href?: string;
+}
+
+export function TrainingCard({
+  slug,
+  title,
+  shortDescription,
+  type,
+  eventDate,
+  durationMinutes,
+  presenters,
+  href,
+}: TrainingCardProps) {
+  const assetUrl = href || `/asset/${slug}`;
+  const formattedDate = formatDate(eventDate);
+  const duration = durationMinutes ? `${durationMinutes} min` : null;
+  const typeLabel = type?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Training';
+
+  return (
+    <Link href={assetUrl} className="training-card block no-underline" data-hub="enablement">
+      {/* Card Header - Date + Type Badge */}
+      <div className="training-card-header">
+        <span className="training-date">{formattedDate}</span>
+        <span className="training-type">{typeLabel}</span>
+      </div>
+
+      {/* Card Body */}
+      <div className="training-card-body">
+        <h4>{title}</h4>
+        {shortDescription && <p>{shortDescription}</p>}
+
+        {/* Presenter */}
+        {presenters && presenters.length > 0 && (
+          <div className="training-presenter">Presenter: {presenters.join(', ')}</div>
+        )}
+
+        {/* Action Footer */}
+        <div className="training-footer">
+          <span className="training-action">
+            Watch
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </span>
+          {duration && <span className="training-duration">{duration}</span>}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ============================================
+// PROOF CARD COMPONENT (CoE Hub - Statistics/Metrics)
+// Based on dark mode design system mockup
+// ============================================
+
+interface ProofCardProps {
+  id: string;
+  slug: string;
+  title: string;
+  metric?: string;  // e.g., "87% AI Resolution Rate", "41% ↓ Chat AHT"
+  metricLabel?: string;  // e.g., "Cost Reduction", "Revenue Impact"
+  source?: string;
+  href?: string;
+}
+
+export function ProofCard({
+  slug,
+  title,
+  metric,
+  metricLabel,
+  source,
+  href,
+}: ProofCardProps) {
+  const assetUrl = href || `/asset/${slug}`;
+
+  return (
+    <Link
+      href={assetUrl}
+      className="proof-card block no-underline"
+      data-hub="coe"
+    >
+      {/* Metric Display - Large, bold, blue */}
+      <div className="proof-metric">{metric || title}</div>
+
+      {/* Description - Secondary color */}
+      <div className="proof-description">
+        {metricLabel || (metric ? title : '')}
+      </div>
+
+      {/* Source - Muted */}
+      {source && (
+        <div className="proof-source">Source: {source}</div>
+      )}
     </Link>
   );
 }

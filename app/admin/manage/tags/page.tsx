@@ -41,6 +41,7 @@ const CATEGORY_OPTIONS = [
   { value: 'team', label: 'Team' },
   { value: 'topic', label: 'Topic' },
   { value: 'customer', label: 'Customer' },
+  { value: 'workflow', label: 'Workflow' },
 ];
 
 export default function TagsManagePage() {

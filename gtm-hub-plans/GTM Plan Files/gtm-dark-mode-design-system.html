@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library Dark Mode Design System</title>
+    <style>
+        /* ========================================
+           GTM LIBRARY DARK MODE DESIGN SYSTEM
+           Production-Ready Implementation
+           ======================================== */
+
+        /* --- CSS VARIABLES (DARK THEME) --- */
+        :root {
+            /* Background Hierarchy */
+            --bg-base: #0D0D12;
+            --bg-surface: #16161D;
+            --bg-elevated: #1E1E28;
+            --bg-hover: #252530;
+            
+            /* Text Colors */
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+            --text-inverse: #0D0D12;
+            
+            /* Borders */
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            /* Accent Colors (Hub-Specific) */
+            --accent-content: #8C69F0;      /* Purple - Content Hub */
+            --accent-enablement: #00B800;    /* Green - Enablement Hub */
+            --accent-coe: #F59E0B;           /* Orange - CoE Hub */
+            --accent-proof: #3B82F6;         /* Blue - Proof Points */
+            --accent-competitive: #EF4444;   /* Red - Competitive */
+            
+            /* Accent Light Variants (for text) */
+            --accent-content-light: #A88BF5;
+            --accent-enablement-light: #4ADE80;
+            --accent-coe-light: #FBBF24;
+            --accent-proof-light: #60A5FA;
+            --accent-competitive-light: #F87171;
+            
+            /* UI States */
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+            
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-base: 0.2s ease;
+            
+            /* Spacing */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        /* --- BASE RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-base);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 48px 24px;
+        }
+
+        .hero.content-hub { 
+            border-bottom-color: var(--accent-content);
+        }
+        .hero.enablement-hub { 
+            border-bottom-color: var(--accent-enablement);
+        }
+        .hero.coe-hub { 
+            border-bottom-color: var(--accent-coe);
+        }
+        .hero.proof-hub { 
+            border-bottom-color: var(--accent-proof);
+        }
+
+        .hero-content {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .hero-stat {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .hero-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-content-light);
+        }
+
+        .hero-stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           NAVIGATION / FILTERS
+           ======================================== */
+        .nav-bar {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-pill {
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .nav-pill:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .nav-pill.active {
+            background: var(--accent-content);
+            color: white;
+            border-color: var(--accent-content);
+        }
+
+        /* Hub-specific active states */
+        .enablement-hub .nav-pill.active { background: var(--accent-enablement); border-color: var(--accent-enablement); }
+        .coe-hub .nav-pill.active { background: var(--accent-coe); border-color: var(--accent-coe); }
+        .proof-hub .nav-pill.active { background: var(--accent-proof); border-color: var(--accent-proof); }
+
+        /* ========================================
+           SECTION HEADERS
+           ======================================== */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-icon {
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-count {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        /* ========================================
+           CARD GRID
+           ======================================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .card-grid.compact {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        /* ========================================
+           UNIFIED CARD COMPONENT
+           Single card style with accent variation
+           ======================================== */
+        .asset-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .asset-card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Card accent bar (top border) - applied via hub class */
+        .content-hub .asset-card:hover { border-color: var(--accent-content); }
+        .enablement-hub .asset-card:hover { border-color: var(--accent-enablement); }
+        .coe-hub .asset-card:hover { border-color: var(--accent-coe); }
+        .proof-hub .asset-card:hover { border-color: var(--accent-proof); }
+        .competitive-hub .asset-card:hover { border-color: var(--accent-competitive); }
+
+        /* Card Header Row */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .card-badge {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+        }
+
+        /* Badge color variations */
+        .card-badge.type {
+            background: rgba(140, 105, 240, 0.15);
+            color: var(--accent-content-light);
+        }
+
+        .card-badge.format {
+            background: var(--bg-hover);
+            color: var(--text-muted);
+        }
+
+        .card-badge.new {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .card-badge.featured {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-coe-light);
+        }
+
+        /* Card Body */
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .card-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-content-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Hub-specific action colors */
+        .enablement-hub .card-action { color: var(--accent-enablement-light); }
+        .coe-hub .card-action { color: var(--accent-coe-light); }
+        .proof-hub .card-action { color: var(--accent-proof-light); }
+
+        /* ========================================
+           COMPACT CARD VARIANT
+           For dense grids (one-pagers, quick links)
+           ======================================== */
+        .compact-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .compact-card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--accent-content);
+        }
+
+        .compact-card h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .compact-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           TRAINING CARD VARIANT
+           For enablement sessions with date/presenter
+           ======================================== */
+        .training-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .training-card:hover {
+            border-color: var(--accent-enablement);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .training-card-header {
+            background: var(--bg-elevated);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .training-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .training-type {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(0, 184, 0, 0.15);
+            color: var(--accent-enablement-light);
+        }
+
+        .training-card-body {
+            padding: 16px;
+        }
+
+        .training-card h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .training-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .training-presenter {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .training-action {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-enablement-light);
+            margin-top: 8px;
+        }
+
+        /* ========================================
+           PROOF POINT CARD
+           Compact metric display
+           ======================================== */
+        .proof-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .proof-card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--accent-proof);
+        }
+
+        .proof-metric {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-proof-light);
+            margin-bottom: 4px;
+        }
+
+        .proof-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .proof-source {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           SEARCH BAR
+           ======================================== */
+        .search-container {
+            max-width: 480px;
+            margin: 0 auto 32px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 12px 16px;
+            gap: 12px;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--accent-content);
+            box-shadow: 0 0 0 3px rgba(140, 105, 240, 0.15);
+        }
+
+        .search-icon {
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-shortcut {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            background: var(--bg-hover);
+            border-radius: 4px;
+        }
+
+        /* ========================================
+           EMPTY STATE
+           ======================================== */
+        .empty-state {
+            text-align: center;
+            padding: 64px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* ========================================
+           UTILITIES
+           ======================================== */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .mb-8 { margin-bottom: 32px; }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         EXAMPLE: CONTENT HUB PAGE
+         ========================================== -->
+    <div class="content-hub">
+        <!-- Hero -->
+        <div class="hero content-hub">
+            <div class="hero-content">
+                <h1>📝 Content Library</h1>
+                <p>Sales decks, battlecards, one-pagers, and marketing materials for every stage of the sales cycle.</p>
+                <div class="hero-meta">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">141</span>
+                        <span class="hero-stat-label">Resources</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">12</span>
+                        <span class="hero-stat-label">New This Week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation / Filters -->
+        <nav class="nav-bar">
+            <div class="nav-inner">
+                <button class="nav-pill active">All</button>
+                <button class="nav-pill">Deck Templates</button>
+                <button class="nav-pill">One Pagers</button>
+                <button class="nav-pill">Battlecards</button>
+                <button class="nav-pill">Messaging</button>
+                <button class="nav-pill">Demo Assets</button>
+                <button class="nav-pill">Videos</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Search -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search content...">
+                    <span class="search-shortcut">⌘K</span>
+                </div>
+            </div>
+
+            <!-- Section: Deck Templates -->
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <h2 class="section-title">Deck & Slides Templates</h2>
+                    <span class="section-count">25 items</span>
+                </div>
+                <div class="card-grid">
+                    <!-- Card 1 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Template</span>
+                                <span class="card-badge format">Slides</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">First Meeting Deck Release 2.0</h3>
+                        <p class="card-description">Ready-to-use first meeting deck template with latest positioning and customer stories.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 2 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Template</span>
+                                <span class="card-badge format">Slides</span>
+                                <span class="card-badge featured">Featured</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">Customer Meeting Megadeck</h3>
+                        <p class="card-description">Comprehensive deck with modules for every meeting type - discovery, demo, QBR.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 3 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Template</span>
+                                <span class="card-badge format">Slides</span>
+                                <span class="card-badge new">New</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">Social Proof Case Studies</h3>
+                        <p class="card-description">Meeting resource with customer testimonials and success stories.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+
+                    <!-- Card 4 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Template</span>
+                                <span class="card-badge format">Slides</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">RFP Responses Features Catalog</h3>
+                        <p class="card-description">Step-by-step RFP responses features guidance for complex deals.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Section: Battlecards -->
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">⚔️</span>
+                    <h2 class="section-title">Battlecards</h2>
+                    <span class="section-count">20 items</span>
+                </div>
+                <div class="card-grid">
+                    <!-- Battlecard 1 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">⚔️</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Battlecard</span>
+                                <span class="card-badge format">PDF</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">Zendesk Sidekick Battle Card</h3>
+                        <p class="card-description">Competitive positioning vs Zendesk AI for external sharing.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+
+                    <!-- Battlecard 2 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">⚔️</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Battlecard</span>
+                                <span class="card-badge format">PDF</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">Intercom Fin Battlecard</h3>
+                        <p class="card-description">Competitive positioning vs Intercom Fin AI agent.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+
+                    <!-- Battlecard 3 -->
+                    <a href="#" class="asset-card">
+                        <div class="card-header">
+                            <span class="card-icon">⚔️</span>
+                            <div class="card-badges">
+                                <span class="card-badge type">Battlecard</span>
+                                <span class="card-badge format">Doc</span>
+                            </div>
+                        </div>
+                        <h3 class="card-title">Ada Battle Card</h3>
+                        <p class="card-description">Competitive positioning vs Ada AI automation platform.</p>
+                        <div class="card-footer">
+                            <span class="card-meta">Dec 28, 2025</span>
+                            <span class="card-action">View →</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Section: One Pagers (Compact Grid) -->
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">📄</span>
+                    <h2 class="section-title">One Pagers</h2>
+                    <span class="section-count">13 items</span>
+                </div>
+                <div class="card-grid compact">
+                    <a href="#" class="compact-card">
+                        <h4>Sidekick Voice One Pager</h4>
+                        <p>Quick reference overview</p>
+                    </a>
+                    <a href="#" class="compact-card">
+                        <h4>Customer AI One Pager</h4>
+                        <p>Product overview</p>
+                    </a>
+                    <a href="#" class="compact-card">
+                        <h4>Sidekick Email One Pager</h4>
+                        <p>Email automation overview</p>
+                    </a>
+                    <a href="#" class="compact-card">
+                        <h4>Travel Hospitality One Pager</h4>
+                        <p>Vertical overview</p>
+                    </a>
+                    <a href="#" class="compact-card">
+                        <h4>Online Marketplace One Pager</h4>
+                        <p>Vertical overview</p>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         EXAMPLE: ENABLEMENT HUB PAGE
+         ========================================== -->
+    <div class="enablement-hub" style="border-top: 1px solid var(--border-default); margin-top: 64px;">
+        <div class="hero enablement-hub">
+            <div class="hero-content">
+                <h1>🎓 Enablement Hub</h1>
+                <p>Training sessions, certifications, and learning paths to level up your skills.</p>
+                <div class="hero-meta">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value" style="color: var(--accent-enablement-light);">51</span>
+                        <span class="hero-stat-label">Resources</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="nav-inner">
+                <button class="nav-pill active">All</button>
+                <button class="nav-pill">Product Training</button>
+                <button class="nav-pill">GTM Training</button>
+                <button class="nav-pill">Technical</button>
+                <button class="nav-pill">Playbooks</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Section: Training Sessions -->
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">📹</span>
+                    <h2 class="section-title">Recent Training Sessions</h2>
+                    <span class="section-count">19 items</span>
+                </div>
+                <div class="card-grid">
+                    <!-- Training Card 1 -->
+                    <a href="#" class="training-card">
+                        <div class="training-card-header">
+                            <span class="training-date">Dec 31, 2025</span>
+                            <span class="training-type">Live Replay</span>
+                        </div>
+                        <div class="training-card-body">
+                            <h4>GTM All Hands Q4 Kick Off</h4>
+                            <p>Q4 GTM strategy and execution plan for the team.</p>
+                            <span class="training-presenter">Presenter: Leadership Team</span>
+                            <div class="training-action">Watch →</div>
+                        </div>
+                    </a>
+
+                    <!-- Training Card 2 -->
+                    <a href="#" class="training-card">
+                        <div class="training-card-header">
+                            <span class="training-date">Dec 18, 2025</span>
+                            <span class="training-type">On Demand</span>
+                        </div>
+                        <div class="training-card-body">
+                            <h4>Gladly Narrative Deep Dive</h4>
+                            <p>Gladly narrative training framework for all GTM roles.</p>
+                            <span class="training-presenter">Presenter: Christian Shockley</span>
+                            <div class="training-action">Watch →</div>
+                        </div>
+                    </a>
+
+                    <!-- Training Card 3 -->
+                    <a href="#" class="training-card">
+                        <div class="training-card-header">
+                            <span class="training-date">Dec 11, 2025</span>
+                            <span class="training-type">Live Replay</span>
+                        </div>
+                        <div class="training-card-body">
+                            <h4>MM/ENT Closing Excellence S4 → Close</h4>
+                            <p>GTM skills for closing mid-market and enterprise deals.</p>
+                            <span class="training-presenter">Presenter: Sales Leadership</span>
+                            <div class="training-action">Watch →</div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         EXAMPLE: PROOF POINTS HUB
+         ========================================== -->
+    <div class="proof-hub" style="border-top: 1px solid var(--border-default); margin-top: 64px;">
+        <div class="hero proof-hub">
+            <div class="hero-content">
+                <h1>📊 Proof Point Repository</h1>
+                <p>Customer metrics, industry benchmarks, and competitive intelligence.</p>
+                <div class="hero-meta">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value" style="color: var(--accent-proof-light);">177</span>
+                        <span class="hero-stat-label">Proof Points</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="nav-inner">
+                <button class="nav-pill active">All</button>
+                <button class="nav-pill">Customer Metrics</button>
+                <button class="nav-pill">Customer Quotes</button>
+                <button class="nav-pill">Benchmarks</button>
+                <button class="nav-pill">Competitor Stats</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">📈</span>
+                    <h2 class="section-title">Customer Success Metrics</h2>
+                    <span class="section-count">65 items</span>
+                </div>
+                <div class="card-grid">
+                    <div class="proof-card">
+                        <div class="proof-metric">87% AI Resolution Rate</div>
+                        <div class="proof-description">Rothy's achieved exceptional resolution with Sidekick</div>
+                        <div class="proof-source">Source: Rothy's Case Study</div>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-metric">41% ↓ Chat AHT</div>
+                        <div class="proof-description">Allbirds reduced handle time significantly</div>
+                        <div class="proof-source">Source: Allbirds Metrics</div>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-metric">93%+ AI CSAT</div>
+                        <div class="proof-description">Rothy's customers rate AI interactions highly</div>
+                        <div class="proof-source">Source: Rothy's CSAT Report</div>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-metric">69% Self-Service Adoption</div>
+                        <div class="proof-description">Breeze Airways customer self-service rate</div>
+                        <div class="proof-source">Source: Breeze Airways</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>

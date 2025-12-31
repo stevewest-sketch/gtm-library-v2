@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Hub Enhancements | Task-Based Sections & Cross-Linking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8C69F0;
+            --primary-light: #A88BF5;
+            --green: #009B00;
+            --green-light: #00B800;
+            --orange: #F59E0B;
+            --red: #EF4444;
+            --bg-dark: #0F0F14;
+            --bg-card: #1A1A22;
+            --bg-elevated: #24242F;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+            --border: rgba(255,255,255,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1525 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(140,105,240,0.15);
+            border: 1px solid rgba(140,105,240,0.3);
+            color: var(--primary-light);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+
+        /* Architecture Overview */
+        .arch-diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .arch-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: stretch;
+        }
+
+        .arch-label {
+            width: 120px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding-top: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .arch-items {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .arch-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 13px;
+        }
+
+        .arch-item.core { border-left: 3px solid var(--primary); }
+        .arch-item.curated { border-left: 3px solid var(--orange); }
+        .arch-item.role { border-left: 3px solid var(--green); }
+        .arch-item.highlight { background: rgba(140,105,240,0.15); border-color: var(--primary); }
+
+        /* Comparison Tables */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 800px) {
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+
+        .compare-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .compare-header {
+            padding: 1rem 1.25rem;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .compare-header.before { color: var(--text-muted); }
+        .compare-header.after { color: var(--green-light); }
+
+        .compare-body {
+            padding: 1rem 1.25rem;
+        }
+
+        .compare-section {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .compare-section:last-child { border-bottom: none; }
+
+        .compare-section strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Task Sections */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .task-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .task-card:hover {
+            border-color: var(--primary);
+        }
+
+        .task-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-card h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .task-tags {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .task-tag {
+            font-size: 10px;
+            padding: 3px 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        /* Schema Section */
+        .schema-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .schema-header {
+            padding: 1rem 1.25rem;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .schema-body {
+            padding: 1.25rem;
+        }
+
+        .schema-field {
+            display: grid;
+            grid-template-columns: 140px 100px 1fr;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .schema-field:last-child { border-bottom: none; }
+
+        .field-name {
+            font-family: 'Monaco', monospace;
+            color: var(--primary-light);
+            font-size: 12px;
+        }
+
+        .field-type {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .field-desc {
+            color: var(--text-secondary);
+        }
+
+        /* Cross-Link Mockup */
+        .mockup-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .mockup-header {
+            background: var(--bg-elevated);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mockup-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mockup-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #FF5F57; }
+        .dot-yellow { background: #FFBD2E; }
+        .dot-green { background: #28CA41; }
+
+        .mockup-title {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .mockup-body {
+            padding: 1.5rem;
+        }
+
+        /* Asset Detail Mockup */
+        .asset-detail {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 800px) {
+            .asset-detail { grid-template-columns: 1fr; }
+        }
+
+        .asset-main h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .asset-main > p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .asset-meta-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-badge {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .meta-badge.type { background: rgba(140,105,240,0.15); color: var(--primary-light); }
+        .meta-badge.hub { background: rgba(0,155,0,0.15); color: var(--green-light); }
+
+        .asset-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Cross-Link Panels */
+        .cross-link-panel {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 0.75rem 1rem;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-body {
+            padding: 0.5rem;
+        }
+
+        .linked-item {
+            padding: 0.6rem 0.75rem;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .linked-item:hover {
+            background: var(--bg-card);
+        }
+
+        .linked-item .icon {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        .linked-item .title {
+            flex: 1;
+        }
+
+        .linked-item .meta {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .proof-stat {
+            padding: 0.6rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .proof-stat:last-child { border-bottom: none; }
+
+        .proof-value {
+            font-weight: 600;
+            color: var(--green-light);
+        }
+
+        .proof-source {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Implementation Steps */
+        .impl-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .impl-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .step-content h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .step-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(140,105,240,0.08);
+            border: 1px solid rgba(140,105,240,0.2);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 0.35rem;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Code */
+        code {
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            background: var(--bg-elevated);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary-light);
+        }
+
+        .code-block {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .key { color: #7DD3FC; }
+        .code-block .string { color: #86EFAC; }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 1rem 0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: var(--bg-elevated);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .data-table td {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">🎯 Enhancement Plan v2</div>
+            <h1>Task-Based Sections & Cross-Linking</h1>
+            <p class="header-subtitle">Building on your existing hub architecture to improve discoverability within role hubs and connect related assets.</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Section 1: Current Architecture -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2>Your Current Architecture</h2>
+            </div>
+            <p class="section-desc">Understanding the existing hub structure before proposing enhancements.</p>
+
+            <div class="arch-diagram">
+                <div class="arch-row">
+                    <div class="arch-label">Core Hubs</div>
+                    <div class="arch-items">
+                        <div class="arch-item core">📝 Content (141)</div>
+                        <div class="arch-item core">🎓 Enablement (51)</div>
+                        <div class="arch-item core">🎯 CoE (58)</div>
+                        <div class="arch-item core">📊 Proof Points (177)</div>
+                    </div>
+                </div>
+                <div class="arch-row">
+                    <div class="arch-label">Curated Hubs</div>
+                    <div class="arch-items">
+                        <div class="arch-item curated">📦 Product (3)</div>
+                        <div class="arch-item curated">⚔️ Competitive (25)</div>
+                        <div class="arch-item curated">🎬 Demo (34)</div>
+                    </div>
+                </div>
+                <div class="arch-row">
+                    <div class="arch-label">Role Hubs</div>
+                    <div class="arch-items">
+                        <div class="arch-item role highlight">💰 Sales (31)</div>
+                        <div class="arch-item role highlight">🤝 CSM (32)</div>
+                        <div class="arch-item role">🔧 SC (1)</div>
+                        <div class="arch-item role">📞 BDR (0)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>✅ What's Working</h4>
+                <p>Your hub structure is solid — core types, curated collections, and role views. The enhancement opportunity is in <strong>how assets are sectioned within role hubs</strong> and <strong>how assets link to each other</strong>.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Task-Based Sections -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2>Task-Based Sections for Role Hubs</h2>
+            </div>
+            <p class="section-desc">Transform role hub sections from format-based (Slides, Docs) to task-based (Discovery, Building Business Case) using your existing tags.</p>
+
+            <!-- Before/After Comparison -->
+            <h3 style="font-size: 1rem; margin: 1.5rem 0 1rem;">Sales Hub Transformation</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <div class="compare-header before">❌ Current Sections</div>
+                    <div class="compare-body">
+                        <div class="compare-section"><strong>demo</strong> — 25 items (format)</div>
+                        <div class="compare-section"><strong>Deck and Slides Templates</strong> — 25 items (format)</div>
+                        <div class="compare-section"><strong>Implementation</strong> — 8 items (stage)</div>
+                        <div class="compare-section"><strong>Internal Process Guides</strong> — 5 items (format)</div>
+                        <div class="compare-section"><strong>First Meeting</strong> — 3 items (task ✓)</div>
+                    </div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-header after">✅ Proposed Sections</div>
+                    <div class="compare-body">
+                        <div class="compare-section"><strong>🎯 Discovery & First Meeting</strong> — decks, questions, talk tracks</div>
+                        <div class="compare-section"><strong>🎬 Demo & Proof of Value</strong> — mockups, guides, videos</div>
+                        <div class="compare-section"><strong>💰 Building Business Case</strong> — BVA, ROI calc, metrics</div>
+                        <div class="compare-section"><strong>⚔️ Competitive Situations</strong> — battlecards, stats, win stories</div>
+                        <div class="compare-section"><strong>📝 Proposals & Closing</strong> — templates, pricing, contracts</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1rem; margin: 1.5rem 0 1rem;">CSM Hub Transformation</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <div class="compare-header before">❌ Current Sections</div>
+                    <div class="compare-body">
+                        <div class="compare-section"><strong>demo</strong> — 25 items (format)</div>
+                        <div class="compare-section"><strong>QBR</strong> — 3 items (task ✓)</div>
+                        <div class="compare-section"><strong>Implementation</strong> — 8 items (stage)</div>
+                        <div class="compare-section"><strong>Insights</strong> — 4 items (format)</div>
+                        <div class="compare-section"><strong>csm</strong> — 11 items (role tag)</div>
+                    </div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-header after">✅ Proposed Sections</div>
+                    <div class="compare-body">
+                        <div class="compare-section"><strong>🚀 Onboarding & Kickoff</strong> — handoff docs, kickoff decks</div>
+                        <div class="compare-section"><strong>📈 Driving Adoption</strong> — playbooks, best practices, dashboards</div>
+                        <div class="compare-section"><strong>📊 Business Reviews</strong> — QBR/EBR templates, metrics, examples</div>
+                        <div class="compare-section"><strong>💎 Expansion & Upsell</strong> — product pitch, use cases, ROI</div>
+                        <div class="compare-section"><strong>🔄 Renewals</strong> — renewal decks, health metrics, risk playbooks</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Role Sections -->
+            <h3 style="font-size: 1rem; margin: 2rem 0 1rem;">Proposed Task Sections by Role</h3>
+            
+            <div class="task-grid">
+                <!-- Sales Tasks -->
+                <div class="task-card">
+                    <div class="task-icon">🎯</div>
+                    <h4>Discovery & First Meeting</h4>
+                    <p>Initial prospect engagement and needs assessment</p>
+                    <div class="task-tags">
+                        <span class="task-tag">first-meeting</span>
+                        <span class="task-tag">discovery</span>
+                        <span class="task-tag">qualification</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">🎬</div>
+                    <h4>Demo & Proof of Value</h4>
+                    <p>Product demonstrations and capability showcase</p>
+                    <div class="task-tags">
+                        <span class="task-tag">demo</span>
+                        <span class="task-tag">prototype</span>
+                        <span class="task-tag">pov</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">💰</div>
+                    <h4>Building Business Case</h4>
+                    <p>ROI justification and value demonstration</p>
+                    <div class="task-tags">
+                        <span class="task-tag">bva</span>
+                        <span class="task-tag">roi</span>
+                        <span class="task-tag">value-realization</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">⚔️</div>
+                    <h4>Competitive Situations</h4>
+                    <p>Win against specific competitors</p>
+                    <div class="task-tags">
+                        <span class="task-tag">battlecard</span>
+                        <span class="task-tag">competitive</span>
+                        <span class="task-tag">competitor-stat</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">📝</div>
+                    <h4>Proposals & Closing</h4>
+                    <p>Contract creation and deal finalization</p>
+                    <div class="task-tags">
+                        <span class="task-tag">proposal</span>
+                        <span class="task-tag">pricing</span>
+                        <span class="task-tag">sow</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">🚀</div>
+                    <h4>Onboarding & Kickoff</h4>
+                    <p>Customer handoff and implementation start</p>
+                    <div class="task-tags">
+                        <span class="task-tag">onboarding</span>
+                        <span class="task-tag">kickoff</span>
+                        <span class="task-tag">handoff</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">📈</div>
+                    <h4>Driving Adoption</h4>
+                    <p>Product usage and success optimization</p>
+                    <div class="task-tags">
+                        <span class="task-tag">adoption</span>
+                        <span class="task-tag">usage-metrics</span>
+                        <span class="task-tag">best-practice</span>
+                    </div>
+                </div>
+                <div class="task-card">
+                    <div class="task-icon">📊</div>
+                    <h4>Business Reviews</h4>
+                    <p>QBRs, EBRs, and executive alignment</p>
+                    <div class="task-tags">
+                        <span class="task-tag">qbr</span>
+                        <span class="task-tag">ebr</span>
+                        <span class="task-tag">executive</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implementation Approach -->
+            <div class="info-box">
+                <h4>💡 Implementation Approach</h4>
+                <p>Add a new <code>workflow</code> tag to assets (e.g., <code>workflow:discovery</code>, <code>workflow:demo</code>). Then configure role hub pages to section by workflow tags instead of format tags. No schema changes needed — just new tag values and hub page configuration.</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Tag Mapping -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2>Workflow Tag Mapping</h2>
+            </div>
+            <p class="section-desc">Map existing assets to workflow tags based on their current tags and types.</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Workflow Tag</th>
+                        <th>Auto-Map From</th>
+                        <th>Example Assets</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>workflow:discovery</code></td>
+                        <td>Tags containing: first-meeting, discovery, qualification, S0, S1</td>
+                        <td>First Meeting Deck, Discovery Questions, MEDPICCC Scorecard</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:demo</code></td>
+                        <td>Type = demo, prototype; Tags: demo, mockup, figma</td>
+                        <td>Zendesk Demo Mockup, Gladly Demo 2025, Demo Guide</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:business-case</code></td>
+                        <td>Type = value-realization; Tags: bva, roi, calculator</td>
+                        <td>Pre-Sales BVA, Sidekick ROI Calculator, BVA Overview</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:competitive</code></td>
+                        <td>Type = battlecard, competitor-stat; Hub = competitive</td>
+                        <td>Zendesk Battlecard, Ada Stats, Competitive Analysis</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:proposal</code></td>
+                        <td>Tags: proposal, pricing, contract, sow, rfp</td>
+                        <td>SOW Template, RFP Features Catalog, Pricing Calculator</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:onboarding</code></td>
+                        <td>Tags: kickoff, handoff, onboarding, implementation</td>
+                        <td>Account Handoff Template, Implementation Deck, Kickoff Template</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:adoption</code></td>
+                        <td>Type = usage-metrics, best-practice; Tags: adoption, optimization</td>
+                        <td>Adoption Playbook, Usage Dashboards, Best Practice Guides</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:review</code></td>
+                        <td>Tags: qbr, ebr, business-review</td>
+                        <td>QBR Template, EBR Examples, Automated QBR Decks</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:expansion</code></td>
+                        <td>Tags: upsell, cross-sell, expansion</td>
+                        <td>Expansion Playbook, Product Pitch Decks</td>
+                    </tr>
+                    <tr>
+                        <td><code>workflow:renewal</code></td>
+                        <td>Tags: renewal, retention, churn</td>
+                        <td>Renewal Deck, Health Score Dashboard, Risk Playbook</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<span class="comment">// Example: Auto-tagging script logic</span>
+<span class="key">if</span> (asset.type === <span class="string">'battlecard'</span> || asset.tags.includes(<span class="string">'competitive'</span>)) {
+  asset.tags.push(<span class="string">'workflow:competitive'</span>);
+}
+
+<span class="key">if</span> (asset.tags.some(t => [<span class="string">'first-meeting'</span>, <span class="string">'discovery'</span>, <span class="string">'S0'</span>, <span class="string">'S1'</span>].includes(t))) {
+  asset.tags.push(<span class="string">'workflow:discovery'</span>);
+}
+
+<span class="key">if</span> (asset.type === <span class="string">'value-realization'</span> || asset.tags.includes(<span class="string">'bva'</span>)) {
+  asset.tags.push(<span class="string">'workflow:business-case'</span>);
+}
+            </div>
+        </section>
+
+        <!-- Section 4: Contextual Cross-Linking -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2>Contextual Cross-Linking</h2>
+            </div>
+            <p class="section-desc">Surface related content on asset detail pages to help users discover connected resources.</p>
+
+            <!-- Mockup -->
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <div class="mockup-dots">
+                        <div class="mockup-dot dot-red"></div>
+                        <div class="mockup-dot dot-yellow"></div>
+                        <div class="mockup-dot dot-green"></div>
+                    </div>
+                    <div class="mockup-title">Asset Detail Page — /asset/zendesk-sidekick-battlecard</div>
+                </div>
+                <div class="mockup-body">
+                    <div class="asset-detail">
+                        <!-- Main Content -->
+                        <div class="asset-main">
+                            <div class="asset-meta-row">
+                                <span class="meta-badge type">Battlecard</span>
+                                <span class="meta-badge hub">Competitive</span>
+                                <span class="meta-badge" style="background: rgba(245,158,11,0.15); color: #FBBF24;">Zendesk</span>
+                            </div>
+                            <h3>Zendesk Sidekick Battle Card (External)</h3>
+                            <p>Competitor battlecard comparing Zendesk AI vs Gladly Sidekick for external sharing with prospects during competitive situations.</p>
+                            
+                            <div class="asset-actions">
+                                <button class="btn-primary">Open Document →</button>
+                                <button class="btn-secondary">Copy Link</button>
+                                <button class="btn-secondary">Add to Collection</button>
+                            </div>
+
+                            <!-- Recommended Training -->
+                            <div class="cross-link-panel">
+                                <div class="panel-header">🎓 Recommended Training</div>
+                                <div class="panel-body">
+                                    <div class="linked-item">
+                                        <span class="icon">📹</span>
+                                        <span class="title">Flip Competitive + SK Voice Roadmap</span>
+                                        <span class="meta">Live Replay • 45 min</span>
+                                    </div>
+                                    <div class="linked-item">
+                                        <span class="icon">📹</span>
+                                        <span class="title">Competitive Positioning Deep Dive</span>
+                                        <span class="meta">On Demand • 30 min</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar Cross-Links -->
+                        <div class="asset-sidebar">
+                            <!-- Related Assets -->
+                            <div class="cross-link-panel">
+                                <div class="panel-header">🔗 Related Assets</div>
+                                <div class="panel-body">
+                                    <div class="linked-item">
+                                        <span class="icon">📄</span>
+                                        <span class="title">Zendesk Competitive Snapshot</span>
+                                    </div>
+                                    <div class="linked-item">
+                                        <span class="icon">🎬</span>
+                                        <span class="title">Zendesk Demo Mockup</span>
+                                    </div>
+                                    <div class="linked-item">
+                                        <span class="icon">📊</span>
+                                        <span class="title">Zendesk vs Gladly CI Analysis</span>
+                                    </div>
+                                    <div class="linked-item">
+                                        <span class="icon">⚔️</span>
+                                        <span class="title">Zendesk Voice Battle Card</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Supporting Proof Points -->
+                            <div class="cross-link-panel">
+                                <div class="panel-header">📊 Supporting Proof Points</div>
+                                <div class="panel-body">
+                                    <div class="proof-stat">
+                                        <div>
+                                            <div class="proof-value">286% ROI</div>
+                                            <div class="proof-source">Zendesk TEI Report</div>
+                                        </div>
+                                    </div>
+                                    <div class="proof-stat">
+                                        <div>
+                                            <div class="proof-value">17% ↓ Resolution Time</div>
+                                            <div class="proof-source">Zendesk claim</div>
+                                        </div>
+                                    </div>
+                                    <div class="proof-stat">
+                                        <div>
+                                            <div class="proof-value">95% CSAT</div>
+                                            <div class="proof-source">Grove case study</div>
+                                        </div>
+                                    </div>
+                                    <div class="linked-item" style="color: var(--primary-light);">
+                                        <span>View all 12 Zendesk stats →</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Customer Examples -->
+                            <div class="cross-link-panel">
+                                <div class="panel-header">🏆 Win Stories vs Zendesk</div>
+                                <div class="panel-body">
+                                    <div class="linked-item">
+                                        <span class="icon">📄</span>
+                                        <span class="title">TCO: Gladly over Zendesk</span>
+                                    </div>
+                                    <div class="linked-item">
+                                        <span class="icon">📄</span>
+                                        <span class="title">Competitive Win: Rothy's</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-Link Types -->
+            <h3 style="font-size: 1rem; margin: 1.5rem 0 1rem;">Cross-Link Relationship Types</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Relationship</th>
+                        <th>Logic</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Related Assets</strong></td>
+                        <td>Same competitor/product tag + different type</td>
+                        <td>Zendesk Battlecard → Zendesk Demo Mockup, Zendesk CI Analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Supporting Proof Points</strong></td>
+                        <td>Hub = proof + matching competitor/product tag</td>
+                        <td>Zendesk Battlecard → All competitor-stat with tag "zendesk"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recommended Training</strong></td>
+                        <td>Hub = enablement + matching topic tags</td>
+                        <td>Zendesk Battlecard → Flip Competitive training session</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer Examples</strong></td>
+                        <td>Hub = coe + type = customer-example + matching tags</td>
+                        <td>Sidekick Pitch → Allbirds metrics, Rothy's case study</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Same Collection</strong></td>
+                        <td>Shared hub membership</td>
+                        <td>Asset in /hub/competitive → Other competitive hub assets</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: Schema Additions -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2>Schema Additions</h2>
+            </div>
+            <p class="section-desc">Minimal additions to enable cross-linking and task-based sections.</p>
+
+            <div class="schema-block">
+                <div class="schema-header">New Fields (Optional)</div>
+                <div class="schema-body">
+                    <div class="schema-field">
+                        <div class="field-name">relatedAssets</div>
+                        <div class="field-type">Array[slug]</div>
+                        <div class="field-desc">Manual override for related assets (supplements auto-linking)</div>
+                    </div>
+                    <div class="schema-field">
+                        <div class="field-name">prerequisiteTraining</div>
+                        <div class="field-type">Array[slug]</div>
+                        <div class="field-desc">Enablement content to complete before using this asset</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schema-block">
+                <div class="schema-header">New Tag Conventions</div>
+                <div class="schema-body">
+                    <div class="schema-field">
+                        <div class="field-name">workflow:*</div>
+                        <div class="field-type">Tag prefix</div>
+                        <div class="field-desc">Task-based grouping: workflow:discovery, workflow:demo, workflow:competitive</div>
+                    </div>
+                    <div class="schema-field">
+                        <div class="field-name">competitor:*</div>
+                        <div class="field-type">Tag prefix</div>
+                        <div class="field-desc">Competitor association: competitor:zendesk, competitor:ada (enables cross-linking)</div>
+                    </div>
+                    <div class="schema-field">
+                        <div class="field-name">customer:*</div>
+                        <div class="field-type">Tag prefix</div>
+                        <div class="field-desc">Customer association: customer:allbirds, customer:rothys (links metrics to examples)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Why Tag Conventions Over Schema?</h4>
+                <p>Using tag prefixes (workflow:, competitor:, customer:) lets you add rich metadata without CMS schema changes. Your existing tag system already supports this — it's just about establishing conventions.</p>
+            </div>
+        </section>
+
+        <!-- Section 6: Implementation -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2>Implementation Steps</h2>
+            </div>
+            <p class="section-desc">Phased rollout starting with highest-impact changes.</p>
+
+            <div class="impl-grid">
+                <div class="impl-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Define Workflow Tags (Day 1)</h4>
+                        <p>Create the <code>workflow:*</code> tag taxonomy. Start with 8-10 core workflows covering Sales and CSM journeys. Document in your tag guidelines.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Auto-Tag Existing Assets (Day 2-3)</h4>
+                        <p>Write a migration script to auto-assign workflow tags based on existing tags and types. Review output and adjust mappings.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Update Sales Hub Sections (Day 4)</h4>
+                        <p>Configure /hub/sales to section by workflow tags instead of format. Test navigation flow and adjust asset assignments.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Update CSM Hub Sections (Day 5)</h4>
+                        <p>Apply same pattern to /hub/csm. Validate with CSM team for relevance and completeness.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Build Cross-Link Component (Week 2)</h4>
+                        <p>Create reusable "Related Assets" sidebar component. Implement auto-linking logic based on shared tags. Add to asset detail page template.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4>Add Proof Point Integration (Week 2)</h4>
+                        <p>Build "Supporting Proof Points" panel for Content and Competitive assets. Query proof hub by matching competitor/product tags.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <h4>Add Training Recommendations (Week 3)</h4>
+                        <p>Build "Recommended Training" panel. Link Content/CoE assets to relevant Enablement hub content based on topic overlap.</p>
+                    </div>
+                </div>
+                <div class="impl-step">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <h4>Expand to SC & BDR Hubs (Week 3-4)</h4>
+                        <p>Define workflow taxonomy for SC (Technical Discovery, Integration, Custom Solutions) and BDR (Prospecting, Outreach, Qualification). Populate hubs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Measurement -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">7</div>
+                <h2>Success Metrics</h2>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current</th>
+                        <th>Target</th>
+                        <th>How to Measure</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cross-link click rate</td>
+                        <td>N/A</td>
+                        <td>15%+ of asset views</td>
+                        <td>Track clicks on Related Assets panels</td>
+                    </tr>
+                    <tr>
+                        <td>Role hub engagement</td>
+                        <td>Baseline</td>
+                        <td>+30% page views</td>
+                        <td>Compare Sales/CSM hub traffic pre/post</td>
+                    </tr>
+                    <tr>
+                        <td>Assets per session</td>
+                        <td>~1.5</td>
+                        <td>3+</td>
+                        <td>Analytics: avg assets viewed per session</td>
+                    </tr>
+                    <tr>
+                        <td>Proof point utilization</td>
+                        <td>Low</td>
+                        <td>+50% views</td>
+                        <td>Proof hub traffic from cross-links</td>
+                    </tr>
+                    <tr>
+                        <td>Search → browse ratio</td>
+                        <td>High search</td>
+                        <td>More browse</td>
+                        <td>Compare search vs. hub navigation paths</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>GTM Hub Enhancement Plan v2 • December 2025</div>
+            <div>Gladly GTM Enablement</div>
+        </div>
+    </footer>
+</body>
+</html>

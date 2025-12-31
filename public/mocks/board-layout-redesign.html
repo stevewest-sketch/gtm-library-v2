@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTM Hub - Board Layout Redesign Mocks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Hub Colors */
+      --enablement: #10B981;
+      --enablement-light: #D1FAE5;
+      --enablement-hover: #ECFDF5;
+      --content: #8C69F0;
+      --content-light: #EDE9FE;
+      --content-hover: #F5F3FF;
+      --coe: #F59E0B;
+      --coe-light: #FEF3C7;
+      --coe-hover: #FFFBEB;
+
+      /* Type Colors */
+      --type-training: #8B5CF6;
+      --type-training-light: #EDE9FE;
+      --type-product: #10B981;
+      --type-product-light: #D1FAE5;
+      --type-competitive: #EF4444;
+      --type-competitive-light: #FEE2E2;
+
+      /* UI Colors */
+      --bg-page: #F1F5F9;
+      --bg-section: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+      --text-muted: #94A3B8;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.25);
+      --shadow-glow-purple: 0 0 20px rgba(140, 105, 240, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       MOCK NAVIGATION / TABLE OF CONTENTS
+    ======================================== */
+    .mock-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+      padding: 16px 32px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .mock-nav h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .mock-nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mock-nav a {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.2s;
+    }
+
+    .mock-nav a:hover {
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+
+    /* ========================================
+       SECTION WRAPPER
+    ======================================== */
+    .mock-section {
+      margin-top: 72px;
+      padding: 48px 32px;
+      border-bottom: 2px dashed var(--border);
+    }
+
+    .mock-section:first-of-type {
+      margin-top: 80px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--content);
+      background: var(--content-light);
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 32px;
+    }
+
+    /* ========================================
+       DEMO CONTAINER (simulates page width)
+    ======================================== */
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--bg-page);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .demo-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 12px 24px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-content {
+      padding: 24px;
+      background: var(--bg-page);
+    }
+
+    /* ========================================
+       CARD COMPONENT
+    ======================================== */
+    .card {
+      height: 220px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .card-header.type-training {
+      background: linear-gradient(135deg, var(--type-training-light) 0%, #F5F3FF 100%);
+    }
+
+    .card-header.type-product {
+      background: linear-gradient(135deg, var(--type-product-light) 0%, #ECFDF5 100%);
+    }
+
+    .card-header.type-competitive {
+      background: linear-gradient(135deg, var(--type-competitive-light) 0%, #FEF2F2 100%);
+    }
+
+    .card-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .card-type {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .card-header.type-training .card-type { color: #6D28D9; }
+    .card-header.type-product .card-type { color: #047857; }
+    .card-header.type-competitive .card-type { color: #B91C1C; }
+
+    .card-format {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+
+    .card-header.type-training .card-format { color: #6D28D9; }
+    .card-header.type-product .card-format { color: #047857; }
+    .card-header.type-competitive .card-format { color: #B91C1C; }
+
+    .card-body {
+      flex: 1;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title-wrapper {
+      min-height: 42px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-light);
+      margin-top: auto;
+    }
+
+    .card-date {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .card-action {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--enablement);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .card-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 800px) {
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ========================================
+       HUB BADGE (on cards)
+    ======================================== */
+    .hub-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 10;
+    }
+
+    .hub-badge.enablement {
+      background: var(--enablement);
+      color: white;
+    }
+
+    .hub-badge.content {
+      background: var(--content);
+      color: white;
+    }
+
+    .hub-badge.coe {
+      background: var(--coe);
+      color: #78350F;
+    }
+
+    /* Hub badge variant: footer position */
+    .hub-badge-footer {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 6px;
+      border-radius: 3px;
+    }
+
+    .hub-badge-footer.enablement {
+      background: var(--enablement-light);
+      color: var(--enablement);
+    }
+
+    .hub-badge-footer.content {
+      background: var(--content-light);
+      color: var(--content);
+    }
+
+    .hub-badge-footer.coe {
+      background: var(--coe-light);
+      color: #B45309;
+    }
+
+    /* ========================================
+       RECENTLY ADDED - OPTION A: BANNER STRIP
+    ======================================== */
+    .recently-banner {
+      background: linear-gradient(135deg, var(--enablement-light) 0%, #ECFDF5 50%, var(--bg-page) 100%);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .recently-banner-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .recently-banner-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--enablement);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .recently-banner-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .recently-banner-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: auto;
+    }
+
+    .recently-banner .card {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .recently-banner .card:hover {
+      box-shadow: var(--shadow-glow-green);
+    }
+
+    /* ========================================
+       RECENTLY ADDED - OPTION B: NEW BADGE
+    ======================================== */
+    .new-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    }
+
+    .card.is-new {
+      border-color: rgba(16, 185, 129, 0.3);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+      50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+    }
+
+    /* ========================================
+       RECENTLY ADDED - OPTION C: CAROUSEL
+    ======================================== */
+    .recently-carousel {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .recently-carousel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .recently-carousel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .recently-carousel-title span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .carousel-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .carousel-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .carousel-btn:hover {
+      background: var(--enablement);
+      border-color: var(--enablement);
+      color: white;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding: 8px 0;
+      margin: -8px 0;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-track .card {
+      flex: 0 0 280px;
+      scroll-snap-align: start;
+    }
+
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .carousel-dot.active {
+      background: var(--enablement);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* ========================================
+       STICKY NAVIGATION REDESIGN
+    ======================================== */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(248, 250, 252, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      padding: 12px 24px;
+    }
+
+    .sticky-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .sticky-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sticky-nav-hub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sticky-nav-hub-icon {
+      font-size: 18px;
+    }
+
+    .sticky-nav-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    .sticky-nav-sections {
+      display: flex;
+      gap: 4px;
+    }
+
+    .sticky-nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .sticky-nav-link:hover {
+      background: var(--enablement-light);
+      color: var(--enablement);
+    }
+
+    .sticky-nav-link.active {
+      background: var(--enablement);
+      color: white;
+    }
+
+    .sticky-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sticky-nav-sort {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+    }
+
+    .sticky-nav-views {
+      display: flex;
+      gap: 2px;
+      background: var(--border-light);
+      padding: 2px;
+      border-radius: 6px;
+    }
+
+    .sticky-nav-view {
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sticky-nav-view.active {
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ========================================
+       SECTION HEADERS - NEW DESIGN
+    ======================================== */
+    .content-section {
+      margin-bottom: 40px;
+    }
+
+    .content-section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border-light);
+    }
+
+    .content-section-accent {
+      width: 4px;
+      height: 32px;
+      background: var(--enablement);
+      border-radius: 2px;
+    }
+
+    .content-section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .content-section-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--border-light);
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .content-section-expand {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--enablement);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Alternative section header - card style */
+    .content-section-card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .content-section-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #F8FAFC 0%, white 100%);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .content-section-card-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--enablement-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .content-section-card-info {
+      flex: 1;
+    }
+
+    .content-section-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .content-section-card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .content-section-card-body {
+      padding: 24px;
+    }
+
+    /* ========================================
+       MIXED HUB SECTION
+    ======================================== */
+    .hub-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: var(--border-light);
+      border-radius: 10px;
+    }
+
+    .hub-filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-right: 8px;
+    }
+
+    .hub-filter-btn {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+      background: white;
+      color: var(--text-secondary);
+    }
+
+    .hub-filter-btn:hover {
+      border-color: var(--border);
+    }
+
+    .hub-filter-btn.active {
+      background: var(--text-primary);
+      color: white;
+    }
+
+    .hub-filter-btn.enablement.active {
+      background: var(--enablement);
+    }
+
+    .hub-filter-btn.content.active {
+      background: var(--content);
+    }
+
+    .hub-filter-btn.coe.active {
+      background: var(--coe);
+      color: #78350F;
+    }
+
+    /* Hub sub-headers within section */
+    .hub-subheader {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 24px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .hub-subheader:first-child {
+      margin-top: 0;
+    }
+
+    .hub-subheader-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .hub-subheader-dot.enablement { background: var(--enablement); }
+    .hub-subheader-dot.content { background: var(--content); }
+    .hub-subheader-dot.coe { background: var(--coe); }
+
+    .hub-subheader-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .hub-subheader-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    /* ========================================
+       COMPARISON: OLD VS NEW
+    ======================================== */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .comparison-panel {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .comparison-panel-header {
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .comparison-panel-header.old {
+      background: #FEE2E2;
+      color: #B91C1C;
+    }
+
+    .comparison-panel-header.new {
+      background: var(--enablement-light);
+      color: var(--enablement);
+    }
+
+    .comparison-panel-body {
+      padding: 16px;
+    }
+
+    /* Old sticky nav simulation */
+    .old-sticky-nav {
+      background: #F8FAFC;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .old-filter-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+
+    .old-filter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .old-filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .old-pill {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 16px;
+      background: var(--border-light);
+      color: var(--text-secondary);
+    }
+
+    .old-pill.active {
+      background: var(--enablement);
+      color: white;
+    }
+
+    .old-sort-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .old-hub-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Old section header simulation */
+    .old-section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 0;
+      margin-bottom: 16px;
+    }
+
+    .old-section-divider {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .old-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Mock Navigation -->
+  <nav class="mock-nav">
+    <h1>GTM Hub Redesign Mocks</h1>
+    <div class="mock-nav-links">
+      <a href="#recently-added">Recently Added</a>
+      <a href="#sticky-nav">Sticky Nav</a>
+      <a href="#section-headers">Sections</a>
+      <a href="#hub-badges">Hub Badges</a>
+      <a href="#mixed-hub">Mixed Hub</a>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       SECTION 1: RECENTLY ADDED OPTIONS
+  ============================================= -->
+  <section class="mock-section" id="recently-added">
+    <span class="section-label">Design Options</span>
+    <h2 class="section-title">Recently Added Section</h2>
+    <p class="section-desc">Three options for highlighting recent content without using enlarged hero cards. All use standard 220px card height.</p>
+
+    <!-- Option A: Banner Strip -->
+    <div class="demo-container" style="margin-bottom: 32px;">
+      <div class="demo-label">Option A: Featured Banner Strip</div>
+      <div class="demo-content">
+        <div class="recently-banner">
+          <div class="recently-banner-header">
+            <div class="recently-banner-icon">✨</div>
+            <span class="recently-banner-title">Recently Added</span>
+            <span class="recently-banner-subtitle">4 new this week</span>
+          </div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">📦</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sales Process Foundational Training: S0→S1</h4>
+                </div>
+                <p class="card-desc">S0→S1 sales process qualification training</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 28, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">🎯</span>
+                <div class="card-meta">
+                  <span class="card-type">GTM Training</span>
+                  <span class="card-format">Video</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sidekick Sales Launch Enablement</h4>
+                </div>
+                <p class="card-desc">Sidekick Sales positioning and launch training</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 26, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Competitive</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Zendesk Competitive Battlecard</h4>
+                </div>
+                <p class="card-desc">Updated competitive positioning</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 25, 2025</span>
+                <span class="card-action">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">🔧</span>
+                <div class="card-meta">
+                  <span class="card-type">Technical Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">App Platform Integration Deep Dive</h4>
+                </div>
+                <p class="card-desc">Technical deep dive on integrations</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 24, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B: NEW Badge -->
+    <div class="demo-container" style="margin-bottom: 32px;">
+      <div class="demo-label">Option B: "NEW" Badge Treatment</div>
+      <div class="demo-content">
+        <div class="card-grid">
+          <div class="card is-new">
+            <span class="new-badge">New</span>
+            <div class="card-header type-training">
+              <span class="card-icon">📦</span>
+              <div class="card-meta">
+                <span class="card-type">Product Training</span>
+                <span class="card-format">Live Replay</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">Sales Process Foundational Training: S0→S1</h4>
+              </div>
+              <p class="card-desc">S0→S1 sales process qualification training</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 28, 2025</span>
+              <span class="card-action">Watch →</span>
+            </div>
+          </div>
+          <div class="card is-new">
+            <span class="new-badge">New</span>
+            <div class="card-header type-product">
+              <span class="card-icon">🎯</span>
+              <div class="card-meta">
+                <span class="card-type">GTM Training</span>
+                <span class="card-format">Video</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">Sidekick Sales Launch Enablement</h4>
+              </div>
+              <p class="card-desc">Sidekick Sales positioning and launch training</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 26, 2025</span>
+              <span class="card-action">Watch →</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header type-competitive">
+              <span class="card-icon">⚔️</span>
+              <div class="card-meta">
+                <span class="card-type">Competitive</span>
+                <span class="card-format">Slides</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">Zendesk Competitive Battlecard</h4>
+              </div>
+              <p class="card-desc">Updated competitive positioning</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 20, 2025</span>
+              <span class="card-action">View →</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header type-training">
+              <span class="card-icon">🔧</span>
+              <div class="card-meta">
+                <span class="card-type">Technical Training</span>
+                <span class="card-format">Live Replay</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">App Platform Integration Deep Dive</h4>
+              </div>
+              <p class="card-desc">Technical deep dive on integrations</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 18, 2025</span>
+              <span class="card-action">Watch →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option C: Carousel -->
+    <div class="demo-container">
+      <div class="demo-label">Option C: Horizontal Carousel</div>
+      <div class="demo-content">
+        <div class="recently-carousel">
+          <div class="recently-carousel-header">
+            <div class="recently-carousel-title">
+              <span style="font-size: 20px;">✨</span>
+              <span>Recently Added</span>
+            </div>
+            <div class="carousel-nav">
+              <button class="carousel-btn">←</button>
+              <button class="carousel-btn">→</button>
+            </div>
+          </div>
+          <div class="carousel-track">
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">📦</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sales Process Foundational Training: S0→S1</h4>
+                </div>
+                <p class="card-desc">S0→S1 sales process qualification</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 28, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">🎯</span>
+                <div class="card-meta">
+                  <span class="card-type">GTM Training</span>
+                  <span class="card-format">Video</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sidekick Sales Launch Enablement</h4>
+                </div>
+                <p class="card-desc">Sidekick positioning and training</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 26, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Competitive</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Zendesk Competitive Battlecard</h4>
+                </div>
+                <p class="card-desc">Updated competitive positioning</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 25, 2025</span>
+                <span class="card-action">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">🔧</span>
+                <div class="card-meta">
+                  <span class="card-type">Technical Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">App Platform Integration Deep Dive</h4>
+                </div>
+                <p class="card-desc">Technical deep dive</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 24, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">💡</span>
+                <div class="card-meta">
+                  <span class="card-type">Demo</span>
+                  <span class="card-format">Video</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">AI Features Product Demo</h4>
+                </div>
+                <p class="card-desc">Latest AI capabilities demo</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 22, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-dots">
+            <div class="carousel-dot active"></div>
+            <div class="carousel-dot"></div>
+            <div class="carousel-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2: STICKY NAVIGATION REDESIGN
+  ============================================= -->
+  <section class="mock-section" id="sticky-nav">
+    <span class="section-label">Navigation</span>
+    <h2 class="section-title">Sticky Navigation Redesign</h2>
+    <p class="section-desc">Slim, elegant jump-nav that integrates with content instead of dominating it.</p>
+
+    <div class="comparison">
+      <!-- Old Design -->
+      <div class="comparison-panel">
+        <div class="comparison-panel-header old">Current Design</div>
+        <div class="comparison-panel-body" style="padding: 0;">
+          <div class="old-sticky-nav">
+            <div class="old-filter-box">
+              <div class="old-filter-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                </svg>
+                Filter by Topic
+              </div>
+              <div class="old-filter-pills">
+                <span class="old-pill active">All</span>
+                <span class="old-pill">Product Training (12)</span>
+                <span class="old-pill">GTM Training (8)</span>
+                <span class="old-pill">Competitive (5)</span>
+                <span class="old-pill">Technical (3)</span>
+              </div>
+            </div>
+            <div class="old-sort-bar">
+              <div class="old-hub-title">
+                <span>🎓</span> Enablement <span style="color: var(--text-muted); font-weight: 400; margin-left: 4px;">28 items</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 12px; color: var(--text-secondary);">Sort: Newest</span>
+                <span style="font-size: 12px; color: var(--text-muted);">Grid | List</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Design -->
+      <div class="comparison-panel">
+        <div class="comparison-panel-header new">New Design</div>
+        <div class="comparison-panel-body" style="padding: 0;">
+          <div class="sticky-nav">
+            <div class="sticky-nav-inner">
+              <div class="sticky-nav-left">
+                <div class="sticky-nav-hub">
+                  <span class="sticky-nav-hub-icon">🎓</span>
+                  Enablement
+                </div>
+                <div class="sticky-nav-divider"></div>
+                <div class="sticky-nav-sections">
+                  <span class="sticky-nav-link active">All</span>
+                  <span class="sticky-nav-link">Product</span>
+                  <span class="sticky-nav-link">GTM</span>
+                  <span class="sticky-nav-link">Competitive</span>
+                  <span class="sticky-nav-link">Technical</span>
+                </div>
+              </div>
+              <div class="sticky-nav-right">
+                <div class="sticky-nav-sort">
+                  Newest ▼
+                </div>
+                <div class="sticky-nav-views">
+                  <span class="sticky-nav-view active">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="7" height="7"></rect>
+                      <rect x="14" y="3" width="7" height="7"></rect>
+                      <rect x="3" y="14" width="7" height="7"></rect>
+                      <rect x="14" y="14" width="7" height="7"></rect>
+                    </svg>
+                  </span>
+                  <span class="sticky-nav-view">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="8" y1="6" x2="21" y2="6"></line>
+                      <line x1="8" y1="12" x2="21" y2="12"></line>
+                      <line x1="8" y1="18" x2="21" y2="18"></line>
+                      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3: SECTION HEADERS
+  ============================================= -->
+  <section class="mock-section" id="section-headers">
+    <span class="section-label">Layout</span>
+    <h2 class="section-title">Section Headers & Groupings</h2>
+    <p class="section-desc">Stronger visual hierarchy for content sections with larger titles and clear groupings.</p>
+
+    <div class="comparison">
+      <!-- Old Design -->
+      <div class="comparison-panel">
+        <div class="comparison-panel-header old">Current Design</div>
+        <div class="comparison-panel-body">
+          <div class="old-section-header">
+            <span class="old-section-divider"></span>
+            <span class="old-section-title">Product Training</span>
+            <span class="old-section-divider"></span>
+          </div>
+          <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="card" style="height: 180px;">
+              <div class="card-header type-training" style="padding: 10px 14px;">
+                <span class="card-icon" style="font-size: 16px;">📦</span>
+                <div class="card-meta">
+                  <span class="card-type" style="font-size: 10px;">Product</span>
+                  <span class="card-format" style="font-size: 9px;">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body" style="padding: 10px 14px;">
+                <div class="card-title-wrapper" style="min-height: 34px;">
+                  <h4 class="card-title" style="font-size: 13px;">Sales Process Training</h4>
+                </div>
+              </div>
+              <div class="card-footer" style="padding: 8px 14px;">
+                <span class="card-date" style="font-size: 11px;">Dec 28</span>
+                <span class="card-action" style="font-size: 11px;">Watch →</span>
+              </div>
+            </div>
+            <div class="card" style="height: 180px;">
+              <div class="card-header type-training" style="padding: 10px 14px;">
+                <span class="card-icon" style="font-size: 16px;">📦</span>
+                <div class="card-meta">
+                  <span class="card-type" style="font-size: 10px;">Product</span>
+                  <span class="card-format" style="font-size: 9px;">Video</span>
+                </div>
+              </div>
+              <div class="card-body" style="padding: 10px 14px;">
+                <div class="card-title-wrapper" style="min-height: 34px;">
+                  <h4 class="card-title" style="font-size: 13px;">Sidekick Launch</h4>
+                </div>
+              </div>
+              <div class="card-footer" style="padding: 8px 14px;">
+                <span class="card-date" style="font-size: 11px;">Dec 26</span>
+                <span class="card-action" style="font-size: 11px;">Watch →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Design -->
+      <div class="comparison-panel">
+        <div class="comparison-panel-header new">New Design - Option A</div>
+        <div class="comparison-panel-body">
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="content-section-accent"></div>
+              <h3 class="content-section-title">Product Training</h3>
+              <span class="content-section-count">12 items</span>
+              <span class="content-section-expand">Show all ↓</span>
+            </div>
+            <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="card" style="height: 180px;">
+                <div class="card-header type-training" style="padding: 10px 14px;">
+                  <span class="card-icon" style="font-size: 16px;">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type" style="font-size: 10px;">Product</span>
+                    <span class="card-format" style="font-size: 9px;">Live Replay</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 10px 14px;">
+                  <div class="card-title-wrapper" style="min-height: 34px;">
+                    <h4 class="card-title" style="font-size: 13px;">Sales Process Training</h4>
+                  </div>
+                </div>
+                <div class="card-footer" style="padding: 8px 14px;">
+                  <span class="card-date" style="font-size: 11px;">Dec 28</span>
+                  <span class="card-action" style="font-size: 11px;">Watch →</span>
+                </div>
+              </div>
+              <div class="card" style="height: 180px;">
+                <div class="card-header type-training" style="padding: 10px 14px;">
+                  <span class="card-icon" style="font-size: 16px;">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type" style="font-size: 10px;">Product</span>
+                    <span class="card-format" style="font-size: 9px;">Video</span>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 10px 14px;">
+                  <div class="card-title-wrapper" style="min-height: 34px;">
+                    <h4 class="card-title" style="font-size: 13px;">Sidekick Launch</h4>
+                  </div>
+                </div>
+                <div class="card-footer" style="padding: 8px 14px;">
+                  <span class="card-date" style="font-size: 11px;">Dec 26</span>
+                  <span class="card-action" style="font-size: 11px;">Watch →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Design Option B: Card Style Sections -->
+    <div class="demo-container" style="margin-top: 32px;">
+      <div class="demo-label">New Design - Option B: Card-Style Section Wrapper</div>
+      <div class="demo-content">
+        <div class="content-section-card">
+          <div class="content-section-card-header">
+            <div class="content-section-card-icon">📦</div>
+            <div class="content-section-card-info">
+              <h3 class="content-section-card-title">Product Training</h3>
+              <p class="content-section-card-desc">Training sessions on product features and capabilities</p>
+            </div>
+            <span class="content-section-count">12 items</span>
+          </div>
+          <div class="content-section-card-body">
+            <div class="card-grid">
+              <div class="card">
+                <div class="card-header type-training">
+                  <span class="card-icon">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type">Product Training</span>
+                    <span class="card-format">Live Replay</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="card-title-wrapper">
+                    <h4 class="card-title">Sales Process Foundational Training: S0→S1</h4>
+                  </div>
+                  <p class="card-desc">S0→S1 sales process qualification training</p>
+                </div>
+                <div class="card-footer">
+                  <span class="card-date">Dec 28, 2025</span>
+                  <span class="card-action">Watch →</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header type-training">
+                  <span class="card-icon">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type">Product Training</span>
+                    <span class="card-format">Video</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="card-title-wrapper">
+                    <h4 class="card-title">Sidekick Sales Launch Enablement</h4>
+                  </div>
+                  <p class="card-desc">Sidekick Sales positioning and launch</p>
+                </div>
+                <div class="card-footer">
+                  <span class="card-date">Dec 26, 2025</span>
+                  <span class="card-action">Watch →</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header type-training">
+                  <span class="card-icon">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type">Product Training</span>
+                    <span class="card-format">Slides</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="card-title-wrapper">
+                    <h4 class="card-title">AI Features Overview Deck</h4>
+                  </div>
+                  <p class="card-desc">Complete AI capabilities overview</p>
+                </div>
+                <div class="card-footer">
+                  <span class="card-date">Dec 24, 2025</span>
+                  <span class="card-action">View →</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header type-training">
+                  <span class="card-icon">📦</span>
+                  <div class="card-meta">
+                    <span class="card-type">Product Training</span>
+                    <span class="card-format">Document</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="card-title-wrapper">
+                    <h4 class="card-title">Product Feature Guide</h4>
+                  </div>
+                  <p class="card-desc">Comprehensive feature documentation</p>
+                </div>
+                <div class="card-footer">
+                  <span class="card-date">Dec 22, 2025</span>
+                  <span class="card-action">View →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 4: HUB BADGES ON CARDS
+  ============================================= -->
+  <section class="mock-section" id="hub-badges">
+    <span class="section-label">Cards</span>
+    <h2 class="section-title">Hub Badge on Cards</h2>
+    <p class="section-desc">Small pill badge indicating which hub (Enablement/Content/CoE) the asset belongs to.</p>
+
+    <div class="demo-container">
+      <div class="demo-label">Hub Badge Positions</div>
+      <div class="demo-content">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+          <!-- Position: Top Right Corner -->
+          <div>
+            <p style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Option A: Top Right</p>
+            <div class="card">
+              <span class="hub-badge enablement">Enablement</span>
+              <div class="card-header type-training">
+                <span class="card-icon">📦</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sales Process Training</h4>
+                </div>
+                <p class="card-desc">S0→S1 qualification training</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 28, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Position: Footer -->
+          <div>
+            <p style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Option B: In Footer</p>
+            <div class="card">
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Battlecard</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Zendesk Competitive</h4>
+                </div>
+                <p class="card-desc">Updated battlecard</p>
+              </div>
+              <div class="card-footer">
+                <span class="hub-badge-footer content">Content</span>
+                <span class="card-action" style="color: var(--content);">View →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Position: Header Right -->
+          <div>
+            <p style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Option C: In Header</p>
+            <div class="card">
+              <div class="card-header type-product" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span class="card-icon">🔧</span>
+                  <div class="card-meta">
+                    <span class="card-type">Template</span>
+                    <span class="card-format">Document</span>
+                  </div>
+                </div>
+                <span class="hub-badge coe" style="position: static;">CoE</span>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">ROI Calculator Template</h4>
+                </div>
+                <p class="card-desc">Customer value calculator</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 20, 2025</span>
+                <span class="card-action" style="color: var(--coe);">View →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All three hubs side by side -->
+        <p style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 32px 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">All Hub Types (Recommended: Top Right)</p>
+        <div class="card-grid">
+          <div class="card">
+            <span class="hub-badge enablement">Enablement</span>
+            <div class="card-header type-training">
+              <span class="card-icon">📦</span>
+              <div class="card-meta">
+                <span class="card-type">Product Training</span>
+                <span class="card-format">Live Replay</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">Sales Process Foundational Training</h4>
+              </div>
+              <p class="card-desc">S0→S1 sales process qualification</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 28, 2025</span>
+              <span class="card-action">Watch →</span>
+            </div>
+          </div>
+          <div class="card">
+            <span class="hub-badge content">Content</span>
+            <div class="card-header type-competitive">
+              <span class="card-icon">⚔️</span>
+              <div class="card-meta">
+                <span class="card-type">Battlecard</span>
+                <span class="card-format">Slides</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">Zendesk Competitive Battlecard</h4>
+              </div>
+              <p class="card-desc">Updated competitive positioning</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 25, 2025</span>
+              <span class="card-action" style="color: var(--content);">View →</span>
+            </div>
+          </div>
+          <div class="card">
+            <span class="hub-badge coe">CoE</span>
+            <div class="card-header type-product">
+              <span class="card-icon">🔧</span>
+              <div class="card-meta">
+                <span class="card-type">Template</span>
+                <span class="card-format">Spreadsheet</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">ROI Calculator Template</h4>
+              </div>
+              <p class="card-desc">Customer value calculation tool</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 20, 2025</span>
+              <span class="card-action" style="color: var(--coe);">View →</span>
+            </div>
+          </div>
+          <div class="card">
+            <span class="hub-badge enablement">Enablement</span>
+            <div class="card-header type-training">
+              <span class="card-icon">🔧</span>
+              <div class="card-meta">
+                <span class="card-type">Technical Training</span>
+                <span class="card-format">Video</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title-wrapper">
+                <h4 class="card-title">App Platform Integration Deep Dive</h4>
+              </div>
+              <p class="card-desc">Technical integration training</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-date">Dec 18, 2025</span>
+              <span class="card-action">Watch →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 5: MIXED HUB SECTIONS
+  ============================================= -->
+  <section class="mock-section" id="mixed-hub">
+    <span class="section-label">Mixed Content</span>
+    <h2 class="section-title">Mixed-Hub Section Layout</h2>
+    <p class="section-desc">Per-section hub filtering for boards that combine Enablement, Content, and CoE assets.</p>
+
+    <div class="demo-container">
+      <div class="demo-label">Sales Resources Board - Mixed Hub Example</div>
+      <div class="demo-content">
+        <!-- Sticky Nav for this context -->
+        <div class="sticky-nav" style="position: relative; margin: -24px -24px 24px -24px; border-radius: 0;">
+          <div class="sticky-nav-inner">
+            <div class="sticky-nav-left">
+              <div class="sticky-nav-hub">
+                <span class="sticky-nav-hub-icon">💼</span>
+                Sales Resources
+              </div>
+              <div class="sticky-nav-divider"></div>
+              <div class="sticky-nav-sections">
+                <span class="sticky-nav-link active">All</span>
+                <span class="sticky-nav-link">Competitive</span>
+                <span class="sticky-nav-link">Product</span>
+                <span class="sticky-nav-link">Training</span>
+              </div>
+            </div>
+            <div class="sticky-nav-right">
+              <div class="sticky-nav-sort">Newest ▼</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section with hub filter bar -->
+        <div class="content-section">
+          <div class="content-section-header">
+            <div class="content-section-accent" style="background: var(--competitive, #EF4444);"></div>
+            <h3 class="content-section-title">Competitive Intelligence</h3>
+            <span class="content-section-count">8 items</span>
+          </div>
+
+          <!-- Hub Filter Bar -->
+          <div class="hub-filter-bar">
+            <span class="hub-filter-label">Show from:</span>
+            <button class="hub-filter-btn active">All Hubs</button>
+            <button class="hub-filter-btn enablement">Enablement</button>
+            <button class="hub-filter-btn content">Content</button>
+            <button class="hub-filter-btn coe">CoE</button>
+          </div>
+
+          <div class="card-grid">
+            <div class="card">
+              <span class="hub-badge content">Content</span>
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Battlecard</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Zendesk Competitive Battlecard</h4>
+                </div>
+                <p class="card-desc">Updated competitive positioning</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 25, 2025</span>
+                <span class="card-action" style="color: var(--content);">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <span class="hub-badge enablement">Enablement</span>
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Competitive</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Competitive Win/Loss Training</h4>
+                </div>
+                <p class="card-desc">How to handle competitive objections</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 22, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <span class="hub-badge coe">CoE</span>
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Template</span>
+                  <span class="card-format">Document</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Competitive Analysis Framework</h4>
+                </div>
+                <p class="card-desc">Template for analyzing competitors</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 18, 2025</span>
+                <span class="card-action" style="color: var(--coe);">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <span class="hub-badge content">Content</span>
+              <div class="card-header type-competitive">
+                <span class="card-icon">⚔️</span>
+                <div class="card-meta">
+                  <span class="card-type">Battlecard</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Intercom Competitive Battlecard</h4>
+                </div>
+                <p class="card-desc">Intercom comparison and positioning</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 15, 2025</span>
+                <span class="card-action" style="color: var(--content);">View →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alternative: Sub-grouped by hub -->
+        <div class="content-section" style="margin-top: 48px;">
+          <div class="content-section-header">
+            <div class="content-section-accent" style="background: var(--type-training);"></div>
+            <h3 class="content-section-title">Product Knowledge</h3>
+            <span class="content-section-count">12 items</span>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Alternative: Sub-grouped by hub within section</p>
+
+          <!-- Enablement sub-group -->
+          <div class="hub-subheader">
+            <span class="hub-subheader-dot enablement"></span>
+            <span class="hub-subheader-label">Enablement</span>
+            <span class="hub-subheader-count">6 training sessions</span>
+          </div>
+          <div class="card-grid" style="margin-bottom: 16px;">
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">📦</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Training</span>
+                  <span class="card-format">Live Replay</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sales Process Foundational Training</h4>
+                </div>
+                <p class="card-desc">S0→S1 sales process qualification</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 28, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-training">
+                <span class="card-icon">📦</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Training</span>
+                  <span class="card-format">Video</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Sidekick Sales Launch Enablement</h4>
+                </div>
+                <p class="card-desc">Sidekick positioning and launch</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 26, 2025</span>
+                <span class="card-action">Watch →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content sub-group -->
+          <div class="hub-subheader">
+            <span class="hub-subheader-dot content"></span>
+            <span class="hub-subheader-label">Content</span>
+            <span class="hub-subheader-count">4 resources</span>
+          </div>
+          <div class="card-grid" style="margin-bottom: 16px;">
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">📄</span>
+                <div class="card-meta">
+                  <span class="card-type">Product Overview</span>
+                  <span class="card-format">Slides</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Platform Overview Deck</h4>
+                </div>
+                <p class="card-desc">Complete platform capabilities</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 24, 2025</span>
+                <span class="card-action" style="color: var(--content);">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">📄</span>
+                <div class="card-meta">
+                  <span class="card-type">One-Pager</span>
+                  <span class="card-format">PDF</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">AI Features Summary</h4>
+                </div>
+                <p class="card-desc">One-page AI capabilities</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 20, 2025</span>
+                <span class="card-action" style="color: var(--content);">View →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CoE sub-group -->
+          <div class="hub-subheader">
+            <span class="hub-subheader-dot coe"></span>
+            <span class="hub-subheader-label">CoE</span>
+            <span class="hub-subheader-count">2 tools</span>
+          </div>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">🔧</span>
+                <div class="card-meta">
+                  <span class="card-type">Calculator</span>
+                  <span class="card-format">Spreadsheet</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">ROI Calculator</h4>
+                </div>
+                <p class="card-desc">Customer value estimation tool</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 15, 2025</span>
+                <span class="card-action" style="color: var(--coe);">View →</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header type-product">
+                <span class="card-icon">🔧</span>
+                <div class="card-meta">
+                  <span class="card-type">Template</span>
+                  <span class="card-format">Document</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="card-title-wrapper">
+                  <h4 class="card-title">Discovery Questions Guide</h4>
+                </div>
+                <p class="card-desc">Best practice discovery template</p>
+              </div>
+              <div class="card-footer">
+                <span class="card-date">Dec 10, 2025</span>
+                <span class="card-action" style="color: var(--coe);">View →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding: 48px 32px; text-align: center; color: var(--text-muted); font-size: 13px;">
+    GTM Hub Board Layout Redesign Mocks - View at /mocks/board-layout-redesign.html
+  </footer>
+
+</body>
+</html>

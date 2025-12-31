@@ -63,10 +63,11 @@ export function HubSidebar({ activeHub }: HubSidebarProps) {
 
   return (
     <aside
-      className="bg-white border-r fixed left-0 bottom-0 overflow-y-auto custom-scrollbar"
+      className="border-r fixed left-0 bottom-0 overflow-y-auto custom-scrollbar"
       style={{
         width: 'var(--sidebar-width)',
         borderColor: 'var(--card-border)',
+        background: 'var(--card-bg)',
         display: 'flex',
         flexDirection: 'column',
         top: '64px', // Below the header
@@ -89,7 +90,7 @@ export function HubSidebar({ activeHub }: HubSidebarProps) {
             borderRadius: '6px',
           }}
           onMouseEnter={(e) => {
-            if (!isHomeActive) e.currentTarget.style.backgroundColor = '#F3F4F6';
+            if (!isHomeActive) e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
           }}
           onMouseLeave={(e) => {
             if (!isHomeActive) e.currentTarget.style.backgroundColor = 'transparent';
@@ -147,7 +148,7 @@ export function HubSidebar({ activeHub }: HubSidebarProps) {
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.currentTarget.style.backgroundColor = '#F3F4F6';
+                      e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
                     }
                   }}
                   onMouseLeave={(e) => {

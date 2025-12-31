@@ -211,8 +211,8 @@ export function PageHeader() {
               transform: 'translateX(-50%)',
               width: '100%',
               maxWidth: '640px',
-              background: 'white',
-              border: '1px solid #E2E8F0',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '16px',
               boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
               maxHeight: '400px',
@@ -223,14 +223,14 @@ export function PageHeader() {
             onWheel={(e) => e.stopPropagation()}
           >
             {!hasResults && searchQuery.trim() && !isLoading && (
-              <div style={{ padding: '24px', textAlign: 'center', color: '#94A3B8' }}>
+              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)' }}>
                 No results found for "{searchQuery}"
               </div>
             )}
 
             {/* Tags Section */}
             {results.tags.length > 0 && (
-              <div style={{ borderBottom: results.assets.length > 0 ? '1px solid #F1F5F9' : 'none' }}>
+              <div style={{ borderBottom: results.assets.length > 0 ? '1px solid var(--card-border)' : 'none' }}>
                 <div
                   style={{
                     padding: '12px 20px 8px',
@@ -238,7 +238,7 @@ export function PageHeader() {
                     fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    color: '#94A3B8',
+                    color: 'var(--text-muted)',
                   }}
                 >
                   Tags
@@ -255,9 +255,9 @@ export function PageHeader() {
                     style={{
                       padding: '12px 20px',
                       gap: '14px',
-                      color: '#0F172A',
+                      color: 'var(--text-primary)',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hover-bg)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     {/* Tag Icon Box */}
@@ -266,11 +266,11 @@ export function PageHeader() {
                         width: '36px',
                         height: '36px',
                         borderRadius: '10px',
-                        background: '#F1F5F9',
+                        background: 'var(--hover-bg)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#94A3B8',
+                        color: 'var(--text-muted)',
                         fontSize: '18px',
                         fontWeight: 500,
                         flexShrink: 0,
@@ -284,7 +284,7 @@ export function PageHeader() {
                         style={{
                           fontSize: '14px',
                           fontWeight: 500,
-                          color: '#0F172A',
+                          color: 'var(--text-primary)',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
@@ -295,11 +295,11 @@ export function PageHeader() {
                           <span
                             style={{
                               padding: '3px 8px',
-                              background: '#F1F5F9',
+                              background: 'var(--hover-bg)',
                               borderRadius: '6px',
                               fontSize: '11px',
                               fontWeight: 500,
-                              color: '#94A3B8',
+                              color: 'var(--text-muted)',
                             }}
                           >
                             {tag.subtitle}
@@ -322,7 +322,7 @@ export function PageHeader() {
                     fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    color: '#94A3B8',
+                    color: 'var(--text-muted)',
                   }}
                 >
                   Assets
@@ -339,9 +339,9 @@ export function PageHeader() {
                     style={{
                       padding: '12px 20px',
                       gap: '14px',
-                      color: '#0F172A',
+                      color: 'var(--text-primary)',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hover-bg)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     {/* Asset Icon Box */}
@@ -366,7 +366,7 @@ export function PageHeader() {
                         style={{
                           fontSize: '14px',
                           fontWeight: 500,
-                          color: '#0F172A',
+                          color: 'var(--text-primary)',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
@@ -375,7 +375,7 @@ export function PageHeader() {
                         {asset.title}
                       </div>
                       {asset.subtitle && (
-                        <div style={{ fontSize: '12px', color: '#94A3B8' }}>{asset.subtitle}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{asset.subtitle}</div>
                       )}
                     </div>
                   </Link>
@@ -385,7 +385,7 @@ export function PageHeader() {
 
             {/* Hubs Section - show at bottom if present */}
             {results.boards.length > 0 && (
-              <div style={{ borderTop: results.tags.length > 0 || results.assets.length > 0 ? '1px solid #F1F5F9' : 'none' }}>
+              <div style={{ borderTop: results.tags.length > 0 || results.assets.length > 0 ? '1px solid var(--card-border)' : 'none' }}>
                 <div
                   style={{
                     padding: '12px 20px 8px',
@@ -393,7 +393,7 @@ export function PageHeader() {
                     fontWeight: 600,
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    color: '#94A3B8',
+                    color: 'var(--text-muted)',
                   }}
                 >
                   Hubs
@@ -410,9 +410,9 @@ export function PageHeader() {
                     style={{
                       padding: '12px 20px',
                       gap: '14px',
-                      color: '#0F172A',
+                      color: 'var(--text-primary)',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#F8FAFC')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--hover-bg)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     {/* Board Color Dot */}
@@ -421,7 +421,7 @@ export function PageHeader() {
                         width: '36px',
                         height: '36px',
                         borderRadius: '10px',
-                        background: '#F1F5F9',
+                        background: 'var(--hover-bg)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',

@@ -7,6 +7,9 @@ import { AssetCard, CompactCard, HeroCard } from './AssetCard';
 const INITIAL_GRID_COUNT = 8;
 const INITIAL_LIST_COUNT = 6;
 
+// Workflow step order for numbered indicators
+const WORKFLOW_STEP_ORDER = ['discovery', 'demo', 'proposal', 'onboarding', 'qbr', 'expansion', 'renewal'];
+
 interface Asset {
   id: string;
   slug: string;
@@ -31,6 +34,7 @@ interface TagData {
   name: string;
   slug: string;
   displayName?: string | null;
+  category?: string | null;
 }
 
 interface HubConfig {
@@ -69,6 +73,32 @@ export function HubPageContent({
       map[t.slug] = t.displayName || t.name;
     });
     return map;
+  }, [hubTagsFromAPI]);
+
+  // Category map: slug -> category
+  const hubTagCategoryMap = useMemo(() => {
+    const map: Record<string, string | null> = {};
+    hubTagsFromAPI?.forEach(t => {
+      map[t.slug] = t.category || null;
+    });
+    return map;
+  }, [hubTagsFromAPI]);
+
+  // Get workflow step number for a tag (1-based, or null if not a workflow tag)
+  const getWorkflowStepNumber = (slug: string): number | null => {
+    if (hubTagCategoryMap[slug] !== 'workflow') return null;
+    const index = WORKFLOW_STEP_ORDER.indexOf(slug);
+    // If found in order, use that; otherwise assign based on position in visible tags
+    if (index !== -1) return index + 1;
+    // Fallback: count workflow tags in order of appearance
+    const workflowTags = hubTagSlugs.filter(s => hubTagCategoryMap[s] === 'workflow');
+    const workflowIndex = workflowTags.indexOf(slug);
+    return workflowIndex !== -1 ? workflowIndex + 1 : null;
+  };
+
+  // Check if any tags are workflow category
+  const hasWorkflowTags = useMemo(() => {
+    return hubTagsFromAPI?.some(t => t.category === 'workflow') || false;
   }, [hubTagsFromAPI]);
 
   // Helper: Check if an asset tag matches a board tag (by slug OR name)
@@ -177,148 +207,76 @@ export function HubPageContent({
           position: 'sticky',
           top: 0,
           zIndex: 40,
-          background: '#F8FAFC',
+          background: 'var(--bg-page)',
           marginLeft: '-24px',
           marginRight: '-24px',
           paddingLeft: '24px',
           paddingRight: '24px',
           marginTop: '-24px',
           paddingTop: '24px',
+          paddingBottom: '8px',
+          borderBottom: '1px solid var(--border-subtle, var(--card-border))',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
         }}
       >
-        {/* Enhanced Filter Navigation - More Prominent */}
+        {/* Sleek Jump Nav - Pill Buttons */}
         {hubTagSlugs.length > 0 && (
-          <div
+          <nav
+            className="nav-inner"
             style={{
-              background: 'white',
-              border: '1px solid #E2E8F0',
-              borderRadius: '12px',
-              padding: '16px 20px',
-              marginBottom: '16px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              flexWrap: 'wrap',
+              marginBottom: '8px',
             }}
           >
-            {/* Filter Label */}
-            <div
+            {/* All pill */}
+            <button
+              onClick={() => setInternalSelectedTags([])}
+              className="nav-pill"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '12px',
+                padding: '8px 16px',
+                borderRadius: 'var(--radius-md, 10px)',
+                fontSize: '13px',
+                fontWeight: 500,
+                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.06))',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                background: internalSelectedTags.length === 0 ? hub.color : 'var(--bg-elevated, #1E1E28)',
+                color: internalSelectedTags.length === 0 ? 'white' : 'var(--text-secondary)',
+                borderColor: internalSelectedTags.length === 0 ? hub.color : 'var(--border-subtle)',
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={hub.color} strokeWidth="2.5">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-              </svg>
-              <span
-                style={{
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  color: '#64748B',
-                }}
-              >
-                Filter by Topic
-              </span>
-            </div>
+              All
+            </button>
 
-            {/* Pills Row */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                flexWrap: 'wrap',
-              }}
-            >
-              {/* All pill */}
-              <button
-                onClick={() => setInternalSelectedTags([])}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 18px',
-                  borderRadius: '24px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  border: internalSelectedTags.length === 0 ? `2px solid ${hub.color}` : '2px solid transparent',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  background: internalSelectedTags.length === 0 ? hub.color : '#F1F5F9',
-                  color: internalSelectedTags.length === 0 ? 'white' : '#475569',
-                  boxShadow: internalSelectedTags.length === 0 ? `0 2px 8px ${hub.color}40` : 'none',
-                }}
-              >
-                All
-                <span
+            {/* Tag pills - clean design without counts */}
+            {hubTagsFromAPI?.map(tag => {
+              const isActive = isTagActive(tag.slug) && internalSelectedTags.length > 0;
+              return (
+                <button
+                  key={tag.slug}
+                  onClick={() => toggleTag(tag.slug)}
+                  className="nav-pill"
                   style={{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    padding: '2px 8px',
-                    borderRadius: '12px',
-                    background: internalSelectedTags.length === 0 ? 'rgba(255,255,255,0.3)' : '#E2E8F0',
-                    color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
+                    padding: '8px 16px',
+                    borderRadius: 'var(--radius-md, 10px)',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.06))',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    background: isActive ? hub.color : 'var(--bg-elevated, #1E1E28)',
+                    color: isActive ? 'white' : 'var(--text-secondary)',
+                    borderColor: isActive ? hub.color : 'var(--border-subtle)',
                   }}
                 >
-                  {assets.length}
-                </span>
-              </button>
-
-              {/* Tag pills - display name but track by slug */}
-              {hubTagsFromAPI?.map(tag => {
-                const isActive = isTagActive(tag.slug) && internalSelectedTags.length > 0;
-                return (
-                  <button
-                    key={tag.slug}
-                    onClick={() => toggleTag(tag.slug)}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '10px 18px',
-                      borderRadius: '24px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      border: isActive ? `2px solid ${hub.color}` : '2px solid #E2E8F0',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease',
-                      background: isActive ? hub.color : 'white',
-                      color: isActive ? 'white' : '#475569',
-                      boxShadow: isActive ? `0 2px 8px ${hub.color}40` : 'none',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.borderColor = hub.color;
-                        e.currentTarget.style.background = `${hub.color}10`;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.borderColor = '#E2E8F0';
-                        e.currentTarget.style.background = 'white';
-                      }
-                    }}
-                  >
-                    {hubTagDisplayMap[tag.slug]}
-                    <span
-                      style={{
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        background: isActive ? 'rgba(255,255,255,0.3)' : '#F1F5F9',
-                        color: isActive ? 'white' : '#64748B',
-                      }}
-                    >
-                      {assetCountByTag[tag.slug] || 0}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                  {hubTagDisplayMap[tag.slug]}
+                </button>
+              );
+            })}
+          </nav>
         )}
 
         {/* Sort and View Controls */}
@@ -330,12 +288,20 @@ export function HubPageContent({
             padding: '16px 0',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px' }}>{hub.icon}</span>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#0F172A', margin: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
               {hub.name}
             </h2>
-            <span style={{ fontSize: '14px', color: '#64748B' }}>
+            <span
+              style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                padding: '4px 10px',
+                borderRadius: '12px',
+                background: 'var(--bg-hover, rgba(255, 255, 255, 0.06))',
+                color: 'var(--text-muted)',
+              }}
+            >
               {assets.length} items
             </span>
           </div>
@@ -348,10 +314,10 @@ export function HubPageContent({
               style={{
                 padding: '8px 12px',
                 borderRadius: '8px',
-                border: '1px solid #E2E8F0',
-                background: 'white',
+                border: '1px solid var(--card-border)',
+                background: 'var(--card-bg)',
                 fontSize: '13px',
-                color: '#64748B',
+                color: 'var(--text-muted)',
                 cursor: 'pointer',
               }}
             >
@@ -367,11 +333,11 @@ export function HubPageContent({
                   padding: '8px',
                   borderRadius: '6px',
                   border: 'none',
-                  background: viewMode === 'grid' ? '#E2E8F0' : 'transparent',
+                  background: viewMode === 'grid' ? 'var(--hover-bg)' : 'transparent',
                   cursor: 'pointer',
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
                   <rect x="3" y="14" width="7" height="7" />
@@ -384,11 +350,11 @@ export function HubPageContent({
                   padding: '8px',
                   borderRadius: '6px',
                   border: 'none',
-                  background: viewMode === 'stack' ? '#E2E8F0' : 'transparent',
+                  background: viewMode === 'stack' ? 'var(--hover-bg)' : 'transparent',
                   cursor: 'pointer',
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
                   <line x1="3" y1="6" x2="21" y2="6" />
                   <line x1="3" y1="12" x2="21" y2="12" />
                   <line x1="3" y1="18" x2="21" y2="18" />
@@ -406,16 +372,26 @@ export function HubPageContent({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '12px',
               marginBottom: '20px',
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={hub.color} strokeWidth="2">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-            </svg>
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#0F172A', margin: 0 }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
               Recently Added
             </h2>
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                padding: '3px 8px',
+                borderRadius: '4px',
+                background: 'rgba(34, 197, 94, 0.15)',
+                color: 'var(--success, #4ADE80)',
+              }}
+            >
+              New
+            </span>
           </div>
 
           {/* Top 2 hero cards - 50/50 split */}
@@ -472,21 +448,24 @@ export function HubPageContent({
                 {hasPreviousSections && (
                   <div
                     style={{
-                      borderTop: '1px solid #E2E8F0',
+                      borderTop: '1px solid var(--card-border)',
                       marginBottom: '24px',
                     }}
                   />
                 )}
-                <h3
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#0F172A',
-                    marginBottom: '16px',
-                  }}
-                >
-                  {hubTagDisplayMap[slug]}
-                </h3>
+                <div className="section-header">
+                  {/* Workflow step indicator */}
+                  {getWorkflowStepNumber(slug) !== null && (
+                    <span
+                      className="section-step"
+                      style={{ background: hub.color }}
+                    >
+                      {getWorkflowStepNumber(slug)}
+                    </span>
+                  )}
+                  <h3 className="section-title">{hubTagDisplayMap[slug]}</h3>
+                  <span className="section-count">{tagAssets.length} items</span>
+                </div>
                 {viewMode === 'grid' ? (
                   (() => {
                     const sortedAssets = sortAssets(tagAssets);
@@ -516,22 +495,20 @@ export function HubPageContent({
                               width: '100%',
                               padding: '12px 20px',
                               marginTop: '16px',
-                              background: 'white',
-                              border: '1px solid #E2E8F0',
+                              background: 'var(--card-bg)',
+                              border: '1px solid var(--card-border)',
                               borderRadius: '8px',
                               fontSize: '13px',
                               fontWeight: 500,
-                              color: '#64748B',
+                              color: 'var(--text-muted)',
                               cursor: 'pointer',
                               transition: 'all 0.15s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#F8FAFC';
-                              e.currentTarget.style.borderColor = '#CBD5E1';
+                              e.currentTarget.style.background = 'var(--hover-bg)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'white';
-                              e.currentTarget.style.borderColor = '#E2E8F0';
+                              e.currentTarget.style.background = 'var(--card-bg)';
                             }}
                           >
                             {isExpanded ? (
@@ -598,22 +575,20 @@ export function HubPageContent({
                               maxWidth: '900px',
                               padding: '12px 20px',
                               marginTop: '12px',
-                              background: 'white',
-                              border: '1px solid #E2E8F0',
+                              background: 'var(--card-bg)',
+                              border: '1px solid var(--card-border)',
                               borderRadius: '8px',
                               fontSize: '13px',
                               fontWeight: 500,
-                              color: '#64748B',
+                              color: 'var(--text-muted)',
                               cursor: 'pointer',
                               transition: 'all 0.15s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#F8FAFC';
-                              e.currentTarget.style.borderColor = '#CBD5E1';
+                              e.currentTarget.style.background = 'var(--hover-bg)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'white';
-                              e.currentTarget.style.borderColor = '#E2E8F0';
+                              e.currentTarget.style.background = 'var(--card-bg)';
                             }}
                           >
                             {isExpanded ? (
@@ -657,21 +632,15 @@ export function HubPageContent({
                 {hasPreviousSections && (
                   <div
                     style={{
-                      borderTop: '1px solid #E2E8F0',
+                      borderTop: '1px solid var(--card-border)',
                       marginBottom: '24px',
                     }}
                   />
                 )}
-                <h3
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: 600,
-                    color: '#0F172A',
-                    marginBottom: '16px',
-                  }}
-                >
-                  Other
-                </h3>
+                <div className="section-header">
+                  <h3 className="section-title">Other</h3>
+                  <span className="section-count">{untaggedAssets.length} items</span>
+                </div>
                 {viewMode === 'grid' ? (
                   (() => {
                     const sortedAssets = sortAssets(untaggedAssets);
@@ -701,22 +670,20 @@ export function HubPageContent({
                               width: '100%',
                               padding: '12px 20px',
                               marginTop: '16px',
-                              background: 'white',
-                              border: '1px solid #E2E8F0',
+                              background: 'var(--card-bg)',
+                              border: '1px solid var(--card-border)',
                               borderRadius: '8px',
                               fontSize: '13px',
                               fontWeight: 500,
-                              color: '#64748B',
+                              color: 'var(--text-muted)',
                               cursor: 'pointer',
                               transition: 'all 0.15s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#F8FAFC';
-                              e.currentTarget.style.borderColor = '#CBD5E1';
+                              e.currentTarget.style.background = 'var(--hover-bg)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'white';
-                              e.currentTarget.style.borderColor = '#E2E8F0';
+                              e.currentTarget.style.background = 'var(--card-bg)';
                             }}
                           >
                             {isExpanded ? (
@@ -783,22 +750,20 @@ export function HubPageContent({
                               maxWidth: '900px',
                               padding: '12px 20px',
                               marginTop: '12px',
-                              background: 'white',
-                              border: '1px solid #E2E8F0',
+                              background: 'var(--card-bg)',
+                              border: '1px solid var(--card-border)',
                               borderRadius: '8px',
                               fontSize: '13px',
                               fontWeight: 500,
-                              color: '#64748B',
+                              color: 'var(--text-muted)',
                               cursor: 'pointer',
                               transition: 'all 0.15s ease',
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.background = '#F8FAFC';
-                              e.currentTarget.style.borderColor = '#CBD5E1';
+                              e.currentTarget.style.background = 'var(--hover-bg)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'white';
-                              e.currentTarget.style.borderColor = '#E2E8F0';
+                              e.currentTarget.style.background = 'var(--card-bg)';
                             }}
                           >
                             {isExpanded ? (
@@ -829,11 +794,11 @@ export function HubPageContent({
       ) : (
         <div
           className="rounded-xl p-12 text-center"
-          style={{ backgroundColor: 'white', border: '1px solid #E2E8F0' }}
+          style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
         >
           <svg
             className="w-16 h-16 mx-auto mb-4"
-            style={{ color: '#94A3B8' }}
+            style={{ color: 'var(--text-muted)' }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -845,10 +810,10 @@ export function HubPageContent({
               d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
             />
           </svg>
-          <h3 className="text-lg font-medium mb-2" style={{ color: '#0F172A' }}>
+          <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
             No {hub.name.toLowerCase()} resources yet
           </h3>
-          <p className="mb-6 max-w-md mx-auto" style={{ color: '#64748B' }}>
+          <p className="mb-6 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
             Resources tagged with {hub.name} will appear here.
           </p>
           <a
