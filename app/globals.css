@@ -148,9 +148,9 @@
 
     /* Text Colors */
     --text-primary: #FFFFFF;
-    --text-secondary: #A0A0B0;
-    --text-muted: #6B6B7B;
-    --format-text: #6B6B7B;
+    --text-secondary: #B8B8C8;
+    --text-muted: #8A8A9A;
+    --format-text: #8A8A9A;
 
     /* Border Hierarchy */
     --border-subtle: rgba(255, 255, 255, 0.06);
@@ -636,11 +636,11 @@ body {
 .nav-pill {
   padding: 8px 16px;
   border-radius: var(--radius-md, 10px);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
   background: var(--bg-elevated, #1E1E28);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
   cursor: pointer;
   transition: all var(--transition-fast, 0.15s ease);
   text-decoration: none;
@@ -650,7 +650,7 @@ body {
 .nav-pill:hover {
   background: var(--bg-hover, #252530);
   color: var(--text-primary);
-  border-color: var(--border-hover, rgba(255, 255, 255, 0.15));
+  border-color: var(--border-hover, rgba(255, 255, 255, 0.18));
 }
 
 .nav-pill.active {
@@ -712,12 +712,12 @@ body {
 }
 
 .section-count {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
   margin-left: auto;
-  padding: 4px 10px;
-  background: var(--bg-hover, rgba(255, 255, 255, 0.06));
+  padding: 4px 12px;
+  background: var(--bg-hover, rgba(255, 255, 255, 0.08));
   border-radius: 12px;
 }
 
@@ -871,7 +871,7 @@ body {
 
 /* Card Body */
 .card-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -883,7 +883,7 @@ body {
 }
 
 .card-description {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.5;
   display: -webkit-box;
@@ -905,13 +905,13 @@ body {
 }
 
 .card-meta {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 .card-action {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--accent-content-light, #A88BF5);
   display: flex;
   align-items: center;
@@ -929,11 +929,11 @@ body {
    CARD BADGE SYSTEM (Compact Design from Mockup)
    ======================================== */
 .card-badge {
-  font-size: var(--badge-font-size, 10px);
-  font-weight: 600;
+  font-size: var(--badge-font-size, 11px);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  padding: var(--badge-padding, 3px 8px);
+  padding: var(--badge-padding, 4px 10px);
   border-radius: var(--badge-radius, 4px);
   background: var(--bg-hover);
   color: var(--text-secondary);
@@ -943,6 +943,7 @@ body {
 .card-badge.type {
   background: var(--badge-type-bg);
   color: var(--badge-type-text);
+  font-weight: 700;
 }
 
 .card-badge.format {
@@ -953,11 +954,13 @@ body {
 .card-badge.new {
   background: var(--badge-new-bg);
   color: var(--badge-new-text);
+  font-weight: 700;
 }
 
 .card-badge.featured {
   background: var(--badge-featured-bg);
   color: var(--badge-featured-text);
+  font-weight: 700;
 }
 
 /* ========================================
@@ -978,21 +981,21 @@ body {
 }
 
 .proof-metric {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: var(--accent-proof-light, #60A5FA);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .proof-description {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.5;
 }
 
 .proof-source {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -1028,15 +1031,15 @@ body {
 }
 
 .training-date {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .training-type {
-  font-size: var(--badge-font-size, 10px);
-  font-weight: 600;
+  font-size: var(--badge-font-size, 11px);
+  font-weight: 700;
   text-transform: uppercase;
-  padding: var(--badge-padding, 3px 8px);
+  padding: var(--badge-padding, 4px 10px);
   border-radius: var(--badge-radius, 4px);
   background: var(--badge-hub-bg);
   color: var(--badge-hub-text);
@@ -1047,7 +1050,7 @@ body {
 }
 
 .training-card-body h4 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -1059,7 +1062,7 @@ body {
 }
 
 .training-card-body p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.5;
@@ -1070,7 +1073,7 @@ body {
 }
 
 .training-presenter {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
@@ -1082,8 +1085,8 @@ body {
 }
 
 .training-action {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--accent-enablement-light, #4ADE80);
   display: flex;
   align-items: center;
@@ -1091,7 +1094,7 @@ body {
 }
 
 .training-duration {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
@@ -1113,13 +1116,13 @@ body {
 }
 
 .compact-card h4 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .compact-card p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
