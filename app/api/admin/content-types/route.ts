@@ -26,11 +26,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-');
+
+    // Check if slug already exists
+    const existing = await db.select({ id: contentTypes.id }).from(contentTypes).where(eq(contentTypes.slug, normalizedSlug)).limit(1);
+    if (existing.length > 0) {
+      return NextResponse.json({ error: `A type with slug "${normalizedSlug}" already exists` }, { status: 409 });
+    }
+
     const [newType] = await db
       .insert(contentTypes)
       .values({
         name,
-        slug: slug.toLowerCase().replace(/\s+/g, '-'),
+        slug: normalizedSlug,
         hub: null, // All types are universal now
         bgColor,
         textColor,
@@ -41,10 +49,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newType, { status: 201 });
   } catch (error) {
     console.error('Error creating content type:', error);
-    if (error instanceof Error && error.message.includes('unique')) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('unique') || errorMessage.includes('duplicate')) {
       return NextResponse.json({ error: 'A type with this slug already exists' }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Failed to create content type' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create content type: ' + errorMessage }, { status: 500 });
   }
 }
 

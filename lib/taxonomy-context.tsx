@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 
 interface TypeDisplayConfig {
   label: string;
@@ -18,12 +18,14 @@ interface TaxonomyData {
   types: Record<string, TypeDisplayConfig>;
   formats: Record<string, FormatDisplayConfig>;
   isLoaded: boolean;
+  refresh: () => Promise<void>;
 }
 
 const TaxonomyContext = createContext<TaxonomyData>({
   types: {},
   formats: {},
   isLoaded: false,
+  refresh: async () => {},
 });
 
 // Global cache to persist across component remounts
@@ -34,32 +36,45 @@ export function TaxonomyProvider({ children }: { children: ReactNode }) {
     types: globalCache?.types || {},
     formats: globalCache?.formats || {},
     isLoaded: !!globalCache,
+    refresh: async () => {},
   });
+
+  const fetchTaxonomy = useCallback(async (bypassCache = false) => {
+    try {
+      const url = bypassCache ? '/api/taxonomy/display?refresh=true' : '/api/taxonomy/display';
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        globalCache = result;
+        setData(prev => ({
+          ...prev,
+          types: result.types || {},
+          formats: result.formats || {},
+          isLoaded: true,
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to load taxonomy display data:', error);
+      setData(prev => ({ ...prev, isLoaded: true }));
+    }
+  }, []);
+
+  const refresh = useCallback(async () => {
+    // Clear global cache and refetch
+    globalCache = null;
+    await fetchTaxonomy(true);
+  }, [fetchTaxonomy]);
+
+  useEffect(() => {
+    // Update refresh function in state
+    setData(prev => ({ ...prev, refresh }));
+  }, [refresh]);
 
   useEffect(() => {
     // If we have cached data, don't refetch immediately
     if (globalCache) return;
-
-    const fetchTaxonomy = async () => {
-      try {
-        const response = await fetch('/api/taxonomy/display');
-        if (response.ok) {
-          const result = await response.json();
-          globalCache = result;
-          setData({
-            types: result.types || {},
-            formats: result.formats || {},
-            isLoaded: true,
-          });
-        }
-      } catch (error) {
-        console.error('Failed to load taxonomy display data:', error);
-        setData(prev => ({ ...prev, isLoaded: true }));
-      }
-    };
-
     fetchTaxonomy();
-  }, []);
+  }, [fetchTaxonomy]);
 
   return (
     <TaxonomyContext.Provider value={data}>

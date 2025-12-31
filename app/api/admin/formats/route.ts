@@ -26,11 +26,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-');
+
+    // Check if slug already exists
+    const existing = await db.select({ id: formats.id }).from(formats).where(eq(formats.slug, normalizedSlug)).limit(1);
+    if (existing.length > 0) {
+      return NextResponse.json({ error: `A format with slug "${normalizedSlug}" already exists` }, { status: 409 });
+    }
+
     const [newFormat] = await db
       .insert(formats)
       .values({
         name,
-        slug: slug.toLowerCase().replace(/\s+/g, '-'),
+        slug: normalizedSlug,
         color,
         iconType: iconType || 'document',
         sortOrder: sortOrder || 0,
@@ -40,10 +48,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newFormat, { status: 201 });
   } catch (error) {
     console.error('Error creating format:', error);
-    if (error instanceof Error && error.message.includes('unique')) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('unique') || errorMessage.includes('duplicate')) {
       return NextResponse.json({ error: 'A format with this slug already exists' }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Failed to create format' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create format: ' + errorMessage }, { status: 500 });
   }
 }
 

@@ -159,12 +159,14 @@ export default function TaxonomyPage() {
       if (res.ok) {
         setIsModalOpen(false);
         fetchData();
+        // Invalidate taxonomy cache so cards show updated data immediately
+        await fetch('/api/taxonomy/display', { method: 'POST' });
       } else {
         const data = await res.json();
-        alert('Error: ' + data.error);
+        alert('Error: ' + (data.error || 'Failed to save'));
       }
     } catch (error) {
-      alert('Failed to save');
+      alert('Failed to save: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
@@ -179,11 +181,14 @@ export default function TaxonomyPage() {
       const res = await fetch(endpoint, { method: 'DELETE' });
       if (res.ok) {
         fetchData();
+        // Invalidate taxonomy cache
+        await fetch('/api/taxonomy/display', { method: 'POST' });
       } else {
-        alert('Failed to delete');
+        const data = await res.json();
+        alert('Failed to delete: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
-      alert('Failed to delete');
+      alert('Failed to delete: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 

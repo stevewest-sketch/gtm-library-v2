@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { contentTypes, formats } from '@/lib/db/schema';
 
@@ -10,10 +10,20 @@ let cachedData: {
 let cacheTime = 0;
 const CACHE_TTL = 60 * 1000; // 1 minute cache
 
-export async function GET() {
+// Export function to invalidate cache (called from admin APIs)
+export function invalidateTaxonomyCache() {
+  cachedData = null;
+  cacheTime = 0;
+}
+
+export async function GET(request: NextRequest) {
   try {
-    // Return cached data if fresh
-    if (cachedData && Date.now() - cacheTime < CACHE_TTL) {
+    // Check for cache bypass parameter (used after admin updates)
+    const { searchParams } = new URL(request.url);
+    const bypassCache = searchParams.get('refresh') === 'true';
+
+    // Return cached data if fresh and not bypassing
+    if (!bypassCache && cachedData && Date.now() - cacheTime < CACHE_TTL) {
       return NextResponse.json(cachedData);
     }
 
@@ -54,4 +64,10 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+// POST to invalidate cache (called after admin creates/updates/deletes)
+export async function POST() {
+  invalidateTaxonomyCache();
+  return NextResponse.json({ success: true, message: 'Cache invalidated' });
 }
