@@ -377,9 +377,19 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     }));
   };
 
+  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveMessage(null);
     try {
+      // Filter out empty takeaways and tips
+      const filteredTakeaways = formData.trainingContent.takeaways.filter(t => t.trim() !== '');
+      const filteredTips = formData.trainingContent.tips.filter(t => t.trim() !== '');
+      const filteredHowtos = formData.trainingContent.howtos
+        .filter(h => h.title.trim() !== '' || h.content.trim() !== '')
+        .map(h => ({ title: h.title, content: h.content }));
+
       // Build the update payload
       const payload = {
         title: formData.title,
@@ -399,14 +409,16 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         slidesUrl: formData.resourceLinks.find(l => l.type === 'slides')?.url || null,
         transcriptUrl: formData.resourceLinks.find(l => l.type === 'transcript')?.url || null,
         keyAssetUrl: formData.resourceLinks.find(l => l.type === 'document')?.url || null,
-        // Training content
-        presenters: formData.trainingContent.presenters ? formData.trainingContent.presenters.split(',').map(p => p.trim()) : [],
+        // Training content - filter out empty values
+        presenters: formData.trainingContent.presenters ? formData.trainingContent.presenters.split(',').map(p => p.trim()).filter(p => p !== '') : [],
         durationMinutes: formData.trainingContent.durationMinutes,
         eventDate: formData.trainingContent.eventDate ? new Date(formData.trainingContent.eventDate) : null,
-        takeaways: formData.trainingContent.takeaways,
-        howtos: formData.trainingContent.howtos.map(h => ({ title: h.title, content: h.content })),
-        tips: formData.trainingContent.tips,
+        takeaways: filteredTakeaways,
+        howtos: filteredHowtos,
+        tips: filteredTips,
       };
+
+      console.log('Saving payload:', payload);
 
       const res = await fetch(`/api/assets/${slug}`, {
         method: 'PUT',
@@ -414,14 +426,20 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         body: JSON.stringify(payload),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        // Success - could show toast or redirect
-        console.log('Asset saved successfully');
+        console.log('Asset saved successfully:', data);
+        setSaveMessage({ type: 'success', text: 'Changes saved successfully!' });
+        // Clear message after 3 seconds
+        setTimeout(() => setSaveMessage(null), 3000);
       } else {
-        console.error('Failed to save asset');
+        console.error('Failed to save asset:', data);
+        setSaveMessage({ type: 'error', text: data.error || 'Failed to save changes' });
       }
     } catch (error) {
       console.error('Error saving asset:', error);
+      setSaveMessage({ type: 'error', text: 'Network error - please try again' });
     } finally {
       setIsSaving(false);
     }
@@ -717,6 +735,187 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             </button>
           </div>
         </div>
+
+        {/* Save Message Toast */}
+        {saveMessage && (
+          <div
+            style={{
+              padding: '12px 20px',
+              marginBottom: '16px',
+              borderRadius: '8px',
+              background: saveMessage.type === 'success' ? '#D1FAE5' : '#FEE2E2',
+              border: `1px solid ${saveMessage.type === 'success' ? '#10B981' : '#EF4444'}`,
+              color: saveMessage.type === 'success' ? '#065F46' : '#DC2626',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            {saveMessage.text}
+          </div>
+        )}
+
+        {/* Preview Modal */}
+        {showPreview && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+            }}
+            onClick={() => setShowPreview(false)}
+          >
+            <div
+              style={{
+                background: 'white',
+                borderRadius: '16px',
+                width: '800px',
+                maxHeight: '90vh',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  padding: '16px 24px',
+                  borderBottom: '1px solid #E5E7EB',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                  Preview: {formData.title || 'Untitled Asset'}
+                </h2>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '24px',
+                    color: '#9CA3AF',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
+                {/* Hub Badge */}
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '4px 12px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    marginBottom: '16px',
+                    background: formData.hub === 'enablement' ? '#D1FAE5' : formData.hub === 'content' ? '#EDE9FE' : '#FEF3C7',
+                    color: formData.hub === 'enablement' ? '#065F46' : formData.hub === 'content' ? '#5B21B6' : '#92400E',
+                  }}
+                >
+                  {formData.hub.toUpperCase()}
+                </span>
+
+                {/* Description */}
+                {formData.description && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Description</h3>
+                    <p style={{ fontSize: '14px', color: '#4B5563', lineHeight: 1.6 }}>{formData.description}</p>
+                  </div>
+                )}
+
+                {/* Takeaways */}
+                {formData.trainingContent.takeaways.filter(t => t.trim()).length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Key Takeaways</h3>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                      {formData.trainingContent.takeaways.filter(t => t.trim()).map((t, i) => (
+                        <li key={i} style={{ fontSize: '14px', color: '#4B5563', marginBottom: '8px' }}>{t}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* How-Tos */}
+                {formData.trainingContent.howtos.filter(h => h.title.trim() || h.content.trim()).length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>How-To Steps</h3>
+                    {formData.trainingContent.howtos.filter(h => h.title.trim() || h.content.trim()).map((h, i) => (
+                      <div key={i} style={{ marginBottom: '12px', padding: '12px', background: '#F9FAFB', borderRadius: '8px' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px' }}>
+                          Step {i + 1}: {h.title}
+                        </div>
+                        <div style={{ fontSize: '13px', color: '#6B7280' }}>{h.content}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Tips */}
+                {formData.trainingContent.tips.filter(t => t.trim()).length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Tips & Best Practices</h3>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                      {formData.trainingContent.tips.filter(t => t.trim()).map((t, i) => (
+                        <li key={i} style={{ fontSize: '14px', color: '#4B5563', marginBottom: '8px' }}>{t}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Links */}
+                <div>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Links</h3>
+                  {formData.primaryLink && (
+                    <div style={{ marginBottom: '8px' }}>
+                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>Primary: </span>
+                      <a href={formData.primaryLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#4338CA' }}>
+                        {formData.primaryLink}
+                      </a>
+                    </div>
+                  )}
+                  {formData.trainingContent.videoUrl && (
+                    <div style={{ marginBottom: '8px' }}>
+                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>Video: </span>
+                      <a href={formData.trainingContent.videoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#4338CA' }}>
+                        {formData.trainingContent.videoUrl}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div
+                style={{
+                  padding: '16px 24px',
+                  borderTop: '1px solid #E5E7EB',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <button
+                  onClick={() => setShowPreview(false)}
+                  style={{
+                    padding: '10px 20px',
+                    background: '#F3F4F6',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    color: '#4B5563',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Close Preview
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* AI Banner */}
         <div

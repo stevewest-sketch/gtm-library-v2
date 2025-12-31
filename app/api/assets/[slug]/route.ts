@@ -88,6 +88,21 @@ export async function PUT(
     // Extract board and tag updates
     const { boardSlugs, tagNames, ...assetData } = body;
 
+    // Parse dates properly (JSON serializes Date objects as strings)
+    if (assetData.publishedAt) {
+      assetData.publishedAt = new Date(assetData.publishedAt);
+    }
+    if (assetData.eventDate) {
+      assetData.eventDate = new Date(assetData.eventDate);
+    }
+
+    console.log('Updating asset with data:', {
+      ...assetData,
+      takeaways: assetData.takeaways?.length || 0,
+      howtos: assetData.howtos?.length || 0,
+      tips: assetData.tips?.length || 0,
+    });
+
     // Update the asset
     const [updatedAsset] = await db
       .update(catalogEntries)
@@ -97,6 +112,12 @@ export async function PUT(
       })
       .where(eq(catalogEntries.id, existingAsset.id))
       .returning();
+
+    console.log('Asset updated:', updatedAsset.slug, {
+      takeaways: updatedAsset.takeaways?.length || 0,
+      howtos: (updatedAsset.howtos as unknown[])?.length || 0,
+      tips: updatedAsset.tips?.length || 0,
+    });
 
     // Update board associations if provided
     if (boardSlugs !== undefined) {
