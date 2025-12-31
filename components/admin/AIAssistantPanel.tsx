@@ -38,6 +38,33 @@ const FIELD_OPTIONS: { key: GeneratableField; label: string; enablementOnly?: bo
   { key: 'suggestedType', label: 'Suggested Content Type' },
 ];
 
+// Helper to get display-friendly existing asset info
+function getExistingFieldsSummary(asset?: Record<string, unknown>): { label: string; value: string }[] {
+  if (!asset) return [];
+  const fields: { label: string; value: string }[] = [];
+
+  if (asset.title && typeof asset.title === 'string') {
+    fields.push({ label: 'Title', value: asset.title });
+  }
+  if (asset.hub && typeof asset.hub === 'string') {
+    fields.push({ label: 'Hub', value: asset.hub });
+  }
+  if (asset.format && typeof asset.format === 'string') {
+    fields.push({ label: 'Format', value: asset.format });
+  }
+  if (asset.types && Array.isArray(asset.types) && asset.types.length > 0) {
+    fields.push({ label: 'Type', value: asset.types.join(', ') });
+  }
+  if (asset.primaryLink && typeof asset.primaryLink === 'string') {
+    fields.push({ label: 'Primary Link', value: asset.primaryLink.substring(0, 50) + (asset.primaryLink.length > 50 ? '...' : '') });
+  }
+  if (asset.videoUrl && typeof asset.videoUrl === 'string') {
+    fields.push({ label: 'Video URL', value: asset.videoUrl.substring(0, 50) + (asset.videoUrl.length > 50 ? '...' : '') });
+  }
+
+  return fields;
+}
+
 export default function AIAssistantPanel({
   hub,
   format,
@@ -45,9 +72,10 @@ export default function AIAssistantPanel({
   onApply,
   onClose,
 }: AIAssistantPanelProps) {
-  const [url, setUrl] = useState('');
+  const [aiContentUrl, setAiContentUrl] = useState('');
   const [text, setText] = useState('');
   const [prompt, setPrompt] = useState('');
+  const [useExistingFields, setUseExistingFields] = useState(true);
   const [selectedFields, setSelectedFields] = useState<GeneratableField[]>(() => {
     if (hub === 'enablement') {
       return ['description', 'takeaways', 'howtos', 'tips'];
@@ -59,6 +87,8 @@ export default function AIAssistantPanel({
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [selectedToApply, setSelectedToApply] = useState<Set<string>>(new Set());
 
+  const existingFieldsSummary = getExistingFieldsSummary(existingAsset);
+
   const toggleField = (field: GeneratableField) => {
     setSelectedFields(prev =>
       prev.includes(field)
@@ -68,8 +98,10 @@ export default function AIAssistantPanel({
   };
 
   const handleGenerate = useCallback(async () => {
-    if (!url && !text) {
-      setError('Please provide a URL or paste content to generate from.');
+    // Need at least one source: URL, text, or existing asset fields
+    const hasExistingContext = useExistingFields && existingFieldsSummary.length > 0;
+    if (!aiContentUrl && !text && !hasExistingContext) {
+      setError('Please provide a URL, paste content, or ensure existing asset fields are available.');
       return;
     }
 
@@ -87,9 +119,9 @@ export default function AIAssistantPanel({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: url || undefined,
+          url: aiContentUrl || undefined,
           text: text || undefined,
-          existingAsset: existingAsset || undefined,
+          existingAsset: useExistingFields ? existingAsset : undefined,
           hub,
           format,
           generateFields: selectedFields,
@@ -116,7 +148,7 @@ export default function AIAssistantPanel({
     } finally {
       setIsGenerating(false);
     }
-  }, [url, text, prompt, selectedFields, hub, format, existingAsset]);
+  }, [aiContentUrl, text, prompt, selectedFields, hub, format, existingAsset, useExistingFields, existingFieldsSummary.length]);
 
   const toggleApplyField = (field: string) => {
     setSelectedToApply(prev => {
@@ -247,15 +279,63 @@ export default function AIAssistantPanel({
 
         {/* Body */}
         <div style={{ padding: '20px 24px', overflowY: 'auto', flex: 1 }}>
-          {/* URL Input */}
+          {/* Existing Asset Fields Section */}
+          {existingFieldsSummary.length > 0 && (
+            <div
+              style={{
+                marginBottom: '16px',
+                padding: '12px 14px',
+                background: useExistingFields ? '#F0FDF4' : '#F9FAFB',
+                border: useExistingFields ? '1px solid #86EFAC' : '1px solid #E5E7EB',
+                borderRadius: '10px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="useExistingFields"
+                  checked={useExistingFields}
+                  onChange={(e) => setUseExistingFields(e.target.checked)}
+                  style={{ accentColor: '#10B981', width: '16px', height: '16px' }}
+                />
+                <label
+                  htmlFor="useExistingFields"
+                  style={{ fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}
+                >
+                  Use Existing Asset Fields
+                </label>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', paddingLeft: '26px' }}>
+                {existingFieldsSummary.map((field, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      padding: '4px 10px',
+                      background: useExistingFields ? '#DCFCE7' : '#F3F4F6',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      color: useExistingFields ? '#166534' : '#6B7280',
+                    }}
+                  >
+                    <strong>{field.label}:</strong> {field.value}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* AI Content URL Input */}
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
-              URL to Crawl
+              AI Content URL
+              <span style={{ fontWeight: 400, color: '#9CA3AF', marginLeft: '8px' }}>
+                (for content generation only - not saved to asset)
+              </span>
             </label>
             <input
               type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              value={aiContentUrl}
+              onChange={(e) => setAiContentUrl(e.target.value)}
               placeholder="https://docs.google.com/... or https://loom.com/share/..."
               style={{
                 width: '100%',
@@ -266,7 +346,7 @@ export default function AIAssistantPanel({
               }}
             />
             <p style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
-              Supports: Web pages, Google Docs/Slides, Loom, YouTube
+              Crawls this URL to generate content. Supports: Web pages, Google Docs/Slides, Loom, YouTube
             </p>
           </div>
 
