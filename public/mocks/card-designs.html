@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asset Card Design Explorations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #F1F5F9;
+      padding: 40px;
+      color: #1E293B;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0F172A;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #64748B;
+      margin-bottom: 40px;
+    }
+
+    .section {
+      margin-bottom: 60px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #E2E8F0;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1E293B;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #64748B;
+      line-height: 1.5;
+    }
+
+    .card-footer {
+      padding: 12px 18px;
+      border-top: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #F1F5F9;
+      color: #64748B;
+    }
+
+    /* Type colors */
+    .type-training { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+    .type-product { background: #DBEAFE; color: #1E40AF; border-color: #BFDBFE; }
+    .type-competitive { background: #FEF3C7; color: #B45309; border-color: #FDE68A; }
+    .type-best-practice { background: #EDE9FE; color: #6D28D9; border-color: #DDD6FE; }
+
+    .notes {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #92400E;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Asset Card Design Explorations</h1>
+  <p class="subtitle">Testing different ways to make Type and Format more prominent and descriptive</p>
+
+  <!-- VERSION A: All Caps Type with Different Fonts -->
+  <div class="section">
+    <h2 class="section-title">Version A: ALL CAPS Type + Lighter Format (No Emoji)</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: #DCFCE7; border-bottom: 1px solid #BBF7D0;">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #166534;">TRAINING</span>
+            <span style="font-size: 11px; font-weight: 400; color: #166534; opacity: 0.7;">Video</span>
+          </div>
+          <span style="font-size: 11px; color: #64748B;">45 min</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #DBEAFE; border-bottom: 1px solid #BFDBFE;">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #1E40AF;">PRODUCT UPDATE</span>
+            <span style="font-size: 11px; font-weight: 400; color: #1E40AF; opacity: 0.7;">Document</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #FEF3C7; border-bottom: 1px solid #FDE68A;">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 1px; color: #B45309;">COMPETITIVE</span>
+            <span style="font-size: 11px; font-weight: 400; color: #B45309; opacity: 0.7;">Slides</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Type is ALL CAPS with extra letter-spacing for emphasis. Format uses lighter weight and reduced opacity to create hierarchy. Type reads as the primary descriptor.
+    </div>
+  </div>
+
+  <!-- VERSION B: Type with Emoji, Format in Pill -->
+  <div class="section">
+    <h2 class="section-title">Version B: Emoji + ALL CAPS Type | Format in Subtle Pill</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: #DCFCE7; border-bottom: 1px solid #BBF7D0;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">🎓</span>
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.8px; color: #166534;">TRAINING</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #166534; background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 20px;">Video</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #DBEAFE; border-bottom: 1px solid #BFDBFE;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">📦</span>
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.8px; color: #1E40AF;">PRODUCT UPDATE</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #1E40AF; background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 20px;">Document</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #FEF3C7; border-bottom: 1px solid #FDE68A;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">⚔️</span>
+            <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.8px; color: #B45309;">COMPETITIVE</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #B45309; background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 20px;">Slides</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Large emoji before ALL CAPS type for quick visual scanning. Format moved to a subtle pill on the right. The emoji adds personality and quick recognition.
+    </div>
+  </div>
+
+  <!-- VERSION C: Integrated Type-Format Line -->
+  <div class="section">
+    <h2 class="section-title">Version C: Integrated "TYPE · Format" Line Above Title</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: #DCFCE7; border-bottom: 1px solid #BBF7D0; padding: 12px 18px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: #166534;">TRAINING</span>
+            <span style="font-size: 12px; color: #166534; opacity: 0.5;">·</span>
+            <span style="font-size: 12px; font-weight: 500; color: #166534; opacity: 0.7;">Video</span>
+          </div>
+          <span style="font-size: 11px; color: #64748B;">45 min</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #DBEAFE; border-bottom: 1px solid #BFDBFE; padding: 12px 18px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: #1E40AF;">PRODUCT UPDATE</span>
+            <span style="font-size: 12px; color: #1E40AF; opacity: 0.5;">·</span>
+            <span style="font-size: 12px; font-weight: 500; color: #1E40AF; opacity: 0.7;">Document</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #EDE9FE; border-bottom: 1px solid #DDD6FE; padding: 12px 18px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: #6D28D9;">BEST PRACTICE</span>
+            <span style="font-size: 12px; color: #6D28D9; opacity: 0.5;">·</span>
+            <span style="font-size: 12px; font-weight: 500; color: #6D28D9; opacity: 0.7;">Guide</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Discovery Call Framework</h3>
+          <p class="card-desc">Proven framework for running effective discovery calls with prospects.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Type and Format on same line with dot separator. Reads like "TRAINING · Video" as a unified descriptor. Compact header with clear hierarchy.
+    </div>
+  </div>
+
+  <!-- VERSION D: Emoji in Icon Box + Type/Format Stack -->
+  <div class="section">
+    <h2 class="section-title">Version D: Icon Box with Emoji + Stacked Type/Format</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: #DCFCE7; border-bottom: 1px solid #BBF7D0;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              🎓
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 700; color: #166534; letter-spacing: 0.3px;">TRAINING</span>
+              <span style="font-size: 11px; font-weight: 500; color: #166534; opacity: 0.7;">Video · 45 min</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #DBEAFE; border-bottom: 1px solid #BFDBFE;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              📦
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 700; color: #1E40AF; letter-spacing: 0.3px;">PRODUCT UPDATE</span>
+              <span style="font-size: 11px; font-weight: 500; color: #1E40AF; opacity: 0.7;">Document</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #FEF3C7; border-bottom: 1px solid #FDE68A;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              ⚔️
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: 13px; font-weight: 700; color: #B45309; letter-spacing: 0.3px;">COMPETITIVE</span>
+              <span style="font-size: 11px; font-weight: 500; color: #B45309; opacity: 0.7;">Slides</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Large icon box contains emoji for visual anchor. Type stacked above Format creates clear hierarchy. Duration included with format for video content.
+    </div>
+  </div>
+
+  <!-- VERSION E: Type as Eyebrow, Format Icon Only -->
+  <div class="section">
+    <h2 class="section-title">Version E: Type as Eyebrow Text, Format as Icon</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: #DCFCE7; border-bottom: 1px solid #BBF7D0; padding: 14px 18px;">
+          <span style="font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #166534; text-transform: uppercase;">Training</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;" title="Video">🎬</span>
+            <span style="font-size: 11px; color: #64748B;">45 min</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #DBEAFE; border-bottom: 1px solid #BFDBFE; padding: 14px 18px;">
+          <span style="font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #1E40AF; text-transform: uppercase;">Product Update</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;" title="Document">📄</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: #FEF3C7; border-bottom: 1px solid #FDE68A; padding: 14px 18px;">
+          <span style="font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #B45309; text-transform: uppercase;">Competitive</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;" title="Slides">📊</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Type as prominent eyebrow text (all caps, letter-spacing). Format represented by icon only (hover shows label). Minimal, scannable design.
+    </div>
+  </div>
+
+  <!-- VERSION F: Unified Descriptor Line -->
+  <div class="section">
+    <h2 class="section-title">Version F: "Type: Format" as Single Unified Line</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header" style="background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%); border-bottom: 1px solid #BBF7D0; padding: 14px 18px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 14px; font-weight: 700; color: #166534;">Training:</span>
+            <span style="font-size: 14px; font-weight: 500; color: #166534;">Video</span>
+          </div>
+          <span style="font-size: 11px; color: #64748B; background: rgba(255,255,255,0.7); padding: 4px 10px; border-radius: 12px;">45 min</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%); border-bottom: 1px solid #BFDBFE; padding: 14px 18px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 14px; font-weight: 700; color: #1E40AF;">Product Update:</span>
+            <span style="font-size: 14px; font-weight: 500; color: #1E40AF;">Document</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); border-bottom: 1px solid #DDD6FE; padding: 14px 18px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 14px; font-weight: 700; color: #6D28D9;">Best Practice:</span>
+            <span style="font-size: 14px; font-weight: 500; color: #6D28D9;">Guide</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Discovery Call Framework</h3>
+          <p class="card-desc">Proven framework for running effective discovery calls with prospects.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> "Type: Format" reads as natural language. Larger font size (14px) for both. Bold type, regular format weight. Gradient background adds depth.
+    </div>
+  </div>
+
+  <!-- VERSION G: Compact Badge Style -->
+  <div class="section">
+    <h2 class="section-title">Version G: Compact Badge Pills</h2>
+    <div class="card-grid">
+      <div class="card" style="border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+        <div style="padding: 18px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #166534; background: #DCFCE7; padding: 5px 12px; border-radius: 6px;">TRAINING</span>
+            <span style="font-size: 11px; font-weight: 500; color: #64748B; background: #F1F5F9; padding: 5px 12px; border-radius: 6px;">Video · 45min</span>
+          </div>
+          <h3 class="card-title">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card" style="border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+        <div style="padding: 18px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #1E40AF; background: #DBEAFE; padding: 5px 12px; border-radius: 6px;">PRODUCT UPDATE</span>
+            <span style="font-size: 11px; font-weight: 500; color: #64748B; background: #F1F5F9; padding: 5px 12px; border-radius: 6px;">Document</span>
+          </div>
+          <h3 class="card-title">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card" style="border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+        <div style="padding: 18px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #B45309; background: #FEF3C7; padding: 5px 12px; border-radius: 6px;">COMPETITIVE</span>
+            <span style="font-size: 11px; font-weight: 500; color: #64748B; background: #F1F5F9; padding: 5px 12px; border-radius: 6px;">Slides</span>
+          </div>
+          <h3 class="card-title">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> No header section - Type and Format as inline badge pills. Type uses colored background, Format is neutral gray. Feels more like content tags.
+    </div>
+  </div>
+
+  <!-- VERSION H: Left Border Accent -->
+  <div class="section">
+    <h2 class="section-title">Version H: Color Accent Border + Type/Format Together</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid #16A34A;">
+        <div style="padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span style="font-size: 20px;">🎓</span>
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #166534; letter-spacing: 0.3px;">TRAINING</div>
+              <div style="font-size: 11px; color: #64748B;">Video · 45 min</div>
+            </div>
+          </div>
+          <h3 class="card-title" style="font-size: 17px;">Sidekick Sales Launch Enablement</h3>
+          <p class="card-desc">Learn how to position and demo our new AI assistant feature to enterprise customers.</p>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid #2563EB;">
+        <div style="padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span style="font-size: 20px;">📦</span>
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #1E40AF; letter-spacing: 0.3px;">PRODUCT UPDATE</div>
+              <div style="font-size: 11px; color: #64748B;">Document</div>
+            </div>
+          </div>
+          <h3 class="card-title" style="font-size: 17px;">Q4 Feature Roadmap Overview</h3>
+          <p class="card-desc">Comprehensive overview of all upcoming features for the next quarter.</p>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid #D97706;">
+        <div style="padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span style="font-size: 20px;">⚔️</span>
+            <div>
+              <div style="font-size: 13px; font-weight: 700; color: #B45309; letter-spacing: 0.3px;">COMPETITIVE</div>
+              <div style="font-size: 11px; color: #64748B;">Slides</div>
+            </div>
+          </div>
+          <h3 class="card-title" style="font-size: 17px;">Competitor Battlecard: Acme Corp</h3>
+          <p class="card-desc">Key differentiators and objection handling for Acme Corp deals.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <strong>Notes:</strong> Color accent as left border instead of header. Type/Format grouped with emoji in content area. Clean, modern look with strong type association through color.
+    </div>
+  </div>
+
+</body>
+</html>

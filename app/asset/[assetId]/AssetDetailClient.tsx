@@ -147,6 +147,7 @@ interface AssetDetailClientProps {
     description: string | null;
     hub: string | null;
     format: string | null;
+    types: string[] | null;
     primaryLink: string | null;
     videoUrl: string | null;
     slidesUrl: string | null;
@@ -193,7 +194,9 @@ export function AssetDetailClient({
   const [takeawaysExpanded, setTakeawaysExpanded] = useState(true);
   const [howToExpanded, setHowToExpanded] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const hasTrackedView = useRef(false);
+  const stickyHeaderRef = useRef<HTMLDivElement>(null);
 
   // Track view on page load (once per session)
   useEffect(() => {
@@ -268,46 +271,156 @@ export function AssetDetailClient({
 
   const hasMaterials = asset.videoUrl || asset.slidesUrl || asset.keyAssetUrl || asset.transcriptUrl || asset.primaryLink;
 
+  // Build sections list for "On This Page" navigation
+  const sections: Array<{ id: string; label: string; icon: string }> = [];
+  if (hasVideo || isTrainingAsset) {
+    sections.push({ id: 'video-section', label: 'Recording', icon: '🎬' });
+  }
+  if (canPreview && !hasVideo) {
+    sections.push({ id: 'preview-section', label: 'Preview', icon: '📄' });
+  }
+  if (asset.takeaways && asset.takeaways.length > 0) {
+    sections.push({ id: 'takeaways-section', label: 'Key Takeaways', icon: '✅' });
+  }
+  if (asset.howtos && asset.howtos.length > 0) {
+    sections.push({ id: 'howto-section', label: 'How To', icon: '📋' });
+  }
+  if (asset.tips && asset.tips.length > 0) {
+    sections.push({ id: 'tips-section', label: 'Tips & Practices', icon: '💡' });
+  }
+  if (hasMaterials) {
+    sections.push({ id: 'materials-section', label: 'Links', icon: '🔗' });
+  }
+
+  const hasContentSections = sections.length > 2; // Show nav if more than just video + materials
+
+  // Calculate sticky header height (64px page header + sticky hero height)
+  const getStickyOffset = () => {
+    const pageHeaderHeight = 64;
+    const stickyHeroHeight = stickyHeaderRef.current?.offsetHeight || 150;
+    return pageHeaderHeight + stickyHeroHeight + 20; // 20px extra padding
+  };
+
+  // Scroll to section smoothly - position section right below sticky header
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = getStickyOffset();
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      setActiveSection(sectionId);
+    }
+  };
+
+  // Track which section is currently in view
+  useEffect(() => {
+    if (sections.length === 0) return;
+
+    const handleScroll = () => {
+      const offset = getStickyOffset();
+      let currentSection: string | null = null;
+
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Section is considered active if its top is at or above the offset point
+          if (rect.top <= offset + 50) {
+            currentSection = section.id;
+          }
+        }
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sections]);
+
   return (
     <>
-      {/* Asset Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <span
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '11px',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              padding: '6px 12px',
-              borderRadius: '6px',
-              backgroundColor: hubStyle.light,
-              color: hubStyle.accent,
-            }}
-          >
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'currentColor' }} />
-            {hubName}
-          </span>
+      {/* Sticky Header Container */}
+      <div
+        ref={stickyHeaderRef}
+        style={{
+          position: 'sticky',
+          top: '64px', // Below the fixed page header
+          zIndex: 40,
+          background: 'var(--bg-page, #F9FAFB)',
+          marginLeft: '-28px',
+          marginRight: '-28px',
+          paddingLeft: '28px',
+          paddingRight: '28px',
+          paddingTop: '16px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid #E5E7EB',
+        }}
+      >
+        {/* Header Row with Type Badge and Share Button */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '8px' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Type Badge */}
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '10px',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                padding: '4px 10px',
+                borderRadius: '6px',
+                backgroundColor: hubStyle.light,
+                color: hubStyle.accent,
+                marginBottom: '8px',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
+              {hubName}
+            </span>
+            {/* Title */}
+            <h1 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.3 }}>
+              {asset.title}
+            </h1>
+            {/* Description - truncated */}
+            {asset.description && (
+              <p style={{
+                fontSize: '13px',
+                color: '#6B7280',
+                lineHeight: 1.5,
+                margin: '6px 0 0 0',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}>
+                {asset.description}
+              </p>
+            )}
+          </div>
           <button
             onClick={() => copyToClipboard(copyableAssetLink)}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '10px 18px',
+              gap: '6px',
+              padding: '8px 14px',
               background: hubStyle.primary,
               border: 'none',
               borderRadius: '8px',
               color: 'white',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 500,
               cursor: 'pointer',
+              flexShrink: 0,
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="18" cy="5" r="3" />
               <circle cx="6" cy="12" r="3" />
               <circle cx="18" cy="19" r="3" />
@@ -318,98 +431,64 @@ export function AssetDetailClient({
           </button>
         </div>
 
-        <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', marginBottom: '10px', lineHeight: 1.3 }}>
-          {asset.title}
-        </h1>
-
-        {(presentersString || formattedDate || formattedDuration) && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#4B5563', marginBottom: '12px' }}>
-            {presentersString && <span>Presented by {presentersString}</span>}
-            {presentersString && formattedDate && <span style={{ color: '#D1D5DB' }}>•</span>}
-            {formattedDate && <span>{formattedDate}</span>}
-            {(presentersString || formattedDate) && formattedDuration && <span style={{ color: '#D1D5DB' }}>•</span>}
-            {formattedDuration && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                {formattedDuration}
-              </span>
-            )}
-          </div>
-        )}
-
-        {asset.description && (
-          <p style={{ fontSize: '15px', color: '#4B5563', lineHeight: 1.6 }}>
-            {asset.description}
-          </p>
-        )}
-      </div>
-
-      {/* Shareable Link - shows the actual asset URL (Google Slides, Drive, etc.) */}
-      {asset.primaryLink && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '14px 18px',
-            background: 'white',
-            border: '1px solid #E5E7EB',
-            borderRadius: '10px',
-            marginBottom: '24px',
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-          </svg>
-          <a
-            href={copyableAssetLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              flex: 1,
-              fontSize: '13px',
-              color: hubStyle.primary,
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {copyableAssetLink}
-          </a>
-          <button
-            onClick={() => copyToClipboard(copyableAssetLink)}
+        {/* Pill-style Navigation - similar to board page nav */}
+        {hasContentSections && (
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '8px 12px',
-              background: '#F3F4F6',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '12px',
-              color: '#4B5563',
-              cursor: 'pointer',
+              flexWrap: 'wrap',
+              marginTop: '12px',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-            Copy
-          </button>
-        </div>
-      )}
+            {sections.map((section) => {
+              const isActive = activeSection === section.id;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                  style={{
+                    padding: '6px 14px',
+                    background: isActive ? hubStyle.primary : 'white',
+                    border: `1px solid ${isActive ? hubStyle.primary : '#E5E7EB'}`,
+                    borderRadius: '20px',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: isActive ? 'white' : '#4B5563',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = hubStyle.light;
+                      e.currentTarget.style.borderColor = hubStyle.accent;
+                      e.currentTarget.style.color = hubStyle.accent;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'white';
+                      e.currentTarget.style.borderColor = '#E5E7EB';
+                      e.currentTarget.style.color = '#4B5563';
+                    }
+                  }}
+                >
+                  {section.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      {/* End Sticky Header Container */}
 
       {/* Two Column Layout */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: hasMaterials ? '1fr 300px' : '1fr',
+          paddingTop: '24px',
           gap: '28px',
           maxWidth: '1200px',
         }}
@@ -419,6 +498,7 @@ export function AssetDetailClient({
           {/* Document/Slides Preview (for non-video assets) */}
           {canPreview && !hasVideo && (
             <div
+              id="preview-section"
               style={{
                 background: 'white',
                 border: '1px solid #E5E7EB',
@@ -518,6 +598,7 @@ export function AssetDetailClient({
           {/* Video Container */}
           {(hasVideo || isTrainingAsset) && (
             <div
+              id="video-section"
               style={{
                 background: 'white',
                 border: '1px solid #E5E7EB',
@@ -705,6 +786,7 @@ export function AssetDetailClient({
           {/* Key Takeaways */}
           {asset.takeaways && asset.takeaways.length > 0 && (
             <div
+              id="takeaways-section"
               style={{
                 background: 'white',
                 border: '1px solid #E5E7EB',
@@ -777,6 +859,7 @@ export function AssetDetailClient({
           {/* How To */}
           {asset.howtos && asset.howtos.length > 0 && (
             <div
+              id="howto-section"
               style={{
                 background: 'white',
                 border: '1px solid #E5E7EB',
@@ -854,6 +937,7 @@ export function AssetDetailClient({
           {/* Tips Section */}
           {asset.tips && asset.tips.length > 0 && (
             <div
+              id="tips-section"
               style={{
                 background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
                 borderRadius: '12px',
@@ -905,8 +989,9 @@ export function AssetDetailClient({
         {/* Sidebar Column */}
         {hasMaterials && (
           <div style={{ position: 'sticky', top: '84px', alignSelf: 'start' }}>
-            {/* Session Materials */}
+            {/* Links */}
             <div
+              id="materials-section"
               style={{
                 background: 'white',
                 border: '1px solid #E5E7EB',
@@ -916,25 +1001,20 @@ export function AssetDetailClient({
               }}
             >
               <div style={{ padding: '18px 20px', borderBottom: '1px solid #E5E7EB', background: '#FAFAFA' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>Session Materials</h3>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>Links</h3>
               </div>
               <div style={{ padding: '12px' }}>
                 {actualVideoUrl && (
-                  <a
-                    href={actualVideoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      textDecoration: 'none',
-                      color: '#111827',
+                      background: '#FAFAFA',
+                      marginBottom: '8px',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <div
                       style={{
@@ -946,6 +1026,7 @@ export function AssetDetailClient({
                         justifyContent: 'center',
                         background: '#FEE2E2',
                         color: '#B91C1C',
+                        flexShrink: 0,
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -956,29 +1037,64 @@ export function AssetDetailClient({
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Recording</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{formattedDuration || 'Video'}</div>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button
+                        onClick={() => copyToClipboard(actualVideoUrl, false)}
+                        title="Copy link"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      <a
+                        href={actualVideoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in new tab"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 )}
                 {asset.slidesUrl && (
-                  <a
-                    href={asset.slidesUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      textDecoration: 'none',
-                      color: '#111827',
+                      background: '#FAFAFA',
+                      marginBottom: '8px',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <div
                       style={{
@@ -990,6 +1106,7 @@ export function AssetDetailClient({
                         justifyContent: 'center',
                         background: '#FEF3C7',
                         color: '#B45309',
+                        flexShrink: 0,
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1002,29 +1119,64 @@ export function AssetDetailClient({
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Presentation</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Slides</div>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button
+                        onClick={() => copyToClipboard(asset.slidesUrl!, false)}
+                        title="Copy link"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      <a
+                        href={asset.slidesUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in new tab"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 )}
                 {asset.keyAssetUrl && (
-                  <a
-                    href={asset.keyAssetUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      textDecoration: 'none',
-                      color: '#111827',
+                      background: '#FAFAFA',
+                      marginBottom: '8px',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <div
                       style={{
@@ -1036,6 +1188,7 @@ export function AssetDetailClient({
                         justifyContent: 'center',
                         background: '#DBEAFE',
                         color: '#1D4ED8',
+                        flexShrink: 0,
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1049,29 +1202,64 @@ export function AssetDetailClient({
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Key Document</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Document</div>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button
+                        onClick={() => copyToClipboard(asset.keyAssetUrl!, false)}
+                        title="Copy link"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      <a
+                        href={asset.keyAssetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in new tab"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 )}
                 {asset.transcriptUrl && (
-                  <a
-                    href={asset.transcriptUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      textDecoration: 'none',
-                      color: '#111827',
+                      background: '#FAFAFA',
+                      marginBottom: '8px',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <div
                       style={{
@@ -1083,6 +1271,7 @@ export function AssetDetailClient({
                         justifyContent: 'center',
                         background: hubStyle.light,
                         color: hubStyle.accent,
+                        flexShrink: 0,
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1097,29 +1286,64 @@ export function AssetDetailClient({
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>Transcript</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF' }}>AI-generated</div>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button
+                        onClick={() => copyToClipboard(asset.transcriptUrl!, false)}
+                        title="Copy link"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      <a
+                        href={asset.transcriptUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in new tab"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 )}
                 {asset.primaryLink && !hasVideo && (
-                  <a
-                    href={asset.primaryLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '14px',
                       padding: '14px',
                       borderRadius: '8px',
-                      textDecoration: 'none',
-                      color: '#111827',
+                      background: '#FAFAFA',
+                      marginBottom: '8px',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = hubStyle.hover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <div
                       style={{
@@ -1131,6 +1355,7 @@ export function AssetDetailClient({
                         justifyContent: 'center',
                         background: hubStyle.light,
                         color: hubStyle.accent,
+                        flexShrink: 0,
                       }}
                     >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1144,14 +1369,54 @@ export function AssetDetailClient({
                       <div style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '2px' }}>
                         {previewEmbed.label || 'Primary Asset'}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Open in new tab</div>
+                      <div style={{ fontSize: '11px', color: '#9CA3AF' }}>Document</div>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button
+                        onClick={() => copyToClipboard(asset.primaryLink!, false)}
+                        title="Copy link"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      <a
+                        href={asset.primaryLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open in new tab"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'white',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -1198,6 +1463,14 @@ export function AssetDetailClient({
                     {hubName}
                   </span>
                 </div>
+                {asset.types && asset.types.length > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Type</span>
+                    <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500, textTransform: 'capitalize' }}>
+                      {asset.types[0]}
+                    </span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '13px', color: '#9CA3AF' }}>Format</span>
                   <span style={{ fontSize: '13px', color: '#111827', fontWeight: 500, textTransform: 'capitalize' }}>

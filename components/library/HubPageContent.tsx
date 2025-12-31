@@ -186,84 +186,138 @@ export function HubPageContent({
           paddingTop: '24px',
         }}
       >
-        {/* Horizontal Pills Navigation - Option A from design system */}
+        {/* Enhanced Filter Navigation - More Prominent */}
         {hubTagSlugs.length > 0 && (
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 0 20px',
-              borderBottom: '1px solid #E2E8F0',
-              flexWrap: 'wrap',
+              background: 'white',
+              border: '1px solid #E2E8F0',
+              borderRadius: '12px',
+              padding: '16px 20px',
+              marginBottom: '16px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
             }}
           >
-          {/* All pill */}
-          <button
-            onClick={() => setInternalSelectedTags([])}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '13px',
-              fontWeight: 500,
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              background: internalSelectedTags.length === 0 ? hub.color : '#F1F5F9',
-              color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
-            }}
-          >
-            All
-            <span
+            {/* Filter Label */}
+            <div
               style={{
-                fontSize: '11px',
-                padding: '2px 6px',
-                borderRadius: '10px',
-                background: internalSelectedTags.length === 0 ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
-                color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
-              }}
-            >
-              {assets.length}
-            </span>
-          </button>
-
-          {/* Tag pills - display name but track by slug */}
-          {hubTagsFromAPI?.map(tag => (
-            <button
-              key={tag.slug}
-              onClick={() => toggleTag(tag.slug)}
-              style={{
-                display: 'inline-flex',
+                display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                fontSize: '13px',
-                fontWeight: 500,
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? hub.color : '#F1F5F9',
-                color: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'white' : '#64748B',
+                gap: '8px',
+                marginBottom: '12px',
               }}
             >
-              {hubTagDisplayMap[tag.slug]}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={hub.color} strokeWidth="2.5">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
               <span
                 style={{
-                  fontSize: '11px',
-                  padding: '2px 6px',
-                  borderRadius: '10px',
-                  background: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'rgba(255,255,255,0.25)' : '#E2E8F0',
-                  color: isTagActive(tag.slug) && internalSelectedTags.length > 0 ? 'white' : '#64748B',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  color: '#64748B',
                 }}
               >
-                {assetCountByTag[tag.slug] || 0}
+                Filter by Topic
               </span>
-            </button>
-          ))}
+            </div>
+
+            {/* Pills Row */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* All pill */}
+              <button
+                onClick={() => setInternalSelectedTags([])}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 18px',
+                  borderRadius: '24px',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  border: internalSelectedTags.length === 0 ? `2px solid ${hub.color}` : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: internalSelectedTags.length === 0 ? hub.color : '#F1F5F9',
+                  color: internalSelectedTags.length === 0 ? 'white' : '#475569',
+                  boxShadow: internalSelectedTags.length === 0 ? `0 2px 8px ${hub.color}40` : 'none',
+                }}
+              >
+                All
+                <span
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    background: internalSelectedTags.length === 0 ? 'rgba(255,255,255,0.3)' : '#E2E8F0',
+                    color: internalSelectedTags.length === 0 ? 'white' : '#64748B',
+                  }}
+                >
+                  {assets.length}
+                </span>
+              </button>
+
+              {/* Tag pills - display name but track by slug */}
+              {hubTagsFromAPI?.map(tag => {
+                const isActive = isTagActive(tag.slug) && internalSelectedTags.length > 0;
+                return (
+                  <button
+                    key={tag.slug}
+                    onClick={() => toggleTag(tag.slug)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      borderRadius: '24px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      border: isActive ? `2px solid ${hub.color}` : '2px solid #E2E8F0',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      background: isActive ? hub.color : 'white',
+                      color: isActive ? 'white' : '#475569',
+                      boxShadow: isActive ? `0 2px 8px ${hub.color}40` : 'none',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = hub.color;
+                        e.currentTarget.style.background = `${hub.color}10`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = '#E2E8F0';
+                        e.currentTarget.style.background = 'white';
+                      }
+                    }}
+                  >
+                    {hubTagDisplayMap[tag.slug]}
+                    <span
+                      style={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        background: isActive ? 'rgba(255,255,255,0.3)' : '#F1F5F9',
+                        color: isActive ? 'white' : '#64748B',
+                      }}
+                    >
+                      {assetCountByTag[tag.slug] || 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 

@@ -5,7 +5,7 @@ export const SYSTEM_PROMPT = `You are an expert content curator and technical wr
 You must always return valid JSON matching the requested schema. Be concise but informative. Use active voice and professional tone.`;
 
 export interface GenerationConfig {
-  hub: 'enablement' | 'content' | 'coe';
+  hub?: 'enablement' | 'content' | 'coe';
   format?: string;
   generateFields: string[];
   prompt?: string;
@@ -40,6 +40,34 @@ Generate content that captures institutional knowledge and enables consistent ex
 
 // Field-specific generation prompts
 export const FIELD_PROMPTS: Record<string, string> = {
+  title: `Generate a clear, concise title (5-10 words) for this asset. The title should:
+- Clearly describe what the content is about
+- Be specific but not too long
+- Use title case (capitalize major words)
+- Be professional and informative
+Example: "Discovery Call Best Practices for Enterprise Sales"`,
+
+  hub: `Determine the most appropriate hub category for this content. Choose ONE of these exact values:
+- "enablement" - Training content, how-to guides, skill development, recorded sessions, workshops, certifications
+- "content" - Marketing materials, customer-facing content, collateral, presentations, data sheets
+- "coe" - Center of Excellence best practices, process documentation, templates, playbooks, methodologies
+Return ONLY the lowercase slug string (enablement, content, or coe).`,
+
+  format: `Determine the content format. Choose the most appropriate from these options:
+- "video" - Recorded video content, webinars, training recordings
+- "slides" - Presentation slides (PowerPoint, Google Slides)
+- "document" - Text documents, PDFs, guides
+- "on-demand" - Self-paced learning content
+- "live-replay" - Recorded live sessions
+- "tool" - Interactive tools, calculators
+- "template" - Reusable templates
+- "guide" - How-to guides, manuals
+- "battlecard" - Competitive battlecards
+- "one-pager" - Single-page summaries
+- "course" - Multi-part learning courses
+- "link" - External web links
+Return ONLY the lowercase slug string.`,
+
   description: `Generate a clear, professional description (2-4 sentences) that explains:
 - What this asset is about
 - Who it's for
@@ -77,6 +105,34 @@ Example: ["discovery-calls", "objection-handling", "enterprise-sales"]`,
 - gtm-training, product-training, certification
 - demo-video, product-overview, competitive
 Return only the slug string.`,
+
+  extractedLinks: `Analyze the content and extract/categorize any URLs found. Return an object with these fields:
+- primaryLink: The main resource URL (landing page, article, or primary content location)
+- videoUrl: Video content URL (YouTube, Vimeo, Loom, Wistia, embedded video, etc.)
+- slidesUrl: Presentation slides URL (Google Slides, PowerPoint online, SlideShare, etc.)
+- transcriptUrl: Transcript or text version URL
+- relatedAssets: Array of additional related documents, templates, or resources with display names
+
+Rules for categorization:
+- If the input URL is a video platform (YouTube, Loom, etc.), set it as videoUrl AND primaryLink
+- If the input URL is Google Slides, set it as slidesUrl AND primaryLink
+- Look for embedded iframes and linked resources in the content
+- Only include URLs that are actually present in the content
+- Use null for categories where no URL was found
+- For relatedAssets, include any PDFs, documents, templates, guides, or additional resources found
+- Each related asset should have a descriptive displayName based on the link text or context
+
+Example:
+{
+  "primaryLink": "https://example.com/training-page",
+  "videoUrl": "https://www.youtube.com/watch?v=abc123",
+  "slidesUrl": "https://docs.google.com/presentation/d/xyz",
+  "transcriptUrl": null,
+  "relatedAssets": [
+    {"url": "https://example.com/download/guide.pdf", "displayName": "Training Guide"},
+    {"url": "https://example.com/template.xlsx", "displayName": "ROI Calculator Template"}
+  ]
+}`,
 };
 
 // Build the full prompt for content generation
@@ -84,7 +140,13 @@ export function buildGenerationPrompt(
   content: string,
   config: GenerationConfig
 ): string {
-  const hubPrompt = HUB_PROMPTS[config.hub] || HUB_PROMPTS.content;
+  // If hub is not specified, we're inferring it - provide context for all hubs
+  const hubPrompt = config.hub
+    ? HUB_PROMPTS[config.hub] || HUB_PROMPTS.content
+    : `Analyze the content to determine the appropriate hub category. Consider:
+- "enablement" - Training content, how-to guides, skill development, recorded sessions
+- "content" - Marketing materials, customer-facing content, collateral
+- "coe" - Best practices, process documentation, templates, methodologies`;
 
   const fieldInstructions = config.generateFields
     .map(field => {
@@ -97,6 +159,20 @@ export function buildGenerationPrompt(
   const userGuidance = config.prompt
     ? `\n\n## Additional Guidance from User\n${config.prompt}`
     : '';
+
+  // Build example JSON based on requested fields
+  const exampleFields: Record<string, unknown> = {};
+  if (config.generateFields.includes('title')) exampleFields.title = "Asset Title Here";
+  if (config.generateFields.includes('hub')) exampleFields.suggestedHub = "enablement";
+  if (config.generateFields.includes('format')) exampleFields.suggestedFormat = "video";
+  if (config.generateFields.includes('description')) exampleFields.description = "...";
+  if (config.generateFields.includes('shortDescription')) exampleFields.shortDescription = "...";
+  if (config.generateFields.includes('takeaways')) exampleFields.takeaways = ["...", "..."];
+  if (config.generateFields.includes('howtos')) exampleFields.howtos = [{"title": "...", "content": "..."}];
+  if (config.generateFields.includes('tips')) exampleFields.tips = ["...", "..."];
+  if (config.generateFields.includes('tags')) exampleFields.suggestedTags = ["...", "..."];
+  if (config.generateFields.includes('suggestedType')) exampleFields.suggestedType = "...";
+  if (config.generateFields.includes('extractedLinks')) exampleFields.extractedLinks = { primaryLink: "...", videoUrl: "...", slidesUrl: null, transcriptUrl: null, relatedAssets: [{ url: "...", displayName: "..." }] };
 
   return `## Content Type Context
 ${hubPrompt}
@@ -114,15 +190,7 @@ ${content}
 
 ## Response Format
 Return a JSON object with only the requested fields. Example structure:
-{
-  "description": "...",
-  "shortDescription": "...",
-  "takeaways": ["...", "..."],
-  "howtos": [{"title": "...", "content": "..."}],
-  "tips": ["...", "..."],
-  "suggestedTags": ["...", "..."],
-  "suggestedType": "..."
-}
+${JSON.stringify(exampleFields, null, 2)}
 
 Only include fields that were requested. Ensure all arrays and objects are properly formatted.`;
 }

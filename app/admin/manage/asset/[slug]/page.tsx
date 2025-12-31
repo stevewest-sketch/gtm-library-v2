@@ -65,6 +65,12 @@ interface HowToItem {
   content: string;
 }
 
+interface RelatedAssetItem {
+  id: string;
+  url: string;
+  displayName: string;
+}
+
 interface AssetData {
   id: string;
   slug: string;
@@ -80,6 +86,7 @@ interface AssetData {
   primaryLink: string;
   publishedAt: string; // Date picker for ordering assets
   resourceLinks: ResourceLink[];
+  relatedAssets: RelatedAssetItem[]; // Flexible URLs with display names
   trainingContent: {
     videoUrl: string;
     presenters: string;
@@ -114,6 +121,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     primaryLink: '',
     publishedAt: new Date().toISOString().split('T')[0], // Default to today
     resourceLinks: [],
+    relatedAssets: [],
     trainingContent: {
       videoUrl: '',
       presenters: '',
@@ -126,6 +134,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
   });
 
   const [newTag, setNewTag] = useState('');
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
 
   const [loading, setLoading] = useState(!isNew);
 
@@ -133,25 +142,40 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
   const [contentTypes, setContentTypes] = useState<ContentTypeDB[]>([]);
   const [formats, setFormats] = useState<FormatDB[]>([]);
   const [boards, setBoards] = useState<BoardDB[]>([]);
+  const [availableTags, setAvailableTags] = useState<{ id: string; name: string; slug: string }[]>([]);
 
   // Fetch taxonomy data on mount
   useEffect(() => {
     const fetchTaxonomy = async () => {
       try {
-        const [typesRes, formatsRes, boardsRes] = await Promise.all([
+        const [typesRes, formatsRes, boardsRes, tagsRes] = await Promise.all([
           fetch('/api/admin/content-types'),
           fetch('/api/admin/formats'),
           fetch('/api/boards'),
+          fetch('/api/tags'),
         ]);
         if (typesRes.ok) setContentTypes(await typesRes.json());
         if (formatsRes.ok) setFormats(await formatsRes.json());
         if (boardsRes.ok) setBoards(await boardsRes.json());
+        if (tagsRes.ok) setAvailableTags(await tagsRes.json());
       } catch (error) {
         console.error('Error fetching taxonomy:', error);
       }
     };
     fetchTaxonomy();
   }, []);
+
+  // Filter tag suggestions based on input
+  const tagSuggestions = useMemo(() => {
+    if (!newTag.trim()) return [];
+    const searchTerm = newTag.toLowerCase();
+    return availableTags
+      .filter(tag =>
+        (tag.name.toLowerCase().includes(searchTerm) || tag.slug.toLowerCase().includes(searchTerm)) &&
+        !formData.tags.includes(tag.name) && !formData.tags.includes(tag.slug)
+      )
+      .slice(0, 8); // Limit to 8 suggestions
+  }, [newTag, availableTags, formData.tags]);
 
   // Build dropdown options from database - single source of truth
   const TYPE_OPTIONS = useMemo(() =>
@@ -200,8 +224,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             ...(data.videoUrl ? [{ id: 'video', type: 'video', label: 'Video', url: data.videoUrl, copyable: true }] : []),
             ...(data.slidesUrl ? [{ id: 'slides', type: 'slides', label: 'Slides', url: data.slidesUrl, copyable: true }] : []),
             ...(data.transcriptUrl ? [{ id: 'transcript', type: 'transcript', label: 'Transcript', url: data.transcriptUrl, copyable: true }] : []),
-            ...(data.keyAssetUrl ? [{ id: 'key', type: 'document', label: 'Key Asset', url: data.keyAssetUrl, copyable: true }] : []),
           ],
+          // Load related assets (new flexible format), migrate from keyAssetUrl if needed
+          relatedAssets: data.relatedAssets?.map((ra: { url: string; displayName: string }, i: number) => ({
+            id: `related-${i}`,
+            url: ra.url,
+            displayName: ra.displayName,
+          })) || (data.keyAssetUrl ? [{ id: 'legacy-key', url: data.keyAssetUrl, displayName: 'Key Asset' }] : []),
           trainingContent: {
             videoUrl: data.videoUrl || '',
             presenters: Array.isArray(data.presenters) ? data.presenters.join(', ') : (data.presenters || ''),
@@ -237,7 +266,19 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         tags: [...prev.tags, newTag.trim()],
       }));
       setNewTag('');
+      setShowTagSuggestions(false);
     }
+  };
+
+  const handleSelectTagSuggestion = (tagName: string) => {
+    if (!formData.tags.includes(tagName)) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, tagName],
+      }));
+    }
+    setNewTag('');
+    setShowTagSuggestions(false);
   };
 
   const handleRemoveTag = (tag: string) => {
@@ -283,6 +324,35 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     setFormData((prev) => ({
       ...prev,
       resourceLinks: prev.resourceLinks.filter((link) => link.id !== id),
+    }));
+  };
+
+  // Related assets handlers
+  const handleAddRelatedAsset = () => {
+    const newAsset: RelatedAssetItem = {
+      id: Date.now().toString(),
+      url: '',
+      displayName: '',
+    };
+    setFormData((prev) => ({
+      ...prev,
+      relatedAssets: [...prev.relatedAssets, newAsset],
+    }));
+  };
+
+  const handleUpdateRelatedAsset = (id: string, field: 'url' | 'displayName', value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      relatedAssets: prev.relatedAssets.map((asset) =>
+        asset.id === id ? { ...asset, [field]: value } : asset
+      ),
+    }));
+  };
+
+  const handleRemoveRelatedAsset = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      relatedAssets: prev.relatedAssets.filter((asset) => asset.id !== id),
     }));
   };
 
@@ -379,10 +449,28 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
   const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Generate slug from title
+  const generateSlug = (title: string): string => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .substring(0, 100);
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     setSaveMessage(null);
     try {
+      // Validate required fields for new assets
+      if (isNew && !formData.title.trim()) {
+        setSaveMessage({ type: 'error', text: 'Title is required' });
+        setIsSaving(false);
+        return;
+      }
+
       // Filter out empty takeaways and tips
       const filteredTakeaways = formData.trainingContent.takeaways.filter(t => t.trim() !== '');
       const filteredTips = formData.trainingContent.tips.filter(t => t.trim() !== '');
@@ -390,8 +478,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         .filter(h => h.title.trim() !== '' || h.content.trim() !== '')
         .map(h => ({ title: h.title, content: h.content }));
 
-      // Build the update payload
+      // Generate slug for new assets
+      const assetSlug = isNew ? generateSlug(formData.title) : slug;
+
+      // Build the payload
       const payload = {
+        slug: assetSlug,
         title: formData.title,
         description: formData.description,
         shortDescription: formData.shortDescription || null,
@@ -408,7 +500,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         videoUrl: formData.resourceLinks.find(l => l.type === 'video')?.url || formData.trainingContent.videoUrl || null,
         slidesUrl: formData.resourceLinks.find(l => l.type === 'slides')?.url || null,
         transcriptUrl: formData.resourceLinks.find(l => l.type === 'transcript')?.url || null,
-        keyAssetUrl: formData.resourceLinks.find(l => l.type === 'document')?.url || null,
+        // Related assets with display names (replaces keyAssetUrl)
+        relatedAssets: formData.relatedAssets
+          .filter(ra => ra.url.trim() !== '')
+          .map(ra => ({ url: ra.url, displayName: ra.displayName || 'Related Asset' })),
         // Training content - filter out empty values
         presenters: formData.trainingContent.presenters ? formData.trainingContent.presenters.split(',').map(p => p.trim()).filter(p => p !== '') : [],
         durationMinutes: formData.trainingContent.durationMinutes,
@@ -420,8 +515,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
       console.log('Saving payload:', payload);
 
-      const res = await fetch(`/api/assets/${slug}`, {
-        method: 'PUT',
+      // Use POST for new assets, PUT for existing
+      const url = isNew ? '/api/assets' : `/api/assets/${slug}`;
+      const method = isNew ? 'POST' : 'PUT';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -430,9 +529,17 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
       if (res.ok) {
         console.log('Asset saved successfully:', data);
-        setSaveMessage({ type: 'success', text: 'Changes saved successfully!' });
-        // Clear message after 3 seconds
-        setTimeout(() => setSaveMessage(null), 3000);
+        if (isNew) {
+          // Redirect to the new asset's edit page
+          setSaveMessage({ type: 'success', text: 'Asset created! Redirecting...' });
+          setTimeout(() => {
+            window.location.href = `/admin/manage/asset/${data.slug}`;
+          }, 1000);
+        } else {
+          setSaveMessage({ type: 'success', text: 'Changes saved successfully!' });
+          // Clear message after 3 seconds
+          setTimeout(() => setSaveMessage(null), 3000);
+        }
       } else {
         console.error('Failed to save asset:', data);
         setSaveMessage({ type: 'error', text: data.error || 'Failed to save changes' });
@@ -472,6 +579,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     setFormData(prev => {
       const updates: Partial<AssetData> = {};
 
+      // Apply title (for new assets)
+      if (content.title) {
+        updates.title = content.title;
+      }
       if (content.description) {
         updates.description = content.description;
       }
@@ -507,6 +618,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
       if (content.suggestedType) {
         updates.type = content.suggestedType;
       }
+      // Apply extracted links
       if (content.extractedLinks) {
         if (content.extractedLinks.primaryLink && !prev.primaryLink) {
           updates.primaryLink = content.extractedLinks.primaryLink;
@@ -517,6 +629,48 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             ...updates.trainingContent,
             videoUrl: content.extractedLinks.videoUrl,
           };
+        }
+        // Add other extracted links to resourceLinks
+        const newLinks: ResourceLink[] = [...prev.resourceLinks];
+        const existingTypes = new Set(newLinks.map(l => l.type));
+
+        if (content.extractedLinks.slidesUrl && !existingTypes.has('slides')) {
+          newLinks.push({
+            id: `link-slides-${Date.now()}`,
+            type: 'slides',
+            label: 'Slides',
+            url: content.extractedLinks.slidesUrl,
+            copyable: true,
+          });
+        }
+        if (content.extractedLinks.transcriptUrl && !existingTypes.has('transcript')) {
+          newLinks.push({
+            id: `link-transcript-${Date.now()}`,
+            type: 'transcript',
+            label: 'Transcript',
+            url: content.extractedLinks.transcriptUrl,
+            copyable: true,
+          });
+        }
+        // Add related assets from AI extraction
+        if (content.extractedLinks.relatedAssets && content.extractedLinks.relatedAssets.length > 0) {
+          const newRelatedAssets = [...prev.relatedAssets];
+          const existingUrls = new Set(newRelatedAssets.map(ra => ra.url));
+
+          for (const ra of content.extractedLinks.relatedAssets) {
+            if (!existingUrls.has(ra.url)) {
+              newRelatedAssets.push({
+                id: `related-ai-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                url: ra.url,
+                displayName: ra.displayName,
+              });
+            }
+          }
+          updates.relatedAssets = newRelatedAssets;
+        }
+
+        if (newLinks.length > prev.resourceLinks.length) {
+          updates.resourceLinks = newLinks;
         }
       }
 
@@ -982,6 +1136,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               primaryLink: formData.primaryLink,
               videoUrl: formData.trainingContent.videoUrl,
             }}
+            isNew={isNew}
             onApply={handleApplyAIContent}
             onClose={() => setShowAIPanel(false)}
           />
@@ -1276,7 +1431,6 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               border: '1px solid #E5E7EB',
               borderRadius: '12px',
               marginBottom: '24px',
-              overflow: 'hidden',
             }}
           >
             <div
@@ -1427,21 +1581,99 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     </span>
                   ))}
                 </div>
-                <div className="flex" style={{ gap: '8px' }}>
-                  <input
-                    type="text"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
-                    placeholder="Add a tag..."
-                    style={{
-                      flex: 1,
-                      padding: '10px 14px',
-                      border: '1px solid #E5E7EB',
-                      borderRadius: '8px',
-                      fontSize: '13px',
-                    }}
-                  />
+                <div className="flex" style={{ gap: '8px', position: 'relative' }}>
+                  <div style={{ flex: 1, position: 'relative' }}>
+                    <input
+                      type="text"
+                      value={newTag}
+                      onChange={(e) => {
+                        setNewTag(e.target.value);
+                        setShowTagSuggestions(true);
+                      }}
+                      onFocus={() => setShowTagSuggestions(true)}
+                      onBlur={() => {
+                        // Delay hiding to allow click on suggestion
+                        setTimeout(() => setShowTagSuggestions(false), 200);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddTag();
+                        } else if (e.key === 'Escape') {
+                          setShowTagSuggestions(false);
+                        }
+                      }}
+                      placeholder="Add a tag..."
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                      }}
+                    />
+                    {/* Tag Suggestions Dropdown */}
+                    {showTagSuggestions && tagSuggestions.length > 0 && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '100%',
+                          left: 0,
+                          right: 0,
+                          marginTop: '4px',
+                          background: 'white',
+                          border: '1px solid #D1D5DB',
+                          borderRadius: '8px',
+                          boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                          zIndex: 9999,
+                          maxHeight: '240px',
+                          overflowY: 'auto',
+                        }}
+                      >
+                        {tagSuggestions.map((tag) => (
+                          <button
+                            key={tag.id}
+                            type="button"
+                            onClick={() => handleSelectTagSuggestion(tag.name)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              textAlign: 'left',
+                              background: 'white',
+                              border: 'none',
+                              borderBottom: '1px solid #F3F4F6',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              color: '#374151',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = '#F3F4F6';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'white';
+                            }}
+                          >
+                            <span style={{
+                              background: '#8C69F0',
+                              color: 'white',
+                              padding: '3px 10px',
+                              borderRadius: '4px',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                            }}>
+                              {tag.name}
+                            </span>
+                            <span style={{ color: '#6B7280', fontSize: '12px' }}>
+                              {tag.slug}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   <button
                     onClick={handleAddTag}
                     style={{
@@ -1592,6 +1824,121 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           border: 'none',
                           borderRadius: '6px',
                           color: '#9CA3AF',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Related Assets Sub-section */}
+            <div
+              style={{
+                padding: '16px 24px',
+                borderTop: '1px solid #E5E7EB',
+              }}
+            >
+              <div
+                className="flex items-center justify-between"
+                style={{ marginBottom: '16px' }}
+              >
+                <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                  Related Assets
+                </div>
+                <button
+                  onClick={handleAddRelatedAsset}
+                  className="flex items-center"
+                  style={{
+                    gap: '6px',
+                    padding: '8px 14px',
+                    background: '#10B981',
+                    border: 'none',
+                    borderRadius: '6px',
+                    color: 'white',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Add Related Asset
+                </button>
+              </div>
+              <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+                Add documents, templates, or other files associated with this asset. Each related asset has a custom display name.
+              </p>
+              {formData.relatedAssets.length === 0 ? (
+                <div style={{ padding: '24px', textAlign: 'center', color: '#9CA3AF', background: '#FAFAFA', borderRadius: '8px' }}>
+                  No related assets added yet.
+                </div>
+              ) : (
+                <div className="flex flex-col" style={{ gap: '10px' }}>
+                  {formData.relatedAssets.map((asset, index) => (
+                    <div
+                      key={asset.id}
+                      className="flex items-center"
+                      style={{
+                        gap: '12px',
+                        padding: '12px 14px',
+                        background: '#FAFAFA',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                      }}
+                    >
+                      <span style={{ color: '#9CA3AF', fontSize: '12px', fontWeight: 500, minWidth: '20px' }}>
+                        {index + 1}
+                      </span>
+                      <input
+                        type="text"
+                        value={asset.displayName}
+                        onChange={(e) => handleUpdateRelatedAsset(asset.id, 'displayName', e.target.value)}
+                        placeholder="Display Name (e.g., Training Guide)"
+                        style={{
+                          width: '200px',
+                          padding: '8px 10px',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                        }}
+                      />
+                      <input
+                        type="url"
+                        value={asset.url}
+                        onChange={(e) => handleUpdateRelatedAsset(asset.id, 'url', e.target.value)}
+                        placeholder="URL"
+                        style={{
+                          flex: 1,
+                          padding: '8px 10px',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                        }}
+                      />
+                      <button
+                        onClick={() => handleRemoveRelatedAsset(asset.id)}
+                        className="flex items-center justify-center"
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          background: 'transparent',
+                          border: 'none',
+                          borderRadius: '6px',
+                          color: '#EF4444',
                           cursor: 'pointer',
                         }}
                       >

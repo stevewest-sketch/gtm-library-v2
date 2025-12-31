@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { catalogEntries, assetBoards, boards, assetTags, tags } from '@/lib/db/schema';
+import { catalogEntries, assetBoards, boards, assetTags, tags, RelatedAsset } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function GET() {
@@ -36,8 +36,17 @@ export async function GET() {
       })
     );
 
-    // CSV headers matching import format + extra useful fields
-    const headers = [
+    // Find maximum number of related assets across all assets
+    let maxRelatedAssets = 0;
+    for (const asset of assetsWithRelations) {
+      const relatedAssets = asset.relatedAssets as RelatedAsset[] | null;
+      if (relatedAssets && relatedAssets.length > maxRelatedAssets) {
+        maxRelatedAssets = relatedAssets.length;
+      }
+    }
+
+    // Build base headers
+    const baseHeaders = [
       'title',
       'slug',
       'description',
@@ -45,7 +54,6 @@ export async function GET() {
       'externalUrl',        // Primary link shown on asset page
       'videoUrl',           // Video URL (Loom/YouTube) shown on asset page
       'slidesUrl',
-      'keyAssetUrl',
       'transcriptUrl',
       'aiContentUrl',       // AI-only URL for content generation - NOT saved to asset
       'hub',
@@ -62,6 +70,15 @@ export async function GET() {
       'shares',
       'createdAt',
     ];
+
+    // Add dynamic related asset columns (relatedAssetUrl1, relatedAssetName1, etc.)
+    const relatedAssetHeaders: string[] = [];
+    for (let i = 1; i <= maxRelatedAssets; i++) {
+      relatedAssetHeaders.push(`relatedAssetUrl${i}`);
+      relatedAssetHeaders.push(`relatedAssetName${i}`);
+    }
+
+    const headers = [...baseHeaders, ...relatedAssetHeaders];
 
     // Helper to escape CSV values
     const escapeCSV = (value: unknown): string => {
@@ -82,7 +99,8 @@ export async function GET() {
         ...asset.tagNames,
       ])];
 
-      return [
+      // Build base row values
+      const baseValues = [
         escapeCSV(asset.title),
         escapeCSV(asset.slug),
         escapeCSV(asset.description),
@@ -90,7 +108,6 @@ export async function GET() {
         escapeCSV(asset.primaryLink),           // externalUrl
         escapeCSV(asset.videoUrl),
         escapeCSV(asset.slidesUrl),
-        escapeCSV(asset.keyAssetUrl),
         escapeCSV(asset.transcriptUrl),
         '',                                      // aiContentUrl - always empty (not stored)
         escapeCSV(asset.hub),
@@ -106,7 +123,18 @@ export async function GET() {
         escapeCSV(asset.views),
         escapeCSV(asset.shares),
         escapeCSV(asset.createdAt?.toISOString()),
-      ].join(',');
+      ];
+
+      // Add related asset values (url1, name1, url2, name2, ...)
+      const relatedAssets = asset.relatedAssets as RelatedAsset[] | null;
+      const relatedAssetValues: string[] = [];
+      for (let i = 0; i < maxRelatedAssets; i++) {
+        const related = relatedAssets?.[i];
+        relatedAssetValues.push(escapeCSV(related?.url || ''));
+        relatedAssetValues.push(escapeCSV(related?.displayName || ''));
+      }
+
+      return [...baseValues, ...relatedAssetValues].join(',');
     });
 
     const csv = [headers.join(','), ...rows].join('\n');

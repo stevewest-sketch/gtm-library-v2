@@ -4,7 +4,7 @@ import { contentTypes, formats } from '@/lib/db/schema';
 
 // Cache the taxonomy display data
 let cachedData: {
-  types: Record<string, { label: string; color: string; bg: string }>;
+  types: Record<string, { label: string; color: string; bg: string; icon?: string }>;
   formats: Record<string, { label: string; color: string; iconType: string }>;
 } | null = null;
 let cacheTime = 0;
@@ -34,12 +34,13 @@ export async function GET(request: NextRequest) {
     const dbFormats = await db.select().from(formats);
 
     // Transform to lookup objects
-    const types: Record<string, { label: string; color: string; bg: string }> = {};
+    const types: Record<string, { label: string; color: string; bg: string; icon?: string }> = {};
     for (const t of dbTypes) {
       types[t.slug] = {
         label: t.name,
         color: t.textColor,
         bg: t.bgColor,
+        icon: t.icon || undefined,
       };
     }
 

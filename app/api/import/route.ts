@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { catalogEntries, tags, assetTags, boards, assetBoards } from '@/lib/db/schema';
+import { catalogEntries, tags, assetTags, boards, assetBoards, RelatedAsset } from '@/lib/db/schema';
 import { inArray, eq } from 'drizzle-orm';
 import { generateContent } from '@/lib/ai/content-generator';
+import { crawlUrl, detectUrlType } from '@/lib/ai/url-crawler';
 
 // Configure for longer timeout on Vercel (5 minutes for AI processing)
 export const maxDuration = 300; // 300 seconds for AI imports
@@ -19,7 +20,7 @@ interface ParsedRow {
   externalUrl: string;
   videoUrl: string;
   slidesUrl: string;
-  keyAssetUrl: string;
+  keyAssetUrl: string; // Deprecated - migrated to relatedAssets
   transcriptUrl: string;
   aiContentUrl: string; // URL only for AI content generation - not saved to asset
   hub: string;
@@ -30,13 +31,33 @@ interface ParsedRow {
   presenters: string; // Pipe-separated list of presenters
   duration: string; // Duration in minutes
   publishedAt: string; // Published date for ordering assets
+  // Related assets (flexible URLs with display names) - replaces keyAssetUrl
+  relatedAssets: RelatedAsset[];
   // AI-generated fields
+  aiTitle?: string;
+  aiHub?: string;
+  aiFormat?: string;
   aiDescription?: string;
   aiShortDescription?: string;
   aiTakeaways?: string[];
   aiHowtos?: { title: string; content: string }[];
   aiTips?: string[];
   aiTags?: string[];
+  aiRelatedAssets?: RelatedAsset[];
+  // Crawled data (fallback when AI fails)
+  crawledTitle?: string;
+  crawledSourceType?: string;
+  // Extracted links from crawled content
+  crawledVideoUrl?: string;
+  crawledSlidesUrl?: string;
+  crawledTranscriptUrl?: string;
+  crawledKeyAssetUrl?: string;
+  crawledPrimaryLink?: string;
+  // AI-extracted links
+  aiVideoUrl?: string;
+  aiSlidesUrl?: string;
+  aiTranscriptUrl?: string;
+  aiPrimaryLink?: string;
 }
 
 interface ImportResult {
@@ -244,15 +265,38 @@ export async function POST(request: NextRequest) {
     const colMap: Record<string, number> = {};
     const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'aicontenturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration', 'publishedat', 'publisheddate'];
 
+    // Track related asset columns (relatedasseturl1, relatedassetname1, relatedasseturl2, etc.)
+    const relatedAssetUrlCols: number[] = [];
+    const relatedAssetNameCols: number[] = [];
+
     headers.forEach((h, i) => {
       if (expectedCols.includes(h)) {
         colMap[h] = i;
       }
+      // Match relatedasseturl1, relatedasseturl2, etc. (case-insensitive, no special chars)
+      const urlMatch = h.match(/^relatedasseturl(\d+)$/);
+      if (urlMatch) {
+        const num = parseInt(urlMatch[1]);
+        relatedAssetUrlCols[num] = i;
+      }
+      // Match relatedassetname1, relatedassetname2, etc.
+      const nameMatch = h.match(/^relatedassetname(\d+)$/);
+      if (nameMatch) {
+        const num = parseInt(nameMatch[1]);
+        relatedAssetNameCols[num] = i;
+      }
     });
 
-    if (colMap['title'] === undefined || colMap['slug'] === undefined || colMap['hub'] === undefined) {
+    console.log('Related asset URL columns:', relatedAssetUrlCols);
+    console.log('Related asset name columns:', relatedAssetNameCols);
+
+    // Required columns: either (title + hub) OR aicontenturl for AI-only imports
+    const hasBasicColumns = colMap['title'] !== undefined && colMap['hub'] !== undefined;
+    const hasAiColumn = colMap['aicontenturl'] !== undefined;
+
+    if (!hasBasicColumns && !hasAiColumn) {
       return NextResponse.json({
-        error: 'CSV must have title, slug, and hub columns',
+        error: 'CSV must have either (title + hub columns) OR aicontenturl column for AI-only imports',
         foundHeaders: headers
       }, { status: 400 });
     }
@@ -270,38 +314,75 @@ export async function POST(request: NextRequest) {
       };
 
       const title = getValue('title');
-      if (!title) continue; // Title is required
+      const aiContentUrl = getValue('aicontenturl');
+
+      // Skip row if no title AND no aiContentUrl (need at least one)
+      if (!title && !aiContentUrl) continue;
 
       // Auto-generate slug from title if not provided
+      // For AI-only rows, use a temporary placeholder that will be replaced
       let slug = getValue('slug');
-      if (!slug) {
+      if (!slug && title) {
         slug = generateSlug(title);
+      } else if (!slug && aiContentUrl) {
+        // Generate temporary slug from URL for AI-only rows
+        const urlPath = new URL(aiContentUrl).pathname;
+        slug = generateSlug(urlPath.split('/').pop() || `ai-import-${i}`);
+      }
+
+      // Parse related assets from columns (relatedAssetUrl1, relatedAssetName1, etc.)
+      const relatedAssets: RelatedAsset[] = [];
+
+      // Find all numbered related asset columns
+      for (let n = 1; n <= 20; n++) { // Support up to 20 related assets
+        const urlColIdx = relatedAssetUrlCols[n];
+        if (urlColIdx !== undefined) {
+          const url = (values[urlColIdx] || '').trim();
+          if (url) {
+            const nameColIdx = relatedAssetNameCols[n];
+            const displayName = nameColIdx !== undefined ? (values[nameColIdx] || '').trim() : '';
+            relatedAssets.push({
+              url,
+              displayName: displayName || `Related Asset ${n}`,
+            });
+          }
+        }
+      }
+
+      // If keyAssetUrl is present (legacy support), migrate it to relatedAssets
+      const keyAssetUrl = getValue('keyasseturl');
+      if (keyAssetUrl && relatedAssets.length === 0) {
+        relatedAssets.push({
+          url: keyAssetUrl,
+          displayName: 'Key Asset',
+        });
       }
 
       parsedRows.push({
         rowNum: i,
-        title,
+        title, // May be empty for AI-only rows - will be filled by AI
         slug,
         description: getValue('description'),
         shortDescription: getValue('shortdescription'),
         externalUrl: getValue('externalurl'),
         videoUrl: getValue('videourl'),
         slidesUrl: getValue('slidesurl'),
-        keyAssetUrl: getValue('keyasseturl'),
+        keyAssetUrl, // Deprecated - kept for backwards compatibility
         transcriptUrl: getValue('transcripturl'),
-        aiContentUrl: getValue('aicontenturl'), // URL only for AI - not saved to asset
-        hub: normalizeHub(getValue('hub')),
-        format: normalizeFormat(getValue('format') || 'document'),
+        aiContentUrl, // URL only for AI - not saved to asset
+        hub: getValue('hub') ? normalizeHub(getValue('hub')) : '', // May be empty for AI-only rows
+        format: getValue('format') ? normalizeFormat(getValue('format')) : '', // May be empty for AI-only rows
         type: normalizeType(getValue('type')),
         tags: getValue('tags'),
         date: getValue('date') || getValue('eventdate'), // Support both column names
         presenters: getValue('presenters'),
         duration: getValue('duration'),
         publishedAt: getValue('publishedat') || getValue('publisheddate'), // Support both column names
+        relatedAssets,
       });
     }
 
-    // STEP 1.5: AI Content Generation (if enabled)
+    // STEP 1.5: Crawl URLs and AI Content Generation (if enabled)
     if (enableAI) {
       console.log(`AI content generation enabled for ${parsedRows.length} rows`);
 
@@ -322,23 +403,69 @@ export async function POST(request: NextRequest) {
           }
 
           try {
-            console.log(`Row ${row.rowNum}: Generating AI content from ${urlToCrawl}`);
+            // Check if this is a URL-only row (missing title/hub)
+            const isUrlOnlyRow = !row.title || !row.hub;
+            console.log(`Row ${row.rowNum}: Generating AI content from ${urlToCrawl} (URL-only: ${isUrlOnlyRow})`);
+
+            // FIRST: Crawl the URL to get title and links (this works even if AI API fails)
+            const crawlResult = await crawlUrl(urlToCrawl);
+            if (crawlResult.success) {
+              row.crawledTitle = crawlResult.title;
+              row.crawledSourceType = crawlResult.sourceType;
+              // Extract any links found in the page
+              if (crawlResult.links) {
+                if (crawlResult.links.videoUrl && !row.videoUrl) {
+                  row.crawledVideoUrl = crawlResult.links.videoUrl;
+                }
+                if (crawlResult.links.slidesUrl && !row.slidesUrl) {
+                  row.crawledSlidesUrl = crawlResult.links.slidesUrl;
+                }
+                if (crawlResult.links.transcriptUrl && !row.transcriptUrl) {
+                  row.crawledTranscriptUrl = crawlResult.links.transcriptUrl;
+                }
+              }
+              console.log(`Row ${row.rowNum}: Crawled successfully - title: "${row.crawledTitle}", type: ${row.crawledSourceType}`);
+            }
+
+            // Infer format from URL type if not provided
+            if (!row.format && row.crawledSourceType) {
+              const formatMap: Record<string, string> = {
+                'youtube': 'video',
+                'loom': 'video',
+                'google-slides': 'slides',
+                'google-doc': 'document',
+                'notion': 'document',
+                'webpage': 'link',
+              };
+              row.aiFormat = formatMap[row.crawledSourceType] || 'document';
+            }
 
             // Determine which fields to generate based on what's missing
-            const generateFields: string[] = [];
+            const generateFields: Array<'title' | 'hub' | 'format' | 'description' | 'shortDescription' | 'takeaways' | 'howtos' | 'tips' | 'tags' | 'suggestedType' | 'extractedLinks'> = [];
+
+            // For URL-only rows, generate title, hub, and format first
+            if (!row.title && !row.crawledTitle) generateFields.push('title');
+            if (!row.hub) generateFields.push('hub');
+            if (!row.format && !row.aiFormat) generateFields.push('format');
+
+            // Always generate content fields if missing
             if (!row.description) generateFields.push('description');
             if (!row.shortDescription) generateFields.push('shortDescription');
 
-            // For enablement hub, generate training content
-            if (row.hub === 'enablement') {
+            // For enablement hub or unknown hub, generate training content
+            if (row.hub === 'enablement' || !row.hub) {
               generateFields.push('takeaways', 'howtos', 'tips');
             } else {
               // For other hubs, generate general content
               generateFields.push('takeaways', 'tips');
             }
 
-            // Always suggest tags
+            // Always suggest type and tags
+            if (!row.type) generateFields.push('suggestedType');
             generateFields.push('tags');
+
+            // Always try to extract and organize links from the content
+            generateFields.push('extractedLinks');
 
             if (generateFields.length === 0) {
               console.log(`Row ${row.rowNum}: All fields already provided, skipping AI`);
@@ -347,17 +474,37 @@ export async function POST(request: NextRequest) {
 
             const aiResponse = await generateContent({
               url: urlToCrawl,
-              hub: row.hub as 'enablement' | 'content' | 'coe',
-              format: row.format,
-              generateFields: generateFields as ('description' | 'shortDescription' | 'takeaways' | 'howtos' | 'tips' | 'tags')[],
-              existingAsset: {
-                title: row.title,
-              },
+              // Only pass hub if we have one - otherwise let AI infer it
+              hub: row.hub ? row.hub as 'enablement' | 'content' | 'coe' : undefined,
+              format: row.format || row.aiFormat || undefined,
+              generateFields,
+              existingAsset: row.title ? { title: row.title } : undefined,
             });
 
             // Apply AI-generated content to the row
             if (aiResponse.success && aiResponse.content) {
-              const { content } = aiResponse;
+              const { content, crawledData } = aiResponse;
+
+              // Apply title - prefer AI generated, fall back to crawled page title
+              if (!row.title) {
+                row.aiTitle = content.title || crawledData?.title || row.crawledTitle;
+                // Update slug based on AI-generated title if we got one
+                if (row.aiTitle) {
+                  row.slug = generateSlug(row.aiTitle);
+                }
+              }
+
+              // Apply hub
+              if (!row.hub && content.suggestedHub) {
+                row.aiHub = content.suggestedHub;
+              }
+
+              // Apply format (AI takes precedence over crawled inference)
+              if (!row.format && content.suggestedFormat) {
+                row.aiFormat = content.suggestedFormat;
+              }
+
+              // Apply description
               if (content.description && !row.description) {
                 row.aiDescription = content.description;
               }
@@ -376,16 +523,66 @@ export async function POST(request: NextRequest) {
               if (content.suggestedTags && content.suggestedTags.length > 0) {
                 row.aiTags = content.suggestedTags;
               }
-            }
 
-            console.log(`Row ${row.rowNum}: AI generated content successfully`);
+              // Apply AI-extracted links (only if not already provided in CSV)
+              if (content.extractedLinks) {
+                if (content.extractedLinks.primaryLink && !row.externalUrl) {
+                  row.aiPrimaryLink = content.extractedLinks.primaryLink;
+                }
+                if (content.extractedLinks.videoUrl && !row.videoUrl) {
+                  row.aiVideoUrl = content.extractedLinks.videoUrl;
+                }
+                if (content.extractedLinks.slidesUrl && !row.slidesUrl) {
+                  row.aiSlidesUrl = content.extractedLinks.slidesUrl;
+                }
+                if (content.extractedLinks.transcriptUrl && !row.transcriptUrl) {
+                  row.aiTranscriptUrl = content.extractedLinks.transcriptUrl;
+                }
+                // Handle relatedAssets from AI extraction
+                if (content.extractedLinks.relatedAssets && content.extractedLinks.relatedAssets.length > 0) {
+                  row.aiRelatedAssets = content.extractedLinks.relatedAssets;
+                }
+                console.log(`Row ${row.rowNum}: AI extracted links - video: ${!!row.aiVideoUrl}, slides: ${!!row.aiSlidesUrl}, relatedAssets: ${row.aiRelatedAssets?.length || 0}`);
+              }
+
+              console.log(`Row ${row.rowNum}: AI generated content successfully - title: "${row.aiTitle || row.title}", hub: "${row.aiHub || row.hub}"`);
+            } else {
+              // AI failed but we may have crawled data - use it as fallback
+              console.log(`Row ${row.rowNum}: AI generation failed, using crawled data as fallback`);
+              if (!row.title && row.crawledTitle) {
+                row.aiTitle = row.crawledTitle;
+                row.slug = generateSlug(row.aiTitle);
+              }
+              // Default to 'content' hub if we couldn't determine it
+              if (!row.hub && !row.aiHub) {
+                row.aiHub = 'content';
+              }
+            }
           } catch (error) {
             console.error(`Row ${row.rowNum}: AI generation failed:`, error);
-            // Continue without AI content - don't fail the import
+            // Try to use crawled data if available
+            if (!row.title && row.crawledTitle) {
+              row.aiTitle = row.crawledTitle;
+              row.slug = generateSlug(row.aiTitle);
+            }
+            if (!row.hub && !row.aiHub) {
+              row.aiHub = 'content'; // Default hub
+            }
           }
         }));
       }
     }
+
+    // STEP 1.6: Filter out rows that still don't have required fields after AI generation
+    const validRows = parsedRows.filter(row => {
+      const finalTitle = row.title || row.aiTitle;
+      const finalHub = row.hub || row.aiHub;
+      if (!finalTitle || !finalHub) {
+        console.log(`Row ${row.rowNum}: Skipping - missing required fields after AI generation (title: ${!!finalTitle}, hub: ${!!finalHub})`);
+        return false;
+      }
+      return true;
+    });
 
     // STEP 2: Get ALL existing slugs in ONE query
     const existingEntries = await db.select({ id: catalogEntries.id, slug: catalogEntries.slug }).from(catalogEntries);
@@ -400,7 +597,7 @@ export async function POST(request: NextRequest) {
     const rowsToUpdate = new Set<number>();
 
     // STEP 3: Make slugs unique and separate new vs existing vs update
-    for (const row of parsedRows) {
+    for (const row of validRows) {
       const originalSlug = row.slug;
 
       // Check if original slug exists in DB
@@ -440,9 +637,9 @@ export async function POST(request: NextRequest) {
       slugsInBatch.add(row.slug);
     }
 
-    const toInsert = parsedRows.filter(r => !rowsWithExistingSlugs.has(r.rowNum) && !rowsToUpdate.has(r.rowNum));
-    const toUpdate = parsedRows.filter(r => rowsToUpdate.has(r.rowNum));
-    const toSkip = parsedRows.filter(r => rowsWithExistingSlugs.has(r.rowNum));
+    const toInsert = validRows.filter(r => !rowsWithExistingSlugs.has(r.rowNum) && !rowsToUpdate.has(r.rowNum));
+    const toUpdate = validRows.filter(r => rowsToUpdate.has(r.rowNum));
+    const toSkip = validRows.filter(r => rowsWithExistingSlugs.has(r.rowNum));
 
     const results: ImportResult[] = [];
 
@@ -501,21 +698,40 @@ export async function POST(request: NextRequest) {
         const aiTags = row.aiTags || [];
         const combinedTags = [...new Set([...csvTags, ...aiTags])];
 
+        // Use AI-generated values as fallback for title, hub, format
+        const finalTitle = row.title || row.aiTitle || `Imported Asset ${row.rowNum}`;
+        const finalHub = row.hub || row.aiHub || 'content';
+        const finalFormat = row.format || row.aiFormat || 'document';
+
+        // Combine related assets: CSV > AI-extracted
+        const finalRelatedAssets = row.relatedAssets.length > 0
+          ? row.relatedAssets
+          : (row.aiRelatedAssets || []);
+
+        // Legacy support: if we have keyAssetUrl but no related assets, add it
+        if (finalRelatedAssets.length === 0 && row.keyAssetUrl) {
+          finalRelatedAssets.push({
+            url: row.keyAssetUrl,
+            displayName: 'Key Asset',
+          });
+        }
+
         return {
           slug: row.slug,
-          title: row.title,
+          title: finalTitle,
           // Use AI description if CSV description is empty
           description: row.description || row.aiDescription || null,
           shortDescription: row.shortDescription || row.aiShortDescription || null,
-          hub: row.hub,
-          format: row.format,
+          hub: finalHub,
+          format: finalFormat,
           types: row.type ? [row.type] : [],
           tags: combinedTags,
-          primaryLink: row.externalUrl || '',
-          videoUrl: row.videoUrl || null,
-          slidesUrl: row.slidesUrl || null,
-          keyAssetUrl: row.keyAssetUrl || null,
-          transcriptUrl: row.transcriptUrl || null,
+          primaryLink: row.externalUrl || row.aiPrimaryLink || row.aiContentUrl || '', // Prefer AI-extracted primary link
+          videoUrl: row.videoUrl || row.aiVideoUrl || row.crawledVideoUrl || null, // AI > crawled > none
+          slidesUrl: row.slidesUrl || row.aiSlidesUrl || row.crawledSlidesUrl || null, // AI > crawled > none
+          keyAssetUrl: null, // Deprecated - use relatedAssets instead
+          relatedAssets: finalRelatedAssets.length > 0 ? finalRelatedAssets : null,
+          transcriptUrl: row.transcriptUrl || row.aiTranscriptUrl || row.crawledTranscriptUrl || null, // AI > crawled > none
           eventDate: parseDate(row.date),
           presenters: parsePresenters(row.presenters),
           durationMinutes: parseDuration(row.duration),
@@ -533,12 +749,14 @@ export async function POST(request: NextRequest) {
         insertedSlugs.push(...chunk.map(r => r.slug));
 
         chunk.forEach(row => {
+          const finalTitle = row.title || row.aiTitle || `Imported Asset ${row.rowNum}`;
+          const finalHub = row.hub || row.aiHub || 'content';
           results.push({
             success: true,
             row: row.rowNum,
             slug: row.slug,
-            title: row.title,
-            hub: row.hub,
+            title: finalTitle,
+            hub: finalHub,
             created: true,
           });
         });
@@ -575,26 +793,49 @@ export async function POST(request: NextRequest) {
           };
 
           // Only update fields that have non-empty values in CSV or AI
-          if (row.title) updateData.title = row.title;
+          if (row.title || row.aiTitle) updateData.title = row.title || row.aiTitle;
           if (row.description || row.aiDescription) {
             updateData.description = row.description || row.aiDescription;
           }
           if (row.shortDescription || row.aiShortDescription) {
             updateData.shortDescription = row.shortDescription || row.aiShortDescription;
           }
-          if (row.hub) updateData.hub = row.hub;
-          if (row.format) updateData.format = row.format;
+          if (row.hub || row.aiHub) updateData.hub = row.hub || row.aiHub;
+          if (row.format || row.aiFormat) updateData.format = row.format || row.aiFormat;
           if (row.type) updateData.types = [row.type];
           if (row.tags || row.aiTags) {
             const csvTags = parseTagsString(row.tags);
             const aiTags = row.aiTags || [];
             updateData.tags = [...new Set([...csvTags, ...aiTags])];
           }
-          if (row.externalUrl) updateData.primaryLink = row.externalUrl;
-          if (row.videoUrl) updateData.videoUrl = row.videoUrl;
-          if (row.slidesUrl) updateData.slidesUrl = row.slidesUrl;
-          if (row.keyAssetUrl) updateData.keyAssetUrl = row.keyAssetUrl;
-          if (row.transcriptUrl) updateData.transcriptUrl = row.transcriptUrl;
+          // Apply links: CSV > AI-extracted > crawled fallback
+          if (row.externalUrl || row.aiPrimaryLink || row.aiContentUrl) {
+            updateData.primaryLink = row.externalUrl || row.aiPrimaryLink || row.aiContentUrl;
+          }
+          if (row.videoUrl || row.aiVideoUrl || row.crawledVideoUrl) {
+            updateData.videoUrl = row.videoUrl || row.aiVideoUrl || row.crawledVideoUrl;
+          }
+          if (row.slidesUrl || row.aiSlidesUrl || row.crawledSlidesUrl) {
+            updateData.slidesUrl = row.slidesUrl || row.aiSlidesUrl || row.crawledSlidesUrl;
+          }
+          // Handle related assets (replaces keyAssetUrl)
+          if (row.relatedAssets.length > 0 || row.aiRelatedAssets) {
+            const finalRelatedAssets = row.relatedAssets.length > 0
+              ? row.relatedAssets
+              : (row.aiRelatedAssets || []);
+            if (finalRelatedAssets.length > 0) {
+              updateData.relatedAssets = finalRelatedAssets;
+            }
+          } else if (row.keyAssetUrl) {
+            // Legacy support: migrate keyAssetUrl to relatedAssets
+            updateData.relatedAssets = [{
+              url: row.keyAssetUrl,
+              displayName: 'Key Asset',
+            }];
+          }
+          if (row.transcriptUrl || row.aiTranscriptUrl || row.crawledTranscriptUrl) {
+            updateData.transcriptUrl = row.transcriptUrl || row.aiTranscriptUrl || row.crawledTranscriptUrl;
+          }
           if (row.date) {
             const parsedDate = parseDate(row.date);
             if (parsedDate) updateData.eventDate = parsedDate;
@@ -679,12 +920,12 @@ export async function POST(request: NextRequest) {
     const allProcessedAssets = [...insertedAssets, ...updatedAssets];
 
     // STEP 8: Handle asset-board assignments
-    // For updated assets, only update board assignments if hub was specified in CSV
+    // For updated assets, only update board assignments if hub was specified in CSV or AI
     // Batch delete board assignments for updated assets
     const assetIdsForBoardDelete = updatedAssets
       .filter(asset => {
         const row = rowBySlug.get(asset.slug);
-        return row && row.hub;
+        return row && (row.hub || row.aiHub);
       })
       .map(asset => asset.id);
 
@@ -700,9 +941,10 @@ export async function POST(request: NextRequest) {
     const boardAssignments: { assetId: string; boardId: string }[] = [];
     for (const asset of allProcessedAssets) {
       const row = rowBySlug.get(asset.slug);
-      if (!row || !row.hub) continue; // Skip if no hub in CSV
+      const finalHub = row?.hub || row?.aiHub;
+      if (!row || !finalHub) continue; // Skip if no hub in CSV or AI
 
-      const board = boardsBySlug.get(row.hub);
+      const board = boardsBySlug.get(finalHub);
       if (board) {
         boardAssignments.push({ assetId: asset.id, boardId: board.id });
       }
@@ -779,14 +1021,18 @@ export async function POST(request: NextRequest) {
       ...successResults.slice(0, Math.max(0, 100 - errorResults.length)),
     ].sort((a, b) => a.row - b.row);
 
+    // Count rows that were skipped due to missing required fields
+    const skippedNoFields = parsedRows.length - validRows.length;
+
     return NextResponse.json({
       success: true,
       summary: {
         total: parsedRows.length,
         created,
         updated,
-        skipped,
+        skipped: skipped + skippedNoFields,
         errors,
+        aiProcessed: enableAI ? validRows.filter(r => r.aiTitle || r.aiHub || r.aiDescription).length : 0,
       },
       results: limitedResults,
       totalResults: results.length,

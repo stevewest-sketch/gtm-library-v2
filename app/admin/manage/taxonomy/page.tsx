@@ -7,6 +7,7 @@ interface ContentType {
   id: string;
   slug: string;
   name: string;
+  icon?: string; // Optional emoji icon
   bgColor: string;
   textColor: string;
   sortOrder: number;
@@ -22,11 +23,14 @@ interface Format {
 }
 
 type TabType = 'types' | 'formats';
+type SortField = 'name' | 'slug' | 'sortOrder';
+type SortDirection = 'asc' | 'desc';
 
-// Available icon types for formats
-const ICON_TYPES = [
-  'slides', 'document', 'spreadsheet', 'pdf', 'video', 'article',
-  'tool', 'guide', 'sequence', 'live-replay', 'on-demand', 'course', 'web-link'
+// Common emojis for content types
+const COMMON_EMOJIS = [
+  '📊', '📈', '📉', '📄', '📋', '📦', '🎯', '⚔️', '🏆', '💬',
+  '📰', '🎬', '🔧', '💡', '🚀', '📚', '📘', '🎓', '💎', '⭐',
+  '🏢', '🤝', '📣', '🛠️', '🧮', '📏', '✨', '🎤', '📕', '🔗',
 ];
 
 export default function TaxonomyPage() {
@@ -38,10 +42,15 @@ export default function TaxonomyPage() {
   const [editingItem, setEditingItem] = useState<ContentType | Format | null>(null);
   const [seeding, setSeeding] = useState(false);
 
+  // Sort state
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
   // Form state
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
+    icon: '', // Emoji icon for types
     bgColor: '#EDE9FE',
     textColor: '#8C69F0',
     color: '#4285F4',
@@ -90,11 +99,37 @@ export default function TaxonomyPage() {
     }
   };
 
+  // Sort helper function
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Get sorted data
+  const sortedTypes = [...types].sort((a, b) => {
+    const aVal = a[sortField]?.toString().toLowerCase() || '';
+    const bVal = b[sortField]?.toString().toLowerCase() || '';
+    const comparison = aVal.localeCompare(bVal);
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  const sortedFormats = [...formats].sort((a, b) => {
+    const aVal = a[sortField]?.toString().toLowerCase() || '';
+    const bVal = b[sortField]?.toString().toLowerCase() || '';
+    const comparison = aVal.localeCompare(bVal);
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
   const openCreateModal = () => {
     setEditingItem(null);
     setFormData({
       name: '',
       slug: '',
+      icon: '',
       bgColor: '#EDE9FE',
       textColor: '#8C69F0',
       color: '#4285F4',
@@ -110,6 +145,7 @@ export default function TaxonomyPage() {
       setFormData({
         name: t.name,
         slug: t.slug,
+        icon: t.icon || '',
         bgColor: t.bgColor,
         textColor: t.textColor,
         color: '#4285F4',
@@ -120,6 +156,7 @@ export default function TaxonomyPage() {
       setFormData({
         name: f.name,
         slug: f.slug,
+        icon: '',
         bgColor: '#EDE9FE',
         textColor: '#8C69F0',
         color: f.color,
@@ -138,6 +175,7 @@ export default function TaxonomyPage() {
           id: editingItem?.id,
           name: formData.name,
           slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+          icon: formData.icon || null,
           bgColor: formData.bgColor,
           textColor: formData.textColor,
         }
@@ -311,19 +349,35 @@ export default function TaxonomyPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#FAFAFA', borderBottom: '1px solid #E5E7EB' }}>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Icon</th>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Preview</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Name</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Slug</th>
+                <th
+                  onClick={() => handleSort('name')}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                >
+                  Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+                </th>
+                <th
+                  onClick={() => handleSort('slug')}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                >
+                  Slug {sortField === 'slug' && (sortDirection === 'asc' ? '↑' : '↓')}
+                </th>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {types.map((type) => (
+              {sortedTypes.map((type) => (
                 <tr key={type.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                  <td style={{ padding: '12px 16px', fontSize: '20px' }}>
+                    {type.icon || '📄'}
+                  </td>
                   <td style={{ padding: '12px 16px' }}>
                     <span
                       style={{
-                        display: 'inline-block',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
                         padding: '4px 10px',
                         borderRadius: '6px',
                         fontSize: '11px',
@@ -334,6 +388,7 @@ export default function TaxonomyPage() {
                         color: type.textColor,
                       }}
                     >
+                      {type.icon && <span style={{ fontSize: '12px' }}>{type.icon}</span>}
                       {type.name}
                     </span>
                   </td>
@@ -357,7 +412,7 @@ export default function TaxonomyPage() {
               ))}
               {types.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
                     No types yet. Click "Seed Defaults" to add standard types or "Add Type" to create custom ones.
                   </td>
                 </tr>
@@ -378,14 +433,23 @@ export default function TaxonomyPage() {
             <thead>
               <tr style={{ background: '#FAFAFA', borderBottom: '1px solid #E5E7EB' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Color</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Name</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Slug</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Icon Type</th>
+                <th
+                  onClick={() => handleSort('name')}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                >
+                  Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+                </th>
+                <th
+                  onClick={() => handleSort('slug')}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                >
+                  Slug {sortField === 'slug' && (sortDirection === 'asc' ? '↑' : '↓')}
+                </th>
                 <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {formats.map((format) => (
+              {sortedFormats.map((format) => (
                 <tr key={format.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
                   <td style={{ padding: '12px 16px' }}>
                     <div
@@ -399,7 +463,6 @@ export default function TaxonomyPage() {
                   </td>
                   <td style={{ padding: '12px 16px', fontSize: '14px', color: '#111827' }}>{format.name}</td>
                   <td style={{ padding: '12px 16px', fontSize: '13px', color: '#6B7280', fontFamily: 'monospace' }}>{format.slug}</td>
-                  <td style={{ padding: '12px 16px', fontSize: '13px', color: '#6B7280' }}>{format.iconType}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <button
                       onClick={() => openEditModal(format)}
@@ -418,7 +481,7 @@ export default function TaxonomyPage() {
               ))}
               {formats.length === 0 && (
                 <tr>
-                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+                  <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
                     No formats yet. Click "Seed Defaults" to add standard formats or "Add Format" to create custom ones.
                   </td>
                 </tr>
@@ -507,6 +570,69 @@ export default function TaxonomyPage() {
 
               {activeTab === 'types' ? (
                 <>
+                  {/* Emoji Icon (Optional) */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                      Icon (Optional)
+                    </label>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '38px',
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '20px',
+                          background: '#F9FAFB',
+                        }}
+                      >
+                        {formData.icon || '📄'}
+                      </div>
+                      <input
+                        type="text"
+                        value={formData.icon}
+                        onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                        style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px' }}
+                        placeholder="Enter emoji or leave blank"
+                      />
+                      {formData.icon && (
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, icon: '' })}
+                          style={{ padding: '8px 12px', background: '#F3F4F6', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#6B7280', cursor: 'pointer' }}
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                      {COMMON_EMOJIS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, icon: emoji })}
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            border: formData.icon === emoji ? '2px solid #8C69F0' : '1px solid #E5E7EB',
+                            borderRadius: '6px',
+                            background: formData.icon === emoji ? '#EDE9FE' : 'white',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Colors */}
                   <div style={{ display: 'flex', gap: '16px' }}>
                     <div style={{ flex: 1 }}>
@@ -555,21 +681,23 @@ export default function TaxonomyPage() {
                       Preview
                     </label>
                     <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px' }}>
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          padding: '5px 12px',
-                          borderRadius: '6px',
-                          fontSize: '10px',
-                          fontWeight: 600,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          backgroundColor: formData.bgColor,
-                          color: formData.textColor,
-                        }}
-                      >
-                        {formData.name || 'Type Name'}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span style={{ fontSize: '24px' }}>{formData.icon || '📄'}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <span
+                            style={{
+                              fontSize: '13px',
+                              fontWeight: 700,
+                              letterSpacing: '0.3px',
+                              textTransform: 'uppercase',
+                              color: formData.textColor,
+                            }}
+                          >
+                            {formData.name || 'Type Name'}
+                          </span>
+                          <span style={{ fontSize: '11px', color: '#6B7280' }}>Format</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -594,29 +722,6 @@ export default function TaxonomyPage() {
                         style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}
                       />
                     </div>
-                  </div>
-
-                  {/* Icon Type */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
-                      Icon Type
-                    </label>
-                    <select
-                      value={formData.iconType}
-                      onChange={(e) => setFormData({ ...formData, iconType: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        background: 'white',
-                      }}
-                    >
-                      {ICON_TYPES.map((icon) => (
-                        <option key={icon} value={icon}>{icon}</option>
-                      ))}
-                    </select>
                   </div>
                 </>
               )}

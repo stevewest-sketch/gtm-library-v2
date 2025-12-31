@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, slug, bgColor, textColor, sortOrder } = body;
+    const { name, slug, icon, bgColor, textColor, sortOrder } = body;
 
     if (!name || !slug || !bgColor || !textColor) {
       return NextResponse.json(
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         name,
         slug: normalizedSlug,
         hub: null, // All types are universal now
+        icon: icon || null, // Optional emoji icon
         bgColor,
         textColor,
         sortOrder: sortOrder || 0,
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, name, slug, bgColor, textColor, sortOrder } = body;
+    const { id, name, slug, icon, bgColor, textColor, sortOrder } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id is required' }, { status: 400 });
@@ -73,6 +74,7 @@ export async function PUT(request: NextRequest) {
         name,
         slug: slug?.toLowerCase().replace(/\s+/g, '-'),
         hub: null, // All types are universal now
+        icon: icon || null, // Optional emoji icon
         bgColor,
         textColor,
         sortOrder,

@@ -2,7 +2,15 @@
 
 import { useState, useCallback } from 'react';
 
+export interface RelatedAssetExtracted {
+  url: string;
+  displayName: string;
+}
+
 export interface GeneratedContent {
+  title?: string;
+  suggestedHub?: 'enablement' | 'content' | 'coe';
+  suggestedFormat?: string;
   description?: string;
   shortDescription?: string;
   takeaways?: string[];
@@ -15,6 +23,7 @@ export interface GeneratedContent {
     videoUrl?: string;
     slidesUrl?: string;
     transcriptUrl?: string;
+    relatedAssets?: RelatedAssetExtracted[];
   };
 }
 
@@ -22,13 +31,15 @@ interface AIAssistantPanelProps {
   hub: 'enablement' | 'content' | 'coe';
   format?: string;
   existingAsset?: Record<string, unknown>;
+  isNew?: boolean; // True when creating a new asset (enables title generation)
   onApply: (content: Partial<GeneratedContent>) => void;
   onClose: () => void;
 }
 
-type GeneratableField = 'description' | 'shortDescription' | 'takeaways' | 'howtos' | 'tips' | 'tags' | 'suggestedType';
+type GeneratableField = 'title' | 'hub' | 'format' | 'description' | 'shortDescription' | 'takeaways' | 'howtos' | 'tips' | 'tags' | 'suggestedType' | 'extractedLinks';
 
-const FIELD_OPTIONS: { key: GeneratableField; label: string; enablementOnly?: boolean; contentOnly?: boolean }[] = [
+const FIELD_OPTIONS: { key: GeneratableField; label: string; enablementOnly?: boolean; contentOnly?: boolean; newAssetOnly?: boolean }[] = [
+  { key: 'title', label: 'Title', newAssetOnly: true },
   { key: 'description', label: 'Description' },
   { key: 'shortDescription', label: 'Short Description (6 words)' },
   { key: 'takeaways', label: 'Key Takeaways', enablementOnly: true },
@@ -36,6 +47,7 @@ const FIELD_OPTIONS: { key: GeneratableField; label: string; enablementOnly?: bo
   { key: 'tips', label: 'Tips & Best Practices' },
   { key: 'tags', label: 'Suggested Tags' },
   { key: 'suggestedType', label: 'Suggested Content Type' },
+  { key: 'extractedLinks', label: 'Extract Links' },
 ];
 
 // Helper to get display-friendly existing asset info
@@ -69,6 +81,7 @@ export default function AIAssistantPanel({
   hub,
   format,
   existingAsset,
+  isNew = false,
   onApply,
   onClose,
 }: AIAssistantPanelProps) {
@@ -167,6 +180,9 @@ export default function AIAssistantPanel({
 
     const toApply: Partial<GeneratedContent> = {};
 
+    if (selectedToApply.has('title') && generatedContent.title) {
+      toApply.title = generatedContent.title;
+    }
     if (selectedToApply.has('description') && generatedContent.description) {
       toApply.description = generatedContent.description;
     }
@@ -199,6 +215,8 @@ export default function AIAssistantPanel({
   const availableFields = FIELD_OPTIONS.filter(f => {
     if (f.enablementOnly && hub !== 'enablement') return false;
     if (f.contentOnly && hub === 'enablement') return false;
+    // Only show title generation for new assets
+    if (f.newAssetOnly && !isNew) return false;
     return true;
   });
 
@@ -480,6 +498,16 @@ export default function AIAssistantPanel({
               </h3>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {generatedContent.title && (
+                  <PreviewItem
+                    label="Title"
+                    selected={selectedToApply.has('title')}
+                    onToggle={() => toggleApplyField('title')}
+                  >
+                    <span style={{ fontSize: '15px', fontWeight: 600 }}>{generatedContent.title}</span>
+                  </PreviewItem>
+                )}
+
                 {generatedContent.description && (
                   <PreviewItem
                     label="Description"
@@ -586,6 +614,50 @@ export default function AIAssistantPanel({
                     >
                       {generatedContent.suggestedType}
                     </span>
+                  </PreviewItem>
+                )}
+
+                {generatedContent.extractedLinks && Object.values(generatedContent.extractedLinks).some(v => v) && (
+                  <PreviewItem
+                    label="Extracted Links"
+                    selected={selectedToApply.has('extractedLinks')}
+                    onToggle={() => toggleApplyField('extractedLinks')}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {generatedContent.extractedLinks.primaryLink && (
+                        <div style={{ fontSize: '13px' }}>
+                          <strong>Primary:</strong> <span style={{ color: '#2563EB' }}>{generatedContent.extractedLinks.primaryLink.substring(0, 60)}{generatedContent.extractedLinks.primaryLink.length > 60 ? '...' : ''}</span>
+                        </div>
+                      )}
+                      {generatedContent.extractedLinks.videoUrl && (
+                        <div style={{ fontSize: '13px' }}>
+                          <strong>Video:</strong> <span style={{ color: '#DC2626' }}>{generatedContent.extractedLinks.videoUrl.substring(0, 60)}{generatedContent.extractedLinks.videoUrl.length > 60 ? '...' : ''}</span>
+                        </div>
+                      )}
+                      {generatedContent.extractedLinks.slidesUrl && (
+                        <div style={{ fontSize: '13px' }}>
+                          <strong>Slides:</strong> <span style={{ color: '#EA580C' }}>{generatedContent.extractedLinks.slidesUrl.substring(0, 60)}{generatedContent.extractedLinks.slidesUrl.length > 60 ? '...' : ''}</span>
+                        </div>
+                      )}
+                      {generatedContent.extractedLinks.transcriptUrl && (
+                        <div style={{ fontSize: '13px' }}>
+                          <strong>Transcript:</strong> <span style={{ color: '#16A34A' }}>{generatedContent.extractedLinks.transcriptUrl.substring(0, 60)}{generatedContent.extractedLinks.transcriptUrl.length > 60 ? '...' : ''}</span>
+                        </div>
+                      )}
+                      {generatedContent.extractedLinks.relatedAssets && generatedContent.extractedLinks.relatedAssets.length > 0 && (
+                        <div style={{ fontSize: '13px' }}>
+                          <strong>Related Assets:</strong>
+                          <ul style={{ margin: '4px 0 0 16px', padding: 0 }}>
+                            {generatedContent.extractedLinks.relatedAssets.map((ra, i) => (
+                              <li key={i} style={{ marginBottom: '4px' }}>
+                                <span style={{ color: '#7C3AED', fontWeight: 500 }}>{ra.displayName}:</span>{' '}
+                                <span style={{ color: '#6B7280' }}>{ra.url.substring(0, 50)}{ra.url.length > 50 ? '...' : ''}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </PreviewItem>
                 )}
               </div>

@@ -12,10 +12,13 @@ export interface GenerateContentRequest {
   text?: string;
   existingAsset?: Partial<AssetData>;
 
-  // Generation config
-  hub: 'enablement' | 'content' | 'coe';
+  // Generation config - hub is optional when inferring from URL
+  hub?: 'enablement' | 'content' | 'coe';
   format?: string;
   generateFields: Array<
+    | 'title'
+    | 'hub'
+    | 'format'
     | 'description'
     | 'shortDescription'
     | 'takeaways'
@@ -23,6 +26,7 @@ export interface GenerateContentRequest {
     | 'tips'
     | 'tags'
     | 'suggestedType'
+    | 'extractedLinks'
   >;
 
   // Optional guidance
@@ -41,6 +45,7 @@ export interface AssetData {
   videoUrl?: string;
   slidesUrl?: string;
   transcriptUrl?: string;
+  keyAssetUrl?: string;
   takeaways?: string[];
   howtos?: { title: string; content: string }[];
   tips?: string[];
@@ -57,7 +62,15 @@ export interface GenerateContentResponse {
   error?: string;
 }
 
+export interface RelatedAssetExtracted {
+  url: string;
+  displayName: string;
+}
+
 export interface GeneratedContent {
+  title?: string;
+  suggestedHub?: 'enablement' | 'content' | 'coe';
+  suggestedFormat?: string;
   description?: string;
   shortDescription?: string;
   takeaways?: string[];
@@ -70,6 +83,7 @@ export interface GeneratedContent {
     videoUrl?: string;
     slidesUrl?: string;
     transcriptUrl?: string;
+    relatedAssets?: RelatedAssetExtracted[];
   };
 }
 
@@ -165,6 +179,24 @@ function parseGeneratedContent(responseText: string): GeneratedContent {
     // Validate and normalize the response
     const result: GeneratedContent = {};
 
+    // Handle title
+    if (typeof parsed.title === 'string') {
+      result.title = parsed.title.trim();
+    }
+
+    // Handle suggested hub
+    if (typeof parsed.suggestedHub === 'string') {
+      const hub = parsed.suggestedHub.toLowerCase().trim();
+      if (['enablement', 'content', 'coe'].includes(hub)) {
+        result.suggestedHub = hub as 'enablement' | 'content' | 'coe';
+      }
+    }
+
+    // Handle suggested format
+    if (typeof parsed.suggestedFormat === 'string') {
+      result.suggestedFormat = parsed.suggestedFormat.toLowerCase().replace(/\s+/g, '-');
+    }
+
     if (typeof parsed.description === 'string') {
       result.description = parsed.description;
     }
@@ -215,6 +247,22 @@ function parseGeneratedContent(responseText: string): GeneratedContent {
       }
       if (parsed.extractedLinks.transcriptUrl) {
         result.extractedLinks.transcriptUrl = String(parsed.extractedLinks.transcriptUrl);
+      }
+      // Handle related assets (array of {url, displayName})
+      if (Array.isArray(parsed.extractedLinks.relatedAssets)) {
+        result.extractedLinks.relatedAssets = parsed.extractedLinks.relatedAssets
+          .filter((ra: unknown) => ra && typeof ra === 'object' && 'url' in ra)
+          .map((ra: { url: string; displayName?: string }) => ({
+            url: String(ra.url),
+            displayName: String(ra.displayName || 'Related Asset'),
+          }));
+      }
+      // Legacy support: if keyAssetUrl is present, convert to relatedAssets
+      if (parsed.extractedLinks.keyAssetUrl && !result.extractedLinks.relatedAssets?.length) {
+        result.extractedLinks.relatedAssets = [{
+          url: String(parsed.extractedLinks.keyAssetUrl),
+          displayName: 'Key Asset',
+        }];
       }
     }
 

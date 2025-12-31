@@ -239,18 +239,23 @@ export async function POST(request: Request) {
       slug,
       title,
       description,
+      shortDescription,
       hub,
       format,
       types,
       tags: assetTagsList,
+      tagNames, // Alternative field name for tags
       primaryLink,
       shareLink,
       videoUrl,
       slidesUrl,
       transcriptUrl,
       keyAssetUrl,
+      relatedAssets,
       presenters,
       durationMinutes,
+      eventDate,
+      publishedAt,
       takeaways,
       howtos,
       tips,
@@ -260,12 +265,19 @@ export async function POST(request: Request) {
       boardSlugs,
     } = body;
 
-    if (!slug || !title || !hub || !format || !primaryLink) {
+    if (!slug || !title || !hub || !format) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields: slug, title, hub, and format are required' },
         { status: 400 }
       );
     }
+
+    // Parse dates properly
+    const parsedEventDate = eventDate ? new Date(eventDate) : null;
+    const parsedPublishedAt = publishedAt ? new Date(publishedAt) : null;
+
+    // Use tagNames if provided, otherwise use tags
+    const finalTags = tagNames || assetTagsList || [];
 
     // Create the catalog entry
     const [newAsset] = await db
@@ -274,18 +286,22 @@ export async function POST(request: Request) {
         slug,
         title,
         description,
+        shortDescription,
         hub,
         format,
         types,
-        tags: assetTagsList,
-        primaryLink,
+        tags: finalTags,
+        primaryLink: primaryLink || '',
         shareLink,
         videoUrl,
         slidesUrl,
         transcriptUrl,
         keyAssetUrl,
+        relatedAssets: relatedAssets && relatedAssets.length > 0 ? relatedAssets : null,
         presenters,
         durationMinutes,
+        eventDate: parsedEventDate,
+        publishedAt: parsedPublishedAt,
         takeaways,
         howtos,
         tips,
@@ -313,9 +329,9 @@ export async function POST(request: Request) {
     }
 
     // Associate with tags if provided
-    if (assetTagsList && assetTagsList.length > 0) {
+    if (finalTags && finalTags.length > 0) {
       // Get or create tags
-      for (const tagName of assetTagsList) {
+      for (const tagName of finalTags) {
         const tagSlug = tagName
           .toLowerCase()
           .replace(/\s+/g, '-')

@@ -206,6 +206,66 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      case 'updateType': {
+        const { type } = body;
+        if (!type) {
+          return NextResponse.json(
+            { error: 'No type specified' },
+            { status: 400 }
+          );
+        }
+
+        await db
+          .update(catalogEntries)
+          .set({ types: [type], updatedAt: new Date() })
+          .where(inArray(catalogEntries.id, assetIds));
+
+        return NextResponse.json({
+          success: true,
+          message: `Updated type of ${assetIds.length} asset(s) to ${type}`,
+        });
+      }
+
+      case 'updateFormat': {
+        const { format } = body;
+        if (!format) {
+          return NextResponse.json(
+            { error: 'No format specified' },
+            { status: 400 }
+          );
+        }
+
+        await db
+          .update(catalogEntries)
+          .set({ format, updatedAt: new Date() })
+          .where(inArray(catalogEntries.id, assetIds));
+
+        return NextResponse.json({
+          success: true,
+          message: `Updated format of ${assetIds.length} asset(s) to ${format}`,
+        });
+      }
+
+      case 'updateHub': {
+        const { hub } = body;
+        if (!hub) {
+          return NextResponse.json(
+            { error: 'No hub specified' },
+            { status: 400 }
+          );
+        }
+
+        await db
+          .update(catalogEntries)
+          .set({ hub, updatedAt: new Date() })
+          .where(inArray(catalogEntries.id, assetIds));
+
+        return NextResponse.json({
+          success: true,
+          message: `Updated hub of ${assetIds.length} asset(s) to ${hub}`,
+        });
+      }
+
       default:
         return NextResponse.json(
           { error: `Unknown action: ${action}` },

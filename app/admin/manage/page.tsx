@@ -96,6 +96,12 @@ function ManageAssetsContent() {
   const [tagSearchQuery, setTagSearchQuery] = useState('');
   const [boardModalMode, setBoardModalMode] = useState<'add' | 'remove'>('add');
 
+  // New bulk action modals for type and format
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [showFormatModal, setShowFormatModal] = useState(false);
+  const [selectedBulkType, setSelectedBulkType] = useState('');
+  const [selectedBulkFormat, setSelectedBulkFormat] = useState('');
+
   // Sorting state
   type SortField = 'title' | 'hub' | 'type' | 'format' | 'boards' | 'tags' | 'updatedAt' | 'views';
   type SortDirection = 'asc' | 'desc';
@@ -391,6 +397,58 @@ function ManageAssetsContent() {
       }
     } catch (error) {
       console.error('Failed to delete assets:', error);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  // Bulk update type
+  const handleBulkUpdateType = async () => {
+    if (!selectedBulkType) return;
+    setBulkActionLoading(true);
+    try {
+      const res = await fetch('/api/assets/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'updateType',
+          assetIds: Array.from(selectedIds),
+          type: selectedBulkType,
+        }),
+      });
+      if (res.ok) {
+        setShowTypeModal(false);
+        setSelectedBulkType('');
+        fetchAssets();
+      }
+    } catch (error) {
+      console.error('Failed to update types:', error);
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  // Bulk update format
+  const handleBulkUpdateFormat = async () => {
+    if (!selectedBulkFormat) return;
+    setBulkActionLoading(true);
+    try {
+      const res = await fetch('/api/assets/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'updateFormat',
+          assetIds: Array.from(selectedIds),
+          format: selectedBulkFormat,
+        }),
+      });
+      if (res.ok) {
+        setShowFormatModal(false);
+        setSelectedBulkFormat('');
+        fetchAssets();
+      }
+    } catch (error) {
+      console.error('Failed to update formats:', error);
     } finally {
       setBulkActionLoading(false);
     }
@@ -973,7 +1031,7 @@ function ManageAssetsContent() {
 
         {/* Add Asset Button */}
         <Link
-          href="/admin/manage/new"
+          href="/admin/manage/asset/new"
           className="flex items-center no-underline"
           style={{
             gap: '8px',
@@ -1137,6 +1195,74 @@ function ManageAssetsContent() {
               <line x1="4" y1="4" x2="10" y2="10" />
             </svg>
             Remove Tags
+          </button>
+
+          {/* Separator */}
+          <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.3)' }} />
+
+          {/* Bulk Type Update */}
+          <button
+            onClick={() => {
+              setSelectedBulkType('');
+              setShowTypeModal(true);
+            }}
+            className="flex items-center"
+            style={{
+              gap: '6px',
+              padding: '8px 14px',
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '6px',
+              color: 'white',
+              fontSize: '13px',
+              cursor: 'pointer',
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="9" y1="9" x2="15" y2="9" />
+              <line x1="9" y1="15" x2="15" y2="15" />
+            </svg>
+            Set Type
+          </button>
+
+          {/* Bulk Format Update */}
+          <button
+            onClick={() => {
+              setSelectedBulkFormat('');
+              setShowFormatModal(true);
+            }}
+            className="flex items-center"
+            style={{
+              gap: '6px',
+              padding: '8px 14px',
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '6px',
+              color: 'white',
+              fontSize: '13px',
+              cursor: 'pointer',
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Set Format
           </button>
 
           <div style={{ flex: 1 }} />
@@ -2370,6 +2496,237 @@ function ManageAssetsContent() {
                 {bulkActionLoading
                   ? (tagModalMode === 'add' ? 'Adding...' : 'Removing...')
                   : `${tagModalMode === 'add' ? 'Add' : 'Remove'} Tags`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Type Update Modal */}
+      {showTypeModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowTypeModal(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '12px',
+              width: '100%',
+              maxWidth: '400px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ padding: '24px' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  background: '#EDE9FE',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '16px',
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <line x1="9" y1="9" x2="15" y2="9" />
+                  <line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+                Set Type for {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.5, marginBottom: '16px' }}>
+                Select a type to apply to all selected assets.
+              </p>
+              <select
+                value={selectedBulkType}
+                onChange={(e) => setSelectedBulkType(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'inherit',
+                  background: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">Select a type...</option>
+                {TYPE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div
+              className="flex justify-end"
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+            >
+              <button
+                onClick={() => setShowTypeModal(false)}
+                style={{
+                  padding: '10px 18px',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  background: 'white',
+                  fontSize: '14px',
+                  color: '#4B5563',
+                  cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkUpdateType}
+                disabled={bulkActionLoading || !selectedBulkType}
+                style={{
+                  padding: '10px 18px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  background: selectedBulkType ? '#8B5CF6' : '#E5E7EB',
+                  fontSize: '14px',
+                  color: selectedBulkType ? 'white' : '#9CA3AF',
+                  cursor: selectedBulkType ? 'pointer' : 'not-allowed',
+                }}
+              >
+                {bulkActionLoading ? 'Updating...' : 'Apply Type'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Format Update Modal */}
+      {showFormatModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowFormatModal(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '12px',
+              width: '100%',
+              maxWidth: '400px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ padding: '24px' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  background: '#DBEAFE',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '16px',
+                }}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#3B82F6"
+                  strokeWidth="2"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+                Set Format for {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.5, marginBottom: '16px' }}>
+                Select a format to apply to all selected assets.
+              </p>
+              <select
+                value={selectedBulkFormat}
+                onChange={(e) => setSelectedBulkFormat(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'inherit',
+                  background: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">Select a format...</option>
+                {FORMAT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div
+              className="flex justify-end"
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+            >
+              <button
+                onClick={() => setShowFormatModal(false)}
+                style={{
+                  padding: '10px 18px',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  background: 'white',
+                  fontSize: '14px',
+                  color: '#4B5563',
+                  cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkUpdateFormat}
+                disabled={bulkActionLoading || !selectedBulkFormat}
+                style={{
+                  padding: '10px 18px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  background: selectedBulkFormat ? '#3B82F6' : '#E5E7EB',
+                  fontSize: '14px',
+                  color: selectedBulkFormat ? 'white' : '#9CA3AF',
+                  cursor: selectedBulkFormat ? 'pointer' : 'not-allowed',
+                }}
+              >
+                {bulkActionLoading ? 'Updating...' : 'Apply Format'}
               </button>
             </div>
           </div>

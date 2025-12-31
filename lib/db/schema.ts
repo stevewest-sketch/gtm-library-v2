@@ -1,5 +1,12 @@
 import { pgTable, text, uuid, timestamp, integer, jsonb, boolean } from 'drizzle-orm/pg-core';
 
+// Related asset type for flexible URL storage
+export interface RelatedAsset {
+  url: string;
+  displayName: string;
+  type?: string; // Optional type hint: 'document', 'video', 'slides', 'template', 'tool', 'link', etc.
+}
+
 // Main catalog entries table
 export const catalogEntries = pgTable('catalog_entries', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -20,7 +27,10 @@ export const catalogEntries = pgTable('catalog_entries', {
   videoUrl: text('video_url'),
   slidesUrl: text('slides_url'),
   transcriptUrl: text('transcript_url'),
-  keyAssetUrl: text('key_asset_url'),
+  keyAssetUrl: text('key_asset_url'), // Deprecated - use relatedAssets instead
+
+  // Flexible related assets (replaces keyAssetUrl)
+  relatedAssets: jsonb('related_assets').$type<RelatedAsset[]>(),
 
   // Enablement-specific fields
   presenters: text('presenters').array(),
@@ -155,6 +165,7 @@ export const contentTypes = pgTable('content_types', {
   slug: text('slug').unique().notNull(),
   name: text('name').notNull(),
   hub: text('hub'), // Which hub this type belongs to: 'content' | 'enablement' | 'coe' | null (all)
+  icon: text('icon'), // Optional emoji icon for this type (e.g., '📊', '⚔️')
   bgColor: text('bg_color').notNull(), // Background color for badge (e.g., '#EDE9FE')
   textColor: text('text_color').notNull(), // Text color for badge (e.g., '#8C69F0')
   sortOrder: integer('sort_order').default(0),

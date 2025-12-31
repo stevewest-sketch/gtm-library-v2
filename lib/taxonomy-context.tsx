@@ -6,6 +6,7 @@ interface TypeDisplayConfig {
   label: string;
   color: string;
   bg: string;
+  icon?: string; // Optional emoji icon
 }
 
 interface FormatDisplayConfig {

@@ -23,14 +23,6 @@ interface AssetCardProps {
   href?: string;
 }
 
-// Get type icon from taxonomy
-function getTypeIcon(type: string | undefined): string {
-  if (!type) return '📄';
-  const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
-  const typeConfig = ALL_TYPES[normalizedType as keyof typeof ALL_TYPES];
-  return typeConfig?.icon || '📄';
-}
-
 // Hook to get type badge with database fallback
 function useTypeBadgeWithDb(type: string | undefined) {
   const { types } = useTaxonomy();
@@ -46,6 +38,24 @@ function useTypeBadgeWithDb(type: string | undefined) {
 
   // Fall back to static config
   return getTypeBadge(type);
+}
+
+// Hook to get type icon - checks database first, then static config
+function useTypeIcon(type: string | undefined): string {
+  const { types } = useTaxonomy();
+
+  if (!type) return '📄';
+
+  const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
+
+  // Check database types first for icon
+  if (types[normalizedType]?.icon) {
+    return types[normalizedType].icon;
+  }
+
+  // Fall back to static taxonomy config
+  const typeConfig = ALL_TYPES[normalizedType as keyof typeof ALL_TYPES];
+  return typeConfig?.icon || '📄';
 }
 
 // Hook to get format config with database fallback
@@ -96,7 +106,7 @@ export function AssetCard({
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = getTypeIcon(type);
+  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
@@ -107,9 +117,9 @@ export function AssetCard({
       href={assetUrl}
       className="block no-underline"
       style={{
-        height: '200px',
-        minHeight: '200px',
-        maxHeight: '200px',
+        height: '220px',
+        minHeight: '220px',
+        maxHeight: '220px',
         display: 'flex',
         flexDirection: 'column',
         background: 'white',
@@ -126,7 +136,7 @@ export function AssetCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Tinted Header with Icon Box */}
+      {/* Version D Header: Emoji + Stacked Type/Format */}
       <div
         style={{
           padding: '14px 18px',
@@ -134,52 +144,49 @@ export function AssetCard({
           borderBottom: `1px solid ${headerColors.headerBorder}`,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: '12px',
           flexShrink: 0,
         }}
       >
-        {/* Icon Box + Type Label */}
+        {/* Emoji - Slightly Smaller */}
         <span
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '12px',
-            fontWeight: 600,
-            color: headerColors.badgeText,
+            fontSize: '20px',
+            lineHeight: 1,
           }}
         >
-          {/* White Icon Box */}
+          {typeIcon}
+        </span>
+        {/* Stacked Type + Format - Slightly Larger */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+          }}
+        >
           <span
             style={{
-              width: '24px',
-              height: '24px',
-              background: 'white',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              fontSize: '14px',
+              fontWeight: 700,
+              color: headerColors.badgeText,
+              letterSpacing: '0.3px',
+              textTransform: 'uppercase',
             }}
           >
-            {typeIcon}
+            {typeBadge?.label || 'Resource'}
           </span>
-          {typeBadge?.label || 'Resource'}
-        </span>
-
-        {/* Format Label in white pill */}
-        <span
-          style={{
-            fontSize: '11px',
-            color: '#64748B',
-            background: 'white',
-            padding: '4px 10px',
-            borderRadius: '12px',
-          }}
-        >
-          {formatConfig.label}
-        </span>
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              color: headerColors.badgeText,
+              opacity: 0.7,
+            }}
+          >
+            {formatConfig.label}
+          </span>
+        </div>
       </div>
 
       {/* Card Body */}
@@ -194,22 +201,30 @@ export function AssetCard({
           overflow: 'hidden',
         }}
       >
-        {/* Title - 15px, 2 lines max */}
-        <h4
+        {/* Title container - fixed height, flex to align title to bottom */}
+        <div
           style={{
-            fontSize: '15px',
-            fontWeight: 600,
-            color: '#0F172A',
-            lineHeight: 1.4,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            margin: 0,
+            minHeight: '42px', // 15px * 1.4 line-height * 2 lines = 42px
+            display: 'flex',
+            alignItems: 'flex-end',
           }}
         >
-          {title}
-        </h4>
+          <h4
+            style={{
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#0F172A',
+              lineHeight: 1.4,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              margin: 0,
+            }}
+          >
+            {title}
+          </h4>
+        </div>
 
         {/* Short Description - 13px, 1 line */}
         {shortDescription && (
@@ -305,7 +320,7 @@ export function CompactCard({
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = getTypeIcon(type);
+  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
@@ -331,48 +346,61 @@ export function CompactCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Left: Tinted type indicator strip */}
+      {/* Left: Version D type indicator panel - Emoji + Stacked Type/Format */}
       <div
         style={{
-          width: '130px',
+          width: '140px',
           flexShrink: 0,
-          padding: '12px 14px',
-          background: isHovered ? headerColors.headerBg : `linear-gradient(135deg, ${typeBadge?.bg || '#F1F5F9'}40 0%, ${typeBadge?.bg || '#F8FAFC'}20 100%)`,
+          padding: '14px 16px',
+          background: headerColors.headerBg,
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          borderRight: '1px solid #E2E8F0',
-          transition: 'background 0.15s ease',
+          gap: '10px',
+          borderRight: `1px solid ${headerColors.headerBorder}`,
+          transition: 'all 0.15s ease',
         }}
       >
+        {/* Emoji - Slightly Smaller */}
         <span
           style={{
-            width: '28px',
-            height: '28px',
-            background: 'white',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '14px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            fontSize: '18px',
+            lineHeight: 1,
             flexShrink: 0,
           }}
         >
           {typeIcon}
         </span>
-        <span
+        {/* Stacked Type + Format - Slightly Larger */}
+        <div
           style={{
-            fontSize: '11px',
-            fontWeight: 600,
-            color: headerColors.badgeText,
-            textTransform: 'uppercase',
-            letterSpacing: '0.3px',
-            lineHeight: 1.2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
           }}
         >
-          {typeBadge?.label || 'Resource'}
-        </span>
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: headerColors.badgeText,
+              letterSpacing: '0.3px',
+              textTransform: 'uppercase',
+              lineHeight: 1.3,
+            }}
+          >
+            {typeBadge?.label || 'Resource'}
+          </span>
+          <span
+            style={{
+              fontSize: '11px',
+              fontWeight: 500,
+              color: headerColors.badgeText,
+              opacity: 0.7,
+            }}
+          >
+            {formatConfig.label}
+          </span>
+        </div>
       </div>
 
       {/* Center: Title + Description */}
@@ -416,7 +444,7 @@ export function CompactCard({
         )}
       </div>
 
-      {/* Right: Format + Date + Action */}
+      {/* Right: Date + Action (format moved to left panel) */}
       <div
         style={{
           display: 'flex',
@@ -427,21 +455,6 @@ export function CompactCard({
           borderLeft: '1px solid #F1F5F9',
         }}
       >
-        {/* Format */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            color: '#475569',
-          }}
-        >
-          {formatConfig.icon(18)}
-          <span style={{ fontSize: '12px', fontWeight: 500 }}>
-            {formatConfig.label}
-          </span>
-        </div>
-
         {/* Date */}
         {formattedDate && (
           <span style={{ fontSize: '12px', color: '#64748B', minWidth: '90px' }}>
@@ -506,7 +519,7 @@ export function HeroCard({
   const formatConfig = useFormatConfigWithDb(format);
   const typeBadge = useTypeBadgeWithDb(type);
   const headerColors = getTypeHeaderColors(typeBadge);
-  const typeIcon = getTypeIcon(type);
+  const typeIcon = useTypeIcon(type);
 
   const assetUrl = href || `/asset/${slug}`;
   const isVideo = format.toLowerCase() === 'video' || format.toLowerCase() === 'live-replay' || format.toLowerCase() === 'on-demand';
@@ -533,55 +546,58 @@ export function HeroCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Large Tinted Header */}
+      {/* Version D Header: Emoji + Stacked Type/Format */}
       <div
         style={{
-          padding: '24px',
+          padding: '20px 24px',
           background: headerColors.headerBg,
           borderBottom: `1px solid ${headerColors.headerBorder}`,
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           justifyContent: 'space-between',
           gap: '16px',
         }}
       >
-        {/* Icon Box + Type */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Emoji + Stacked Type/Format */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {/* Emoji - Slightly Smaller */}
           <span
             style={{
-              width: '40px',
-              height: '40px',
-              background: 'white',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              fontSize: '28px',
+              lineHeight: 1,
             }}
           >
             {typeIcon}
           </span>
-          <div>
-            <div
+          {/* Stacked Type + Format - Slightly Larger */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px',
+            }}
+          >
+            <span
               style={{
-                fontSize: '14px',
-                fontWeight: 600,
+                fontSize: '16px',
+                fontWeight: 700,
                 color: headerColors.badgeText,
+                letterSpacing: '0.3px',
+                textTransform: 'uppercase',
               }}
             >
               {typeBadge?.label || 'Resource'}
-            </div>
-            <div
+            </span>
+            <span
               style={{
-                fontSize: '12px',
+                fontSize: '13px',
+                fontWeight: 500,
                 color: headerColors.badgeText,
                 opacity: 0.7,
-                marginTop: '2px',
               }}
             >
               {formatConfig.label}
-            </div>
+            </span>
           </div>
         </div>
 

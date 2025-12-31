@@ -15,9 +15,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!hub || !['enablement', 'content', 'coe'].includes(hub)) {
+    // Hub is optional - if not provided, AI will try to infer it when 'hub' is in generateFields
+    if (hub && !['enablement', 'content', 'coe'].includes(hub)) {
       return NextResponse.json(
-        { error: 'hub is required and must be one of: enablement, content, coe' },
+        { error: 'hub must be one of: enablement, content, coe' },
         { status: 400 }
       );
     }
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate field names
-    const validFields = ['description', 'shortDescription', 'takeaways', 'howtos', 'tips', 'tags', 'suggestedType'];
+    const validFields = ['title', 'hub', 'format', 'description', 'shortDescription', 'takeaways', 'howtos', 'tips', 'tags', 'suggestedType', 'extractedLinks'];
     const invalidFields = generateFields.filter((f: string) => !validFields.includes(f));
     if (invalidFields.length > 0) {
       return NextResponse.json(

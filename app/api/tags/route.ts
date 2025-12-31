@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server';
 import { db, tags, boardTags, assetTags } from '@/lib/db';
 import { eq, sql } from 'drizzle-orm';
 
-// GET: List all tags with usage counts
-export async function GET() {
+// GET: List all tags with optional usage counts
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const includeCounts = searchParams.get('counts') === 'true';
+
     const tagsData = await db
       .select({
         id: tags.id,
@@ -17,28 +20,32 @@ export async function GET() {
       .from(tags)
       .orderBy(tags.sortOrder);
 
-    // Get board and asset counts for each tag
-    const tagsWithCounts = await Promise.all(
-      tagsData.map(async (tag) => {
-        const [boardCount] = await db
-          .select({ count: sql<number>`count(*)::int` })
-          .from(boardTags)
-          .where(eq(boardTags.tagId, tag.id));
+    // Only calculate counts if explicitly requested (for admin pages)
+    if (includeCounts) {
+      const tagsWithCounts = await Promise.all(
+        tagsData.map(async (tag) => {
+          const [boardCount] = await db
+            .select({ count: sql<number>`count(*)::int` })
+            .from(boardTags)
+            .where(eq(boardTags.tagId, tag.id));
 
-        const [assetCount] = await db
-          .select({ count: sql<number>`count(*)::int` })
-          .from(assetTags)
-          .where(eq(assetTags.tagId, tag.id));
+          const [assetCount] = await db
+            .select({ count: sql<number>`count(*)::int` })
+            .from(assetTags)
+            .where(eq(assetTags.tagId, tag.id));
 
-        return {
-          ...tag,
-          boardCount: boardCount?.count || 0,
-          assetCount: assetCount?.count || 0,
-        };
-      })
-    );
+          return {
+            ...tag,
+            boardCount: boardCount?.count || 0,
+            assetCount: assetCount?.count || 0,
+          };
+        })
+      );
+      return NextResponse.json(tagsWithCounts);
+    }
 
-    return NextResponse.json(tagsWithCounts);
+    // Return just the tags without counts (much faster)
+    return NextResponse.json(tagsData);
   } catch (error) {
     console.error('Error fetching tags:', error);
     return NextResponse.json(
