@@ -1002,6 +1002,104 @@ body {
 }
 
 /* ========================================
+   TYPE BADGE COLORS - Bright Dark Mode System
+   Each type gets a vibrant, highly visible color
+   ======================================== */
+
+/* Purple Types - Bright Violet */
+.card-badge.type[data-type="deck"],
+.card-badge.type[data-type="template"],
+.card-badge.type[data-type="gtm-training"],
+.card-badge.type[data-type="playbook"],
+.card-badge.type[data-type="prospect-meeting-asset"],
+.card-badge.type[data-type="prospect-example"],
+.card-badge.type[data-type="keynote"] {
+  background: rgba(167, 139, 250, 0.2);
+  color: #C4B5FD;
+}
+
+/* Indigo Types - Bright Lavender */
+.card-badge.type[data-type="internal"],
+.card-badge.type[data-type="internal-best-practice"],
+.card-badge.type[data-type="industry-stat"],
+.card-badge.type[data-type="technical-training"] {
+  background: rgba(199, 182, 255, 0.2);
+  color: #DDD6FE;
+}
+
+/* Blue Types - Bright Sky Blue */
+.card-badge.type[data-type="guide"],
+.card-badge.type[data-type="dashboard"],
+.card-badge.type[data-type="demo"],
+.card-badge.type[data-type="best-practice"],
+.card-badge.type[data-type="partner-training"],
+.card-badge.type[data-type="report"],
+.card-badge.type[data-type="product-overview"] {
+  background: rgba(96, 165, 250, 0.2);
+  color: #93C5FD;
+}
+
+/* Cyan Types - Bright Teal */
+.card-badge.type[data-type="calculator"],
+.card-badge.type[data-type="gtm-tool"],
+.card-badge.type[data-type="tool"],
+.card-badge.type[data-type="process-innovation"],
+.card-badge.type[data-type="value-realization"],
+.card-badge.type[data-type="benchmark"] {
+  background: rgba(34, 211, 238, 0.2);
+  color: #67E8F9;
+}
+
+/* Green Types - Bright Emerald */
+.card-badge.type[data-type="case-study"],
+.card-badge.type[data-type="product-training"],
+.card-badge.type[data-type="customer-best-practice"],
+.card-badge.type[data-type="customer-meeting-asset"],
+.card-badge.type[data-type="customer-success-metric"],
+.card-badge.type[data-type="customer-example"],
+.card-badge.type[data-type="proof-point"] {
+  background: rgba(52, 211, 153, 0.2);
+  color: #6EE7B7;
+}
+
+/* Amber/Yellow Types - Bright Gold */
+.card-badge.type[data-type="one-pager"],
+.card-badge.type[data-type="certification"],
+.card-badge.type[data-type="customer-quote"],
+.card-badge.type[data-type="meeting-asset"] {
+  background: rgba(251, 191, 36, 0.2);
+  color: #FCD34D;
+}
+
+/* Orange Types - Bright Tangerine */
+.card-badge.type[data-type="promo"] {
+  background: rgba(251, 146, 60, 0.2);
+  color: #FDBA74;
+}
+
+/* Pink Types - Bright Magenta */
+.card-badge.type[data-type="messaging"] {
+  background: rgba(244, 114, 182, 0.2);
+  color: #F9A8D4;
+}
+
+/* Red Types - Bright Coral */
+.card-badge.type[data-type="battlecard"],
+.card-badge.type[data-type="competitive"],
+.card-badge.type[data-type="competitive-training"],
+.card-badge.type[data-type="competitor-stat"] {
+  background: rgba(248, 113, 113, 0.2);
+  color: #FCA5A5;
+}
+
+/* Gray Types - Bright Silver */
+.card-badge.type[data-type="press"],
+.card-badge.type[data-type="resource"] {
+  background: rgba(148, 163, 184, 0.2);
+  color: #CBD5E1;
+}
+
+/* ========================================
    PROOF CARD COMPONENT (from Mockup)
    ======================================== */
 .proof-card {

@@ -127,7 +127,7 @@ export function AssetCard({
           {/* Type Badge */}
           <span
             className="card-badge type"
-            style={{ color: typeBadge?.color || undefined }}
+            data-type={type?.toLowerCase().replace(/\s+/g, '-') || 'resource'}
           >
             {typeBadge?.label || 'Resource'}
           </span>
@@ -214,7 +214,7 @@ export function CompactCard({
     >
       {/* Left: Badges */}
       <div className="card-badges" style={{ flexShrink: 0, marginRight: '16px' }}>
-        <span className="card-badge type" style={{ color: typeBadge?.color || undefined }}>
+        <span className="card-badge type" data-type={type?.toLowerCase().replace(/\s+/g, '-') || 'resource'}>
           {typeBadge?.label || 'Resource'}
         </span>
         <span className="card-badge format">{formatConfig.label}</span>
@@ -332,7 +332,8 @@ export function HeroCard({
           {/* Type Badge - Slightly larger for hero */}
           <span
             className="card-badge type"
-            style={{ fontSize: '11px', padding: '4px 10px', color: typeBadge?.color || undefined }}
+            data-type={type?.toLowerCase().replace(/\s+/g, '-') || 'resource'}
+            style={{ fontSize: '11px', padding: '4px 10px' }}
           >
             {typeBadge?.label || 'Resource'}
           </span>
