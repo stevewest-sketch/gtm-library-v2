@@ -237,6 +237,44 @@
     /* Scrollbar for dark mode */
     --scrollbar-thumb: rgba(255, 255, 255, 0.15);
     --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+
+    /* Content Type Colors - Brighter for Dark Mode */
+    --type-deck: #B794F6;
+    --type-battlecard: #F87171;
+    --type-one-pager: #FBBF24;
+    --type-template: #A78BFA;
+    --type-messaging: #F472B6;
+    --type-calculator: #22D3EE;
+    --type-competitive: #F87171;
+    --type-guide: #60A5FA;
+    --type-press: #94A3B8;
+    --type-case-study: #34D399;
+    --type-internal: #C4B5FD;
+
+    /* Enablement Type Colors - Brighter for Dark Mode */
+    --type-product-training: #34D399;
+    --type-technical-training: #818CF8;
+    --type-gtm-training: #A78BFA;
+    --type-gtm-tool: #22D3EE;
+    --type-competitive-training: #F87171;
+    --type-certification: #FBBF24;
+    --type-partner-training: #60A5FA;
+    --type-value-realization: #34D399;
+    --type-playbook: #F472B6;
+
+    /* CoE Type Colors - Brighter for Dark Mode */
+    --type-customer-meeting-asset: #FBBF24;
+    --type-prospect-meeting-asset: #FB923C;
+    --type-customer-best-practice: #34D399;
+    --type-best-practice: #60A5FA;
+    --type-internal-best-practice: #C4B5FD;
+    --type-process-innovation: #F472B6;
+    --type-dashboard: #22D3EE;
+    --type-customer-success-metric: #34D399;
+    --type-industry-stat: #818CF8;
+    --type-benchmark: #38BDF8;
+    --type-competitor-stat: #F87171;
+    --type-customer-quote: #FBBF24;
   }
 }
 
@@ -636,7 +674,7 @@ body {
 .nav-pill {
   padding: 8px 16px;
   border-radius: var(--radius-md, 10px);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--text-secondary);
   background: var(--bg-elevated, #1E1E28);
@@ -705,14 +743,14 @@ body {
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
 
 .section-count {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-muted);
   margin-left: auto;
@@ -871,7 +909,7 @@ body {
 
 /* Card Body */
 .card-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -883,7 +921,7 @@ body {
 }
 
 .card-description {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-secondary);
   line-height: 1.5;
   display: -webkit-box;
@@ -905,12 +943,12 @@ body {
 }
 
 .card-meta {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .card-action {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--accent-content-light, #A88BF5);
   display: flex;
@@ -929,7 +967,7 @@ body {
    CARD BADGE SYSTEM (Compact Design from Mockup)
    ======================================== */
 .card-badge {
-  font-size: var(--badge-font-size, 11px);
+  font-size: var(--badge-font-size, 12px);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -981,21 +1019,21 @@ body {
 }
 
 .proof-metric {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--accent-proof-light, #60A5FA);
   margin-bottom: 6px;
 }
 
 .proof-description {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.5;
 }
 
 .proof-source {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
@@ -1031,12 +1069,12 @@ body {
 }
 
 .training-date {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
 .training-type {
-  font-size: var(--badge-font-size, 11px);
+  font-size: var(--badge-font-size, 12px);
   font-weight: 700;
   text-transform: uppercase;
   padding: var(--badge-padding, 4px 10px);
@@ -1050,7 +1088,7 @@ body {
 }
 
 .training-card-body h4 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 6px;
@@ -1062,7 +1100,7 @@ body {
 }
 
 .training-card-body p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.5;
@@ -1073,7 +1111,7 @@ body {
 }
 
 .training-presenter {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -1085,7 +1123,7 @@ body {
 }
 
 .training-action {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--accent-enablement-light, #4ADE80);
   display: flex;
@@ -1094,7 +1132,7 @@ body {
 }
 
 .training-duration {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -1116,13 +1154,13 @@ body {
 }
 
 .compact-card h4 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .compact-card p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
 }
