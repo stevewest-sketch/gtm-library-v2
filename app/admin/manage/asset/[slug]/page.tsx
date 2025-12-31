@@ -777,7 +777,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             existingAsset={{
               title: formData.title,
               description: formData.description,
+              hub: formData.hub,
+              format: formData.format,
+              types: formData.type ? [formData.type] : [],
               primaryLink: formData.primaryLink,
+              videoUrl: formData.trainingContent.videoUrl,
             }}
             onApply={handleApplyAIContent}
             onClose={() => setShowAIPanel(false)}
