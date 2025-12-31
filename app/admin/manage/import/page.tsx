@@ -46,13 +46,13 @@ const importConfigs: Record<ImportType, {
     description: 'Import catalog entries (slides, documents, videos, etc.)',
     exportUrl: '/api/export',
     importUrl: '/api/import',
-    columns: 'title,slug,description,shortDescription,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,date,presenters,publishedAt',
+    columns: 'title,slug,description,shortDescription,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,aiContentUrl,hub,format,type,tags,date,presenters,publishedAt',
     notes: `<strong>Required:</strong> title, hub<br />
 <strong>Optional:</strong> slug (auto-generated from title if blank)<br />
 <strong>Hub values:</strong> CoE, Content, Enablement<br />
 <strong>Tags format:</strong> Pipe-separated, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">sales|gladly|Meeting Examples</code><br />
 <strong>publishedAt:</strong> Date for ordering (YYYY-MM-DD or MM/DD/YYYY)<br />
-<strong style="color: #4338CA">AI Content:</strong> <code style="background: #EEF2FF; padding: 2px 4px; border-radius: 3px">externalUrl</code> or <code style="background: #EEF2FF; padding: 2px 4px; border-radius: 3px">videoUrl</code> will be crawled when AI is enabled`,
+<strong style="color: #4338CA">AI Content:</strong> Use <code style="background: #EEF2FF; padding: 2px 4px; border-radius: 3px">aiContentUrl</code> for AI-only sources (not saved to asset). Falls back to externalUrl/videoUrl if empty.`,
   },
   tags: {
     label: 'Tags',

@@ -37,17 +37,17 @@ export async function GET() {
     );
 
     // CSV headers matching import format + extra useful fields
-    // Note: externalUrl is used by AI Content Generation to crawl and generate content
     const headers = [
       'title',
       'slug',
       'description',
       'shortDescription',
-      'externalUrl',        // Primary link - AI will crawl this URL if enableAI is checked
-      'videoUrl',           // Video URL (Loom/YouTube) - AI can fetch transcripts from this
+      'externalUrl',        // Primary link shown on asset page
+      'videoUrl',           // Video URL (Loom/YouTube) shown on asset page
       'slidesUrl',
       'keyAssetUrl',
       'transcriptUrl',
+      'aiContentUrl',       // AI-only URL for content generation - NOT saved to asset
       'hub',
       'format',
       'type',
@@ -87,11 +87,12 @@ export async function GET() {
         escapeCSV(asset.slug),
         escapeCSV(asset.description),
         escapeCSV(asset.shortDescription),
-        escapeCSV(asset.primaryLink),           // externalUrl - AI crawls this
-        escapeCSV(asset.videoUrl),              // AI can fetch transcripts from video URLs
+        escapeCSV(asset.primaryLink),           // externalUrl
+        escapeCSV(asset.videoUrl),
         escapeCSV(asset.slidesUrl),
         escapeCSV(asset.keyAssetUrl),
         escapeCSV(asset.transcriptUrl),
+        '',                                      // aiContentUrl - always empty (not stored)
         escapeCSV(asset.hub),
         escapeCSV(asset.format),
         escapeCSV(asset.types?.join('|')),

@@ -21,6 +21,7 @@ interface ParsedRow {
   slidesUrl: string;
   keyAssetUrl: string;
   transcriptUrl: string;
+  aiContentUrl: string; // URL only for AI content generation - not saved to asset
   hub: string;
   format: string;
   type: string;
@@ -241,7 +242,7 @@ export async function POST(request: NextRequest) {
     const headers = parseCSVLine(lines[0], delimiter).map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
     console.log('Parsed headers:', headers);
     const colMap: Record<string, number> = {};
-    const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration', 'publishedat', 'publisheddate'];
+    const expectedCols = ['title', 'slug', 'description', 'shortdescription', 'externalurl', 'videourl', 'slidesurl', 'keyasseturl', 'transcripturl', 'aicontenturl', 'hub', 'format', 'type', 'tags', 'date', 'eventdate', 'presenters', 'duration', 'publishedat', 'publisheddate'];
 
     headers.forEach((h, i) => {
       if (expectedCols.includes(h)) {
@@ -288,6 +289,7 @@ export async function POST(request: NextRequest) {
         slidesUrl: getValue('slidesurl'),
         keyAssetUrl: getValue('keyasseturl'),
         transcriptUrl: getValue('transcripturl'),
+        aiContentUrl: getValue('aicontenturl'), // URL only for AI - not saved to asset
         hub: normalizeHub(getValue('hub')),
         format: normalizeFormat(getValue('format') || 'document'),
         type: normalizeType(getValue('type')),
@@ -310,8 +312,9 @@ export async function POST(request: NextRequest) {
         const batch = parsedRows.slice(i, i + AI_BATCH_SIZE);
 
         await Promise.all(batch.map(async (row) => {
-          // Only process rows that have a URL to crawl and are missing description
-          const urlToCrawl = row.externalUrl || row.videoUrl;
+          // Priority: aiContentUrl (dedicated AI-only URL) > externalUrl > videoUrl
+          // aiContentUrl is NOT saved to the asset - only used for content generation
+          const urlToCrawl = row.aiContentUrl || row.externalUrl || row.videoUrl;
 
           if (!urlToCrawl) {
             console.log(`Row ${row.rowNum}: No URL to crawl, skipping AI`);
