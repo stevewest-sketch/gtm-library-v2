@@ -37,13 +37,14 @@ export async function GET() {
     );
 
     // CSV headers matching import format + extra useful fields
+    // Note: externalUrl is used by AI Content Generation to crawl and generate content
     const headers = [
       'title',
       'slug',
       'description',
       'shortDescription',
-      'externalUrl',
-      'videoUrl',
+      'externalUrl',        // Primary link - AI will crawl this URL if enableAI is checked
+      'videoUrl',           // Video URL (Loom/YouTube) - AI can fetch transcripts from this
       'slidesUrl',
       'keyAssetUrl',
       'transcriptUrl',
@@ -54,6 +55,8 @@ export async function GET() {
       'boards',
       'status',
       'publishedAt',
+      'date',               // Event date for enablement assets
+      'presenters',         // Pipe-separated presenter names
       'durationMinutes',
       'views',
       'shares',
@@ -84,8 +87,8 @@ export async function GET() {
         escapeCSV(asset.slug),
         escapeCSV(asset.description),
         escapeCSV(asset.shortDescription),
-        escapeCSV(asset.primaryLink),
-        escapeCSV(asset.videoUrl),
+        escapeCSV(asset.primaryLink),           // externalUrl - AI crawls this
+        escapeCSV(asset.videoUrl),              // AI can fetch transcripts from video URLs
         escapeCSV(asset.slidesUrl),
         escapeCSV(asset.keyAssetUrl),
         escapeCSV(asset.transcriptUrl),
@@ -96,6 +99,8 @@ export async function GET() {
         escapeCSV(asset.boardSlugs.join('|')),
         escapeCSV(asset.status),
         escapeCSV(asset.publishedAt?.toISOString().split('T')[0]),
+        escapeCSV(asset.eventDate?.toISOString().split('T')[0]),  // date
+        escapeCSV(asset.presenters?.join('|')),                   // presenters
         escapeCSV(asset.durationMinutes),
         escapeCSV(asset.views),
         escapeCSV(asset.shares),

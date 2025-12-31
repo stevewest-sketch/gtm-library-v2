@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, use, useMemo } from 'react';
+import { useState, useEffect, use, useMemo, useCallback } from 'react';
 import Link from 'next/link';
+import AIAssistantPanel, { GeneratedContent } from '@/components/admin/AIAssistantPanel';
 
 // Hub options
 const HUB_OPTIONS = [
@@ -426,13 +427,84 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     }
   };
 
-  const sidebarSections = [
-    { id: 'basic', label: 'Basic Info', icon: '📝' },
-    { id: 'organization', label: 'Organization', icon: '📁' },
-    { id: 'links', label: 'Resource Links', icon: '🔗' },
-    { id: 'training', label: 'Training Content', icon: '🎓' },
-    { id: 'seo', label: 'SEO & Metadata', icon: '🔍' },
-  ];
+  // Dynamic sidebar sections based on hub type
+  const sidebarSections = useMemo(() => {
+    const base = [
+      { id: 'basic', label: 'Basic Info', icon: '📝' },
+      { id: 'organization', label: 'Organization', icon: '📁' },
+      { id: 'links', label: 'Resource Links', icon: '🔗' },
+    ];
+
+    // Add hub-specific content section
+    if (formData.hub === 'enablement') {
+      base.push({ id: 'training', label: 'Training Details', icon: '🎓' });
+    } else {
+      base.push({ id: 'content', label: 'Content Details', icon: '📄' });
+    }
+
+    base.push({ id: 'seo', label: 'SEO & Metadata', icon: '🔍' });
+    return base;
+  }, [formData.hub]);
+
+  // AI Assistant panel state
+  const [showAIPanel, setShowAIPanel] = useState(false);
+
+  // Handle AI-generated content application
+  const handleApplyAIContent = useCallback((content: Partial<GeneratedContent>) => {
+    setFormData(prev => {
+      const updates: Partial<AssetData> = {};
+
+      if (content.description) {
+        updates.description = content.description;
+      }
+      if (content.shortDescription) {
+        updates.shortDescription = content.shortDescription;
+      }
+      if (content.takeaways && content.takeaways.length > 0) {
+        updates.trainingContent = {
+          ...prev.trainingContent,
+          takeaways: content.takeaways,
+        };
+      }
+      if (content.howtos && content.howtos.length > 0) {
+        updates.trainingContent = {
+          ...prev.trainingContent,
+          ...updates.trainingContent,
+          howtos: content.howtos.map((h, i) => ({ id: `howto-${Date.now()}-${i}`, ...h })),
+        };
+      }
+      if (content.tips && content.tips.length > 0) {
+        updates.trainingContent = {
+          ...prev.trainingContent,
+          ...updates.trainingContent,
+          tips: content.tips,
+        };
+      }
+      if (content.suggestedTags && content.suggestedTags.length > 0) {
+        // Merge with existing tags
+        const existingTags = new Set(prev.tags);
+        content.suggestedTags.forEach(tag => existingTags.add(tag));
+        updates.tags = Array.from(existingTags);
+      }
+      if (content.suggestedType) {
+        updates.type = content.suggestedType;
+      }
+      if (content.extractedLinks) {
+        if (content.extractedLinks.primaryLink && !prev.primaryLink) {
+          updates.primaryLink = content.extractedLinks.primaryLink;
+        }
+        if (content.extractedLinks.videoUrl) {
+          updates.trainingContent = {
+            ...prev.trainingContent,
+            ...updates.trainingContent,
+            videoUrl: content.extractedLinks.videoUrl,
+          };
+        }
+      }
+
+      return { ...prev, ...updates };
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -680,6 +752,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             </div>
           </div>
           <button
+            onClick={() => setShowAIPanel(true)}
             style={{
               padding: '10px 18px',
               background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
@@ -695,6 +768,21 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             Generate with AI
           </button>
         </div>
+
+        {/* AI Assistant Panel */}
+        {showAIPanel && (
+          <AIAssistantPanel
+            hub={formData.hub as 'enablement' | 'content' | 'coe'}
+            format={formData.format}
+            existingAsset={{
+              title: formData.title,
+              description: formData.description,
+              primaryLink: formData.primaryLink,
+            }}
+            onApply={handleApplyAIContent}
+            onClose={() => setShowAIPanel(false)}
+          />
+        )}
 
         {/* Basic Info Section */}
         {activeSection === 'basic' && (
@@ -757,6 +845,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 >
                   Description
                   <button
+                    onClick={() => setShowAIPanel(true)}
                     style={{
                       fontSize: '11px',
                       padding: '4px 10px',
@@ -1316,7 +1405,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           </div>
         )}
 
-        {/* Training Content Section */}
+        {/* Training Details Section (Enablement Hub) */}
         {activeSection === 'training' && (
           <div
             style={{
@@ -1340,7 +1429,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                 </svg>
-                Training Content
+                Training Details
               </div>
               <span
                 style={{
@@ -1464,6 +1553,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
                     <button
+                      onClick={() => setShowAIPanel(true)}
                       style={{
                         fontSize: '11px',
                         padding: '4px 10px',
@@ -1543,6 +1633,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
                     <button
+                      onClick={() => setShowAIPanel(true)}
                       style={{
                         fontSize: '11px',
                         padding: '4px 10px',
@@ -1650,6 +1741,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
                     <button
+                      onClick={() => setShowAIPanel(true)}
                       style={{
                         fontSize: '11px',
                         padding: '4px 10px',
@@ -1719,6 +1811,273 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     ))
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Content Details Section (Content/CoE Hubs) */}
+        {activeSection === 'content' && (
+          <div
+            style={{
+              background: 'white',
+              border: '1px solid #E5E7EB',
+              borderRadius: '12px',
+              marginBottom: '24px',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              className="flex items-center justify-between"
+              style={{
+                padding: '16px 24px',
+                background: '#FAFAFA',
+                borderBottom: '1px solid #E5E7EB',
+              }}
+            >
+              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                Content Details
+              </div>
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  background: formData.hub === 'coe' ? '#FEF3C7' : '#EDE9FE',
+                  color: formData.hub === 'coe' ? '#B45309' : '#6D28D9',
+                }}
+              >
+                {formData.hub.toUpperCase()}
+              </span>
+            </div>
+            <div style={{ padding: '24px' }}>
+              {/* Key Highlights/Takeaways */}
+              <div style={{ marginBottom: '24px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                    Key Highlights
+                  </label>
+                  <button
+                    onClick={() => setShowAIPanel(true)}
+                    style={{
+                      fontSize: '11px',
+                      padding: '4px 10px',
+                      background: '#EEF2FF',
+                      border: '1px solid #C7D2FE',
+                      borderRadius: '4px',
+                      color: '#4338CA',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✨ AI Generate
+                  </button>
+                </div>
+                <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+                  Key points, data, or insights from this content
+                </p>
+
+                {formData.trainingContent.takeaways.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '24px',
+                      background: '#FAFAFA',
+                      borderRadius: '8px',
+                      textAlign: 'center',
+                      color: '#9CA3AF',
+                      fontSize: '13px',
+                    }}
+                  >
+                    No highlights yet. Add key points or use AI to generate.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {formData.trainingContent.takeaways.map((item, idx) => (
+                      <div key={idx} className="flex items-center" style={{ gap: '10px' }}>
+                        <span style={{ color: '#8C69F0', fontWeight: 600, fontSize: '13px' }}>{idx + 1}.</span>
+                        <input
+                          type="text"
+                          value={item}
+                          onChange={(e) => {
+                            const updated = [...formData.trainingContent.takeaways];
+                            updated[idx] = e.target.value;
+                            setFormData((prev) => ({
+                              ...prev,
+                              trainingContent: { ...prev.trainingContent, takeaways: updated },
+                            }));
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                          }}
+                        />
+                        <button
+                          onClick={() => {
+                            const updated = formData.trainingContent.takeaways.filter((_, i) => i !== idx);
+                            setFormData((prev) => ({
+                              ...prev,
+                              trainingContent: { ...prev.trainingContent, takeaways: updated },
+                            }));
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#9CA3AF',
+                            cursor: 'pointer',
+                            padding: '4px',
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      trainingContent: {
+                        ...prev.trainingContent,
+                        takeaways: [...prev.trainingContent.takeaways, ''],
+                      },
+                    }))
+                  }
+                  style={{
+                    marginTop: '12px',
+                    padding: '8px 16px',
+                    background: '#F3F4F6',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    color: '#4B5563',
+                    cursor: 'pointer',
+                  }}
+                >
+                  + Add Highlight
+                </button>
+              </div>
+
+              {/* Tips & Best Practices */}
+              <div>
+                <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                    Tips & Best Practices
+                  </label>
+                  <button
+                    onClick={() => setShowAIPanel(true)}
+                    style={{
+                      fontSize: '11px',
+                      padding: '4px 10px',
+                      background: '#EEF2FF',
+                      border: '1px solid #C7D2FE',
+                      borderRadius: '4px',
+                      color: '#4338CA',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✨ AI Generate
+                  </button>
+                </div>
+                <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+                  Practical tips for using this content effectively
+                </p>
+
+                {formData.trainingContent.tips.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '24px',
+                      background: '#FAFAFA',
+                      borderRadius: '8px',
+                      textAlign: 'center',
+                      color: '#9CA3AF',
+                      fontSize: '13px',
+                    }}
+                  >
+                    No tips yet. Add best practices or use AI to generate.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {formData.trainingContent.tips.map((item, idx) => (
+                      <div key={idx} className="flex items-center" style={{ gap: '10px' }}>
+                        <span style={{ fontSize: '14px' }}>💡</span>
+                        <input
+                          type="text"
+                          value={item}
+                          onChange={(e) => {
+                            const updated = [...formData.trainingContent.tips];
+                            updated[idx] = e.target.value;
+                            setFormData((prev) => ({
+                              ...prev,
+                              trainingContent: { ...prev.trainingContent, tips: updated },
+                            }));
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '10px 14px',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                          }}
+                        />
+                        <button
+                          onClick={() => {
+                            const updated = formData.trainingContent.tips.filter((_, i) => i !== idx);
+                            setFormData((prev) => ({
+                              ...prev,
+                              trainingContent: { ...prev.trainingContent, tips: updated },
+                            }));
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#9CA3AF',
+                            cursor: 'pointer',
+                            padding: '4px',
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      trainingContent: {
+                        ...prev.trainingContent,
+                        tips: [...prev.trainingContent.tips, ''],
+                      },
+                    }))
+                  }
+                  style={{
+                    marginTop: '12px',
+                    padding: '8px 16px',
+                    background: '#F3F4F6',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    color: '#4B5563',
+                    cursor: 'pointer',
+                  }}
+                >
+                  + Add Tip
+                </button>
               </div>
             </div>
           </div>

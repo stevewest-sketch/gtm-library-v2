@@ -46,12 +46,13 @@ const importConfigs: Record<ImportType, {
     description: 'Import catalog entries (slides, documents, videos, etc.)',
     exportUrl: '/api/export',
     importUrl: '/api/import',
-    columns: 'title,slug,description,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,publishedAt',
+    columns: 'title,slug,description,shortDescription,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,date,presenters,publishedAt',
     notes: `<strong>Required:</strong> title, hub<br />
 <strong>Optional:</strong> slug (auto-generated from title if blank)<br />
 <strong>Hub values:</strong> CoE, Content, Enablement<br />
 <strong>Tags format:</strong> Pipe-separated, e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">sales|gladly|Meeting Examples</code><br />
-<strong>publishedAt:</strong> Date for ordering (YYYY-MM-DD or MM/DD/YYYY), e.g., <code style="background: #F3F4F6; padding: 2px 4px; border-radius: 3px">2024-12-15</code>`,
+<strong>publishedAt:</strong> Date for ordering (YYYY-MM-DD or MM/DD/YYYY)<br />
+<strong style="color: #4338CA">AI Content:</strong> <code style="background: #EEF2FF; padding: 2px 4px; border-radius: 3px">externalUrl</code> or <code style="background: #EEF2FF; padding: 2px 4px; border-radius: 3px">videoUrl</code> will be crawled when AI is enabled`,
   },
   tags: {
     label: 'Tags',
@@ -80,6 +81,7 @@ export default function ImportPage() {
   const [activeTab, setActiveTab] = useState<ImportType>('assets');
   const [file, setFile] = useState<File | null>(null);
   const [duplicateAction, setDuplicateAction] = useState<'skip' | 'update' | 'create'>('update');
+  const [enableAI, setEnableAI] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -144,6 +146,7 @@ export default function ImportPage() {
       formData.append('file', file);
       formData.append('skipDuplicates', (duplicateAction === 'skip').toString());
       formData.append('updateDuplicates', (duplicateAction === 'update').toString());
+      formData.append('enableAI', enableAI.toString());
 
       setProgress(30);
 
@@ -486,6 +489,81 @@ export default function ImportPage() {
               </label>
             </div>
           </div>
+
+          {/* AI Content Generation Option - Only for Assets */}
+          {activeTab === 'assets' && (
+            <div
+              style={{
+                marginTop: '20px',
+                paddingTop: '20px',
+                borderTop: '1px solid #F3F4F6',
+              }}
+            >
+              <div
+                style={{
+                  padding: '16px 20px',
+                  background: enableAI ? 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)' : '#FAFAFA',
+                  border: enableAI ? '1px solid #C7D2FE' : '1px solid #E5E7EB',
+                  borderRadius: '10px',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <label className="flex items-center" style={{ gap: '12px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={enableAI}
+                    onChange={(e) => setEnableAI(e.target.checked)}
+                    style={{ width: '18px', height: '18px', accentColor: '#6366F1' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div className="flex items-center" style={{ gap: '8px' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: enableAI ? '#4338CA' : '#374151' }}>
+                        ✨ AI Content Generation
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 500,
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: enableAI ? '#8B5CF6' : '#9CA3AF',
+                          color: 'white',
+                        }}
+                      >
+                        BETA
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>
+                      Crawl URLs and auto-generate descriptions, takeaways, and tips using AI
+                    </div>
+                  </div>
+                </label>
+                {enableAI && (
+                  <div
+                    style={{
+                      marginTop: '12px',
+                      padding: '12px',
+                      background: 'rgba(255, 255, 255, 0.7)',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                      color: '#4B5563',
+                    }}
+                  >
+                    <strong>How it works:</strong> For each row with a URL, the AI will:
+                    <ul style={{ margin: '8px 0 0 16px', paddingLeft: 0, listStyle: 'disc' }}>
+                      <li>Crawl the primary link (externalUrl)</li>
+                      <li>Generate description if not provided</li>
+                      <li>Generate takeaways and tips for training content</li>
+                      <li>Extract additional metadata where possible</li>
+                    </ul>
+                    <div style={{ marginTop: '8px', color: '#B45309', fontWeight: 500 }}>
+                      Note: AI processing adds ~5-10 seconds per row. Large imports may take several minutes.
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Import Button */}
           <div style={{ marginTop: '24px' }}>

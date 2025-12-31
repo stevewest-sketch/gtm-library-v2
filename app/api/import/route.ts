@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { catalogEntries, tags, assetTags, boards, assetBoards } from '@/lib/db/schema';
 import { inArray, eq } from 'drizzle-orm';
+import { generateContent } from '@/lib/ai/content-generator';
 
-// Configure for longer timeout on Vercel
-export const maxDuration = 60; // 60 seconds max
+// Configure for longer timeout on Vercel (5 minutes for AI processing)
+export const maxDuration = 300; // 300 seconds for AI imports
 
 // CSV structure from updated audit:
 // title,slug,description,shortDescription,externalUrl,videoUrl,slidesUrl,keyAssetUrl,transcriptUrl,hub,format,type,tags,date,presenters,duration
@@ -28,6 +29,13 @@ interface ParsedRow {
   presenters: string; // Pipe-separated list of presenters
   duration: string; // Duration in minutes
   publishedAt: string; // Published date for ordering assets
+  // AI-generated fields
+  aiDescription?: string;
+  aiShortDescription?: string;
+  aiTakeaways?: string[];
+  aiHowtos?: { title: string; content: string }[];
+  aiTips?: string[];
+  aiTags?: string[];
 }
 
 interface ImportResult {
@@ -208,6 +216,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
     const skipDuplicates = formData.get('skipDuplicates') === 'true';
     const updateDuplicates = formData.get('updateDuplicates') === 'true';
+    const enableAI = formData.get('enableAI') === 'true';
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -288,6 +297,91 @@ export async function POST(request: NextRequest) {
         duration: getValue('duration'),
         publishedAt: getValue('publishedat') || getValue('publisheddate'), // Support both column names
       });
+    }
+
+    // STEP 1.5: AI Content Generation (if enabled)
+    if (enableAI) {
+      console.log(`AI content generation enabled for ${parsedRows.length} rows`);
+
+      // Process rows in small batches to avoid overwhelming the API
+      const AI_BATCH_SIZE = 3; // Process 3 rows concurrently
+
+      for (let i = 0; i < parsedRows.length; i += AI_BATCH_SIZE) {
+        const batch = parsedRows.slice(i, i + AI_BATCH_SIZE);
+
+        await Promise.all(batch.map(async (row) => {
+          // Only process rows that have a URL to crawl and are missing description
+          const urlToCrawl = row.externalUrl || row.videoUrl;
+
+          if (!urlToCrawl) {
+            console.log(`Row ${row.rowNum}: No URL to crawl, skipping AI`);
+            return;
+          }
+
+          try {
+            console.log(`Row ${row.rowNum}: Generating AI content from ${urlToCrawl}`);
+
+            // Determine which fields to generate based on what's missing
+            const generateFields: string[] = [];
+            if (!row.description) generateFields.push('description');
+            if (!row.shortDescription) generateFields.push('shortDescription');
+
+            // For enablement hub, generate training content
+            if (row.hub === 'enablement') {
+              generateFields.push('takeaways', 'howtos', 'tips');
+            } else {
+              // For other hubs, generate general content
+              generateFields.push('takeaways', 'tips');
+            }
+
+            // Always suggest tags
+            generateFields.push('tags');
+
+            if (generateFields.length === 0) {
+              console.log(`Row ${row.rowNum}: All fields already provided, skipping AI`);
+              return;
+            }
+
+            const aiResponse = await generateContent({
+              url: urlToCrawl,
+              hub: row.hub as 'enablement' | 'content' | 'coe',
+              format: row.format,
+              generateFields: generateFields as ('description' | 'shortDescription' | 'takeaways' | 'howtos' | 'tips' | 'tags')[],
+              existingAsset: {
+                title: row.title,
+              },
+            });
+
+            // Apply AI-generated content to the row
+            if (aiResponse.success && aiResponse.content) {
+              const { content } = aiResponse;
+              if (content.description && !row.description) {
+                row.aiDescription = content.description;
+              }
+              if (content.shortDescription && !row.shortDescription) {
+                row.aiShortDescription = content.shortDescription;
+              }
+              if (content.takeaways && content.takeaways.length > 0) {
+                row.aiTakeaways = content.takeaways;
+              }
+              if (content.howtos && content.howtos.length > 0) {
+                row.aiHowtos = content.howtos;
+              }
+              if (content.tips && content.tips.length > 0) {
+                row.aiTips = content.tips;
+              }
+              if (content.suggestedTags && content.suggestedTags.length > 0) {
+                row.aiTags = content.suggestedTags;
+              }
+            }
+
+            console.log(`Row ${row.rowNum}: AI generated content successfully`);
+          } catch (error) {
+            console.error(`Row ${row.rowNum}: AI generation failed:`, error);
+            // Continue without AI content - don't fail the import
+          }
+        }));
+      }
     }
 
     // STEP 2: Get ALL existing slugs in ONE query
@@ -398,26 +492,38 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < toInsert.length; i += CHUNK_SIZE) {
       const chunk = toInsert.slice(i, i + CHUNK_SIZE);
 
-      const entryValues = chunk.map(row => ({
-        slug: row.slug,
-        title: row.title,
-        description: row.description || null,
-        shortDescription: row.shortDescription || null,
-        hub: row.hub,
-        format: row.format,
-        types: row.type ? [row.type] : [],
-        tags: parseTagsString(row.tags),
-        primaryLink: row.externalUrl || '',
-        videoUrl: row.videoUrl || null,
-        slidesUrl: row.slidesUrl || null,
-        keyAssetUrl: row.keyAssetUrl || null,
-        transcriptUrl: row.transcriptUrl || null,
-        eventDate: parseDate(row.date),
-        presenters: parsePresenters(row.presenters),
-        durationMinutes: parseDuration(row.duration),
-        publishedAt: parseDate(row.publishedAt),
-        status: 'published',
-      }));
+      const entryValues = chunk.map(row => {
+        // Combine CSV tags with AI-suggested tags
+        const csvTags = parseTagsString(row.tags);
+        const aiTags = row.aiTags || [];
+        const combinedTags = [...new Set([...csvTags, ...aiTags])];
+
+        return {
+          slug: row.slug,
+          title: row.title,
+          // Use AI description if CSV description is empty
+          description: row.description || row.aiDescription || null,
+          shortDescription: row.shortDescription || row.aiShortDescription || null,
+          hub: row.hub,
+          format: row.format,
+          types: row.type ? [row.type] : [],
+          tags: combinedTags,
+          primaryLink: row.externalUrl || '',
+          videoUrl: row.videoUrl || null,
+          slidesUrl: row.slidesUrl || null,
+          keyAssetUrl: row.keyAssetUrl || null,
+          transcriptUrl: row.transcriptUrl || null,
+          eventDate: parseDate(row.date),
+          presenters: parsePresenters(row.presenters),
+          durationMinutes: parseDuration(row.duration),
+          publishedAt: parseDate(row.publishedAt),
+          status: 'published',
+          // AI-generated training content
+          takeaways: row.aiTakeaways || [],
+          howtos: row.aiHowtos || [],
+          tips: row.aiTips || [],
+        };
+      });
 
       try {
         await db.insert(catalogEntries).values(entryValues).onConflictDoNothing();
@@ -465,14 +571,22 @@ export async function POST(request: NextRequest) {
             updatedAt: new Date(),
           };
 
-          // Only update fields that have non-empty values in CSV
+          // Only update fields that have non-empty values in CSV or AI
           if (row.title) updateData.title = row.title;
-          if (row.description) updateData.description = row.description;
-          if (row.shortDescription) updateData.shortDescription = row.shortDescription;
+          if (row.description || row.aiDescription) {
+            updateData.description = row.description || row.aiDescription;
+          }
+          if (row.shortDescription || row.aiShortDescription) {
+            updateData.shortDescription = row.shortDescription || row.aiShortDescription;
+          }
           if (row.hub) updateData.hub = row.hub;
           if (row.format) updateData.format = row.format;
           if (row.type) updateData.types = [row.type];
-          if (row.tags) updateData.tags = parseTagsString(row.tags);
+          if (row.tags || row.aiTags) {
+            const csvTags = parseTagsString(row.tags);
+            const aiTags = row.aiTags || [];
+            updateData.tags = [...new Set([...csvTags, ...aiTags])];
+          }
           if (row.externalUrl) updateData.primaryLink = row.externalUrl;
           if (row.videoUrl) updateData.videoUrl = row.videoUrl;
           if (row.slidesUrl) updateData.slidesUrl = row.slidesUrl;
@@ -490,6 +604,16 @@ export async function POST(request: NextRequest) {
           if (row.publishedAt) {
             const parsedPublishedAt = parseDate(row.publishedAt);
             if (parsedPublishedAt) updateData.publishedAt = parsedPublishedAt;
+          }
+          // Apply AI-generated training content
+          if (row.aiTakeaways && row.aiTakeaways.length > 0) {
+            updateData.takeaways = row.aiTakeaways;
+          }
+          if (row.aiHowtos && row.aiHowtos.length > 0) {
+            updateData.howtos = row.aiHowtos;
+          }
+          if (row.aiTips && row.aiTips.length > 0) {
+            updateData.tips = row.aiTips;
           }
 
           await db.update(catalogEntries)
