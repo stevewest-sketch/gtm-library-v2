@@ -682,7 +682,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ marginTop: '-56px', paddingTop: '56px' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '14px', color: '#6B7280' }}>Loading asset...</div>
+          <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Loading asset...</div>
         </div>
       </div>
     );
@@ -694,8 +694,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
       <aside
         style={{
           width: '220px',
-          background: 'white',
-          borderRight: '1px solid #E5E7EB',
+          background: 'var(--card-bg)',
+          borderRight: '1px solid var(--card-border)',
           position: 'fixed',
           top: '56px',
           left: '220px',
@@ -710,7 +710,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             fontWeight: 600,
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            color: '#9CA3AF',
+            color: 'var(--text-muted)',
             padding: '8px 12px',
             marginBottom: '4px',
           }}
@@ -730,8 +730,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 borderRadius: '6px',
                 cursor: 'pointer',
                 border: 'none',
-                background: activeSection === section.id ? '#D1FAE5' : 'transparent',
-                color: activeSection === section.id ? '#047857' : '#4B5563',
+                background: activeSection === section.id ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
+                color: activeSection === section.id ? '#10B981' : 'var(--text-secondary)',
                 fontWeight: activeSection === section.id ? 500 : 400,
                 fontSize: '13px',
               }}
@@ -742,13 +742,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           ))}
         </nav>
 
-        <div style={{ height: '1px', background: '#E5E7EB', margin: '16px 12px' }} />
+        <div style={{ height: '1px', background: 'var(--card-border)', margin: '16px 12px' }} />
 
         {/* Section Configuration */}
         <div
           style={{
             padding: '16px',
-            background: '#F9FAFB',
+            background: 'var(--bg-elevated)',
             borderRadius: '8px',
             margin: '12px',
           }}
@@ -759,7 +759,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
-              color: '#4B5563',
+              color: 'var(--text-secondary)',
               marginBottom: '12px',
             }}
           >
@@ -773,14 +773,14 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 style={{
                   gap: '8px',
                   padding: '8px 10px',
-                  background: 'white',
-                  border: '1px solid #E5E7EB',
+                  background: 'var(--card-bg)',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '6px',
                   fontSize: '12px',
                 }}
               >
-                <span style={{ color: '#9CA3AF', cursor: 'grab' }}>⋮⋮</span>
-                <span style={{ flex: 1, color: '#111827' }}>{item}</span>
+                <span style={{ color: 'var(--text-muted)', cursor: 'grab' }}>⋮⋮</span>
+                <span style={{ flex: 1, color: 'var(--text-primary)' }}>{item}</span>
                 <label style={{ position: 'relative', width: '32px', height: '18px' }}>
                   <input type="checkbox" defaultChecked style={{ opacity: 0, width: 0, height: 0 }} />
                   <span
@@ -803,7 +803,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         width: '14px',
                         left: '16px',
                         bottom: '2px',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                         borderRadius: '50%',
                       }}
                     />
@@ -833,11 +833,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               style={{
                 gap: '8px',
                 padding: '8px 14px',
-                color: '#4B5563',
+                color: 'var(--text-secondary)',
                 textDecoration: 'none',
                 fontSize: '13px',
                 borderRadius: '6px',
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--card-border)',
               }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -845,7 +845,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               </svg>
               Back
             </Link>
-            <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#111827' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)' }}>
               {isNew ? 'New Asset' : 'Edit Asset'}
             </h1>
           </div>
@@ -856,11 +856,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               style={{
                 gap: '8px',
                 padding: '10px 16px',
-                background: 'white',
-                border: '1px solid #E5E7EB',
+                background: 'var(--card-bg)',
+                border: '1px solid var(--card-border)',
                 borderRadius: '8px',
                 fontSize: '13px',
-                color: '#4B5563',
+                color: 'var(--text-secondary)',
                 cursor: 'pointer',
               }}
             >
@@ -897,9 +897,9 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               padding: '12px 20px',
               marginBottom: '16px',
               borderRadius: '8px',
-              background: saveMessage.type === 'success' ? '#D1FAE5' : '#FEE2E2',
-              border: `1px solid ${saveMessage.type === 'success' ? '#10B981' : '#EF4444'}`,
-              color: saveMessage.type === 'success' ? '#065F46' : '#DC2626',
+              background: saveMessage.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+              border: `1px solid ${saveMessage.type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+              color: saveMessage.type === 'success' ? '#10B981' : '#EF4444',
               fontSize: '14px',
               fontWeight: 500,
             }}
@@ -924,7 +924,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
           >
             <div
               style={{
-                background: 'white',
+                background: 'var(--card-bg)',
                 borderRadius: '16px',
                 width: '800px',
                 maxHeight: '90vh',
@@ -937,13 +937,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               <div
                 style={{
                   padding: '16px 24px',
-                  borderBottom: '1px solid #E5E7EB',
+                  borderBottom: '1px solid var(--card-border)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                 }}
               >
-                <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
                   Preview: {formData.title || 'Untitled Asset'}
                 </h2>
                 <button
@@ -952,7 +952,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     background: 'none',
                     border: 'none',
                     fontSize: '24px',
-                    color: '#9CA3AF',
+                    color: 'var(--text-muted)',
                     cursor: 'pointer',
                   }}
                 >
@@ -979,18 +979,18 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 {/* Description */}
                 {formData.description && (
                   <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Description</h3>
-                    <p style={{ fontSize: '14px', color: '#4B5563', lineHeight: 1.6 }}>{formData.description}</p>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Description</h3>
+                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{formData.description}</p>
                   </div>
                 )}
 
                 {/* Takeaways */}
                 {formData.trainingContent.takeaways.filter(t => t.trim()).length > 0 && (
                   <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Key Takeaways</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>Key Takeaways</h3>
                     <ul style={{ margin: 0, paddingLeft: '20px' }}>
                       {formData.trainingContent.takeaways.filter(t => t.trim()).map((t, i) => (
-                        <li key={i} style={{ fontSize: '14px', color: '#4B5563', marginBottom: '8px' }}>{t}</li>
+                        <li key={i} style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t}</li>
                       ))}
                     </ul>
                   </div>
@@ -999,13 +999,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 {/* How-Tos */}
                 {formData.trainingContent.howtos.filter(h => h.title.trim() || h.content.trim()).length > 0 && (
                   <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>How-To Steps</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>How-To Steps</h3>
                     {formData.trainingContent.howtos.filter(h => h.title.trim() || h.content.trim()).map((h, i) => (
-                      <div key={i} style={{ marginBottom: '12px', padding: '12px', background: '#F9FAFB', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px' }}>
+                      <div key={i} style={{ marginBottom: '12px', padding: '12px', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                           Step {i + 1}: {h.title}
                         </div>
-                        <div style={{ fontSize: '13px', color: '#6B7280' }}>{h.content}</div>
+                        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{h.content}</div>
                       </div>
                     ))}
                   </div>
@@ -1014,10 +1014,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 {/* Tips */}
                 {formData.trainingContent.tips.filter(t => t.trim()).length > 0 && (
                   <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Tips & Best Practices</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>Tips & Best Practices</h3>
                     <ul style={{ margin: 0, paddingLeft: '20px' }}>
                       {formData.trainingContent.tips.filter(t => t.trim()).map((t, i) => (
-                        <li key={i} style={{ fontSize: '14px', color: '#4B5563', marginBottom: '8px' }}>{t}</li>
+                        <li key={i} style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{t}</li>
                       ))}
                     </ul>
                   </div>
@@ -1025,19 +1025,19 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
                 {/* Links */}
                 <div>
-                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Links</h3>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>Links</h3>
                   {formData.primaryLink && (
                     <div style={{ marginBottom: '8px' }}>
-                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>Primary: </span>
-                      <a href={formData.primaryLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#4338CA' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Primary: </span>
+                      <a href={formData.primaryLink} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#818CF8' }}>
                         {formData.primaryLink}
                       </a>
                     </div>
                   )}
                   {formData.trainingContent.videoUrl && (
                     <div style={{ marginBottom: '8px' }}>
-                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>Video: </span>
-                      <a href={formData.trainingContent.videoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#4338CA' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Video: </span>
+                      <a href={formData.trainingContent.videoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#818CF8' }}>
                         {formData.trainingContent.videoUrl}
                       </a>
                     </div>
@@ -1056,11 +1056,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   onClick={() => setShowPreview(false)}
                   style={{
                     padding: '10px 20px',
-                    background: '#F3F4F6',
+                    background: 'var(--bg-elevated)',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    color: '#4B5563',
+                    color: 'var(--text-secondary)',
                     cursor: 'pointer',
                   }}
                 >
@@ -1097,10 +1097,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             ✨
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#4338CA', marginBottom: '4px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#818CF8', marginBottom: '4px' }}>
               AI Auto-Fill Available
             </div>
-            <div style={{ fontSize: '13px', color: '#4B5563' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
               Generate descriptions, tags, and training content automatically from your uploaded files.
             </div>
           </div>
@@ -1146,8 +1146,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'basic' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
               overflow: 'hidden',
@@ -1157,11 +1157,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center justify-between"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
               }}
             >
-              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
@@ -1176,7 +1176,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               <div style={{ marginBottom: '20px' }}>
                 <label
                   className="flex items-center justify-between"
-                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
+                  style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}
                 >
                   Title
                 </label>
@@ -1188,7 +1188,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     width: '100%',
                     padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                   }}
@@ -1199,7 +1199,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               <div style={{ marginBottom: '20px' }}>
                 <label
                   className="flex items-center justify-between"
-                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
+                  style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}
                 >
                   Description
                   <button
@@ -1210,7 +1210,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       background: '#EEF2FF',
                       border: '1px solid #C7D2FE',
                       borderRadius: '4px',
-                      color: '#4338CA',
+                      color: '#818CF8',
                       cursor: 'pointer',
                     }}
                   >
@@ -1225,7 +1225,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     width: '100%',
                     padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                     resize: 'vertical',
@@ -1237,10 +1237,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               <div style={{ marginBottom: '20px' }}>
                 <label
                   className="flex items-center justify-between"
-                  style={{ fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}
+                  style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}
                 >
                   Short Description
-                  <span style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: 400 }}>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>
                     {formData.shortDescription.split(/\s+/).filter(Boolean).length}/6 words
                   </span>
                 </label>
@@ -1252,12 +1252,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     width: '100%',
                     padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                   }}
                 />
-                <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                   Shown on the card in grid view. Keep it brief.
                 </div>
               </div>
@@ -1271,7 +1271,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 }}
               >
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Hub
                   </label>
                   <select
@@ -1280,7 +1280,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                       appearance: 'none',
@@ -1296,7 +1296,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Format
                   </label>
                   <select
@@ -1305,7 +1305,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                       appearance: 'none',
@@ -1322,7 +1322,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Type
                   </label>
                   <select
@@ -1331,7 +1331,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                       appearance: 'none',
@@ -1348,7 +1348,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Status
                   </label>
                   <select
@@ -1357,7 +1357,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                       appearance: 'none',
@@ -1378,7 +1378,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Primary Link and Published Date Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '20px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Primary Link
                   </label>
                   <input
@@ -1389,17 +1389,17 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
                   />
-                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                     The main link for this asset (Google Drive, Slides, etc.)
                   </div>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Published Date
                   </label>
                   <input
@@ -1409,12 +1409,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
                   />
-                  <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                     Used to order assets (newest first)
                   </div>
                 </div>
@@ -1427,8 +1427,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'organization' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
             }}
@@ -1437,12 +1437,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
                 gap: '8px',
                 fontSize: '14px',
                 fontWeight: 600,
-                color: '#111827',
+                color: 'var(--text-primary)',
               }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
@@ -1453,13 +1453,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             <div style={{ padding: '24px' }}>
               {/* Boards */}
               <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '12px' }}>
                   Boards
                 </label>
                 {/* Currently assigned boards with remove button */}
                 {formData.boards.length > 0 && (
                   <div style={{ marginBottom: '12px' }}>
-                    <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                       Assigned to:
                     </div>
                     <div className="flex flex-wrap" style={{ gap: '8px' }}>
@@ -1506,12 +1506,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 )}
                 {/* Available boards to add */}
                 <div>
-                  <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     {formData.boards.length > 0 ? 'Add to more boards:' : 'Add to boards:'}
                   </div>
                   <div className="flex flex-wrap" style={{ gap: '8px' }}>
                     {boards.length === 0 ? (
-                      <span style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                      <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                         Loading boards...
                       </span>
                     ) : (
@@ -1522,9 +1522,9 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                             onClick={() => handleToggleBoard(board.slug)}
                             style={{
                               padding: '8px 16px',
-                              border: '1px solid #E5E7EB',
-                              background: 'white',
-                              color: '#4B5563',
+                              border: '1px solid var(--card-border)',
+                              background: 'var(--card-bg)',
+                              color: 'var(--text-secondary)',
                               borderRadius: '8px',
                               fontSize: '13px',
                               cursor: 'pointer',
@@ -1534,7 +1534,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           </button>
                         ))}
                         {boards.filter(b => !formData.boards.includes(b.slug) && !formData.boards.includes(b.name)).length === 0 && (
-                          <span style={{ fontSize: '13px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                          <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                             Added to all boards
                           </span>
                         )}
@@ -1546,7 +1546,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
               {/* Tags */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '12px' }}>
                   Tags
                 </label>
                 <div className="flex flex-wrap" style={{ gap: '8px', marginBottom: '12px' }}>
@@ -1557,10 +1557,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       style={{
                         gap: '6px',
                         padding: '6px 12px',
-                        background: '#F3F4F6',
+                        background: 'var(--bg-elevated)',
                         borderRadius: '6px',
                         fontSize: '13px',
-                        color: '#4B5563',
+                        color: 'var(--text-secondary)',
                       }}
                     >
                       {tag}
@@ -1569,7 +1569,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#9CA3AF',
+                          color: 'var(--text-muted)',
                           cursor: 'pointer',
                           padding: 0,
                           fontSize: '14px',
@@ -1607,7 +1607,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       style={{
                         width: '100%',
                         padding: '10px 14px',
-                        border: '1px solid #E5E7EB',
+                        border: '1px solid var(--card-border)',
                         borderRadius: '8px',
                         fontSize: '13px',
                       }}
@@ -1621,7 +1621,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           left: 0,
                           right: 0,
                           marginTop: '4px',
-                          background: 'white',
+                          background: 'var(--card-bg)',
                           border: '1px solid #D1D5DB',
                           borderRadius: '8px',
                           boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
@@ -1639,12 +1639,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                               width: '100%',
                               padding: '10px 14px',
                               textAlign: 'left',
-                              background: 'white',
+                              background: 'var(--card-bg)',
                               border: 'none',
                               borderBottom: '1px solid #F3F4F6',
                               cursor: 'pointer',
                               fontSize: '13px',
-                              color: '#374151',
+                              color: 'var(--text-primary)',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px',
@@ -1666,7 +1666,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                             }}>
                               {tag.name}
                             </span>
-                            <span style={{ color: '#6B7280', fontSize: '12px' }}>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
                               {tag.slug}
                             </span>
                           </button>
@@ -1698,8 +1698,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'links' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
               overflow: 'hidden',
@@ -1709,11 +1709,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center justify-between"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
               }}
             >
-              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
@@ -1743,7 +1743,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             </div>
             <div style={{ padding: '16px 24px' }}>
               {formData.resourceLinks.length === 0 ? (
-                <div style={{ padding: '32px', textAlign: 'center', color: '#9CA3AF' }}>
+                <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>
                   No resource links added yet. Click "Add Link" to get started.
                 </div>
               ) : (
@@ -1755,22 +1755,22 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       style={{
                         gap: '12px',
                         padding: '14px 16px',
-                        background: '#FAFAFA',
+                        background: 'var(--bg-elevated)',
                         border: '1px solid #F3F4F6',
                         borderRadius: '8px',
                       }}
                     >
-                      <span style={{ color: '#9CA3AF', cursor: 'grab' }}>⋮⋮</span>
+                      <span style={{ color: 'var(--text-muted)', cursor: 'grab' }}>⋮⋮</span>
                       <select
                         value={link.type}
                         onChange={(e) => handleUpdateLink(link.id, 'type', e.target.value)}
                         style={{
                           width: '140px',
                           padding: '8px 10px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           fontSize: '12px',
-                          background: 'white',
+                          background: 'var(--card-bg)',
                         }}
                       >
                         {LINK_TYPE_OPTIONS.map((opt) => (
@@ -1787,7 +1787,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         style={{
                           flex: 1,
                           padding: '8px 10px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           fontSize: '12px',
                         }}
@@ -1800,12 +1800,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         style={{
                           flex: 2,
                           padding: '8px 10px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           fontSize: '12px',
                         }}
                       />
-                      <label className="flex items-center" style={{ gap: '4px', fontSize: '11px', color: '#4B5563' }}>
+                      <label className="flex items-center" style={{ gap: '4px', fontSize: '11px', color: 'var(--text-secondary)' }}>
                         <input
                           type="checkbox"
                           checked={link.copyable}
@@ -1823,7 +1823,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           background: 'transparent',
                           border: 'none',
                           borderRadius: '6px',
-                          color: '#9CA3AF',
+                          color: 'var(--text-muted)',
                           cursor: 'pointer',
                         }}
                       >
@@ -1849,7 +1849,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 className="flex items-center justify-between"
                 style={{ marginBottom: '16px' }}
               >
-                <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+                <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
@@ -1879,11 +1879,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   Add Related Asset
                 </button>
               </div>
-              <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
                 Add documents, templates, or other files associated with this asset. Each related asset has a custom display name.
               </p>
               {formData.relatedAssets.length === 0 ? (
-                <div style={{ padding: '24px', textAlign: 'center', color: '#9CA3AF', background: '#FAFAFA', borderRadius: '8px' }}>
+                <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
                   No related assets added yet.
                 </div>
               ) : (
@@ -1895,12 +1895,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       style={{
                         gap: '12px',
                         padding: '12px 14px',
-                        background: '#FAFAFA',
-                        border: '1px solid #E5E7EB',
+                        background: 'var(--bg-elevated)',
+                        border: '1px solid var(--card-border)',
                         borderRadius: '8px',
                       }}
                     >
-                      <span style={{ color: '#9CA3AF', fontSize: '12px', fontWeight: 500, minWidth: '20px' }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: 500, minWidth: '20px' }}>
                         {index + 1}
                       </span>
                       <input
@@ -1911,7 +1911,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         style={{
                           width: '200px',
                           padding: '8px 10px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           fontSize: '12px',
                         }}
@@ -1924,7 +1924,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         style={{
                           flex: 1,
                           padding: '8px 10px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           fontSize: '12px',
                         }}
@@ -1959,8 +1959,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'training' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
               overflow: 'hidden',
@@ -1970,11 +1970,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center justify-between"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
               }}
             >
-              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
@@ -1987,8 +1987,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   fontWeight: 500,
                   padding: '3px 8px',
                   borderRadius: '4px',
-                  background: '#D1FAE5',
-                  color: '#047857',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  color: '#10B981',
                 }}
               >
                 ENABLEMENT
@@ -1997,7 +1997,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             <div style={{ padding: '24px' }}>
               {/* Video URL */}
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   Video URL
                 </label>
                 <input
@@ -2013,12 +2013,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     width: '100%',
                     padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                   }}
                 />
-                <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                   Supports Loom, YouTube, Vimeo, Zoom recordings, and Google Drive
                 </div>
               </div>
@@ -2026,7 +2026,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Presenters & Duration Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Presenter(s)
                   </label>
                   <input
@@ -2042,14 +2042,14 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Duration (minutes)
                   </label>
                   <input
@@ -2065,14 +2065,14 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                     Event Date
                   </label>
                   <input
@@ -2087,7 +2087,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       width: '100%',
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
@@ -2098,7 +2098,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Key Takeaways - Repeatable List */}
               <div style={{ marginBottom: '24px' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
                     Key Takeaways
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
@@ -2110,7 +2110,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         background: '#EEF2FF',
                         border: '1px solid #C7D2FE',
                         borderRadius: '4px',
-                        color: '#4338CA',
+                        color: '#818CF8',
                         cursor: 'pointer',
                       }}
                     >
@@ -2134,13 +2134,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </div>
                 <div className="flex flex-col" style={{ gap: '8px' }}>
                   {formData.trainingContent.takeaways.length === 0 ? (
-                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
                       No takeaways yet. Click "+ Add" to add one.
                     </div>
                   ) : (
                     formData.trainingContent.takeaways.map((takeaway, index) => (
                       <div key={index} className="flex items-center" style={{ gap: '8px' }}>
-                        <span style={{ color: '#9CA3AF', fontSize: '12px', width: '20px' }}>{index + 1}.</span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '12px', width: '20px' }}>{index + 1}.</span>
                         <input
                           type="text"
                           value={takeaway}
@@ -2149,7 +2149,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             flex: 1,
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '13px',
                           }}
@@ -2160,7 +2160,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                             padding: '8px',
                             background: 'transparent',
                             border: 'none',
-                            color: '#9CA3AF',
+                            color: 'var(--text-muted)',
                             cursor: 'pointer',
                           }}
                         >
@@ -2178,7 +2178,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* How-Tos - Repeatable Cards with Title + Content */}
               <div style={{ marginBottom: '24px' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
                     How-To Steps
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
@@ -2190,7 +2190,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         background: '#EEF2FF',
                         border: '1px solid #C7D2FE',
                         borderRadius: '4px',
-                        color: '#4338CA',
+                        color: '#818CF8',
                         cursor: 'pointer',
                       }}
                     >
@@ -2214,7 +2214,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </div>
                 <div className="flex flex-col" style={{ gap: '12px' }}>
                   {formData.trainingContent.howtos.length === 0 ? (
-                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
                       No how-to steps yet. Click "+ Add Step" to add one.
                     </div>
                   ) : (
@@ -2223,20 +2223,20 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         key={howto.id}
                         style={{
                           padding: '16px',
-                          background: '#FAFAFA',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--bg-elevated)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '10px',
                         }}
                       >
                         <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                          <span style={{ fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Step {index + 1}</span>
+                          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Step {index + 1}</span>
                           <button
                             onClick={() => handleRemoveHowTo(howto.id)}
                             style={{
                               padding: '4px',
                               background: 'transparent',
                               border: 'none',
-                              color: '#9CA3AF',
+                              color: 'var(--text-muted)',
                               cursor: 'pointer',
                             }}
                           >
@@ -2254,12 +2254,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             width: '100%',
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '13px',
                             fontWeight: 500,
                             marginBottom: '8px',
-                            background: 'white',
+                            background: 'var(--card-bg)',
                           }}
                         />
                         <textarea
@@ -2270,11 +2270,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             width: '100%',
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '13px',
                             resize: 'vertical',
-                            background: 'white',
+                            background: 'var(--card-bg)',
                           }}
                         />
                       </div>
@@ -2286,7 +2286,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Tips - Repeatable List */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
                     Tips & Best Practices
                   </label>
                   <div className="flex items-center" style={{ gap: '8px' }}>
@@ -2298,7 +2298,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                         background: '#EEF2FF',
                         border: '1px solid #C7D2FE',
                         borderRadius: '4px',
-                        color: '#4338CA',
+                        color: '#818CF8',
                         cursor: 'pointer',
                       }}
                     >
@@ -2322,7 +2322,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                 </div>
                 <div className="flex flex-col" style={{ gap: '8px' }}>
                   {formData.trainingContent.tips.length === 0 ? (
-                    <div style={{ padding: '16px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px', background: '#FAFAFA', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
                       No tips yet. Click "+ Add" to add one.
                     </div>
                   ) : (
@@ -2337,7 +2337,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             flex: 1,
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '13px',
                           }}
@@ -2348,7 +2348,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                             padding: '8px',
                             background: 'transparent',
                             border: 'none',
-                            color: '#9CA3AF',
+                            color: 'var(--text-muted)',
                             cursor: 'pointer',
                           }}
                         >
@@ -2370,8 +2370,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'content' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
               overflow: 'hidden',
@@ -2381,11 +2381,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center justify-between"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
               }}
             >
-              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+              <div className="flex items-center" style={{ gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
@@ -2409,7 +2409,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Key Highlights/Takeaways */}
               <div style={{ marginBottom: '24px' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
                     Key Highlights
                   </label>
                   <button
@@ -2420,14 +2420,14 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       background: '#EEF2FF',
                       border: '1px solid #C7D2FE',
                       borderRadius: '4px',
-                      color: '#4338CA',
+                      color: '#818CF8',
                       cursor: 'pointer',
                     }}
                   >
                     ✨ AI Generate
                   </button>
                 </div>
-                <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
                   Key points, data, or insights from this content
                 </p>
 
@@ -2435,10 +2435,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   <div
                     style={{
                       padding: '24px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       borderRadius: '8px',
                       textAlign: 'center',
-                      color: '#9CA3AF',
+                      color: 'var(--text-muted)',
                       fontSize: '13px',
                     }}
                   >
@@ -2463,7 +2463,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             flex: 1,
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '14px',
                           }}
@@ -2479,7 +2479,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: '#9CA3AF',
+                            color: 'var(--text-muted)',
                             cursor: 'pointer',
                             padding: '4px',
                           }}
@@ -2506,11 +2506,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     marginTop: '12px',
                     padding: '8px 16px',
-                    background: '#F3F4F6',
+                    background: 'var(--bg-elevated)',
                     border: 'none',
                     borderRadius: '6px',
                     fontSize: '13px',
-                    color: '#4B5563',
+                    color: 'var(--text-secondary)',
                     cursor: 'pointer',
                   }}
                 >
@@ -2521,7 +2521,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               {/* Tips & Best Practices */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>
+                  <label style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
                     Tips & Best Practices
                   </label>
                   <button
@@ -2532,14 +2532,14 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                       background: '#EEF2FF',
                       border: '1px solid #C7D2FE',
                       borderRadius: '4px',
-                      color: '#4338CA',
+                      color: '#818CF8',
                       cursor: 'pointer',
                     }}
                   >
                     ✨ AI Generate
                   </button>
                 </div>
-                <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '12px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
                   Practical tips for using this content effectively
                 </p>
 
@@ -2547,10 +2547,10 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   <div
                     style={{
                       padding: '24px',
-                      background: '#FAFAFA',
+                      background: 'var(--bg-elevated)',
                       borderRadius: '8px',
                       textAlign: 'center',
-                      color: '#9CA3AF',
+                      color: 'var(--text-muted)',
                       fontSize: '13px',
                     }}
                   >
@@ -2575,7 +2575,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             flex: 1,
                             padding: '10px 14px',
-                            border: '1px solid #E5E7EB',
+                            border: '1px solid var(--card-border)',
                             borderRadius: '8px',
                             fontSize: '14px',
                           }}
@@ -2591,7 +2591,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: '#9CA3AF',
+                            color: 'var(--text-muted)',
                             cursor: 'pointer',
                             padding: '4px',
                           }}
@@ -2618,11 +2618,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     marginTop: '12px',
                     padding: '8px 16px',
-                    background: '#F3F4F6',
+                    background: 'var(--bg-elevated)',
                     border: 'none',
                     borderRadius: '6px',
                     fontSize: '13px',
-                    color: '#4B5563',
+                    color: 'var(--text-secondary)',
                     cursor: 'pointer',
                   }}
                 >
@@ -2637,8 +2637,8 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
         {activeSection === 'seo' && (
           <div
             style={{
-              background: 'white',
-              border: '1px solid #E5E7EB',
+              background: 'var(--card-bg)',
+              border: '1px solid var(--card-border)',
               borderRadius: '12px',
               marginBottom: '24px',
               overflow: 'hidden',
@@ -2648,12 +2648,12 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
               className="flex items-center"
               style={{
                 padding: '16px 24px',
-                background: '#FAFAFA',
-                borderBottom: '1px solid #E5E7EB',
+                background: 'var(--bg-elevated)',
+                borderBottom: '1px solid var(--card-border)',
                 gap: '8px',
                 fontSize: '14px',
                 fontWeight: 600,
-                color: '#111827',
+                color: 'var(--text-primary)',
               }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
@@ -2665,11 +2665,11 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
             <div style={{ padding: '24px' }}>
               {/* Slug */}
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   URL Slug
                 </label>
                 <div className="flex items-center" style={{ gap: '8px' }}>
-                  <span style={{ fontSize: '13px', color: '#9CA3AF' }}>/library/asset/</span>
+                  <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>/library/asset/</span>
                   <input
                     type="text"
                     value={formData.slug}
@@ -2678,7 +2678,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                     style={{
                       flex: 1,
                       padding: '11px 14px',
-                      border: '1px solid #E5E7EB',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '14px',
                     }}
@@ -2688,7 +2688,7 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
 
               {/* Meta Description */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '8px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   Meta Description
                 </label>
                 <textarea
@@ -2697,13 +2697,13 @@ export default function AssetEditorPage({ params }: { params: Promise<{ slug: st
                   style={{
                     width: '100%',
                     padding: '11px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                     resize: 'vertical',
                   }}
                 />
-                <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '6px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>
                   Recommended: 150-160 characters for optimal SEO
                 </div>
               </div>

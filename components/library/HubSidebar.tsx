@@ -166,10 +166,13 @@ export function HubSidebar({ activeHub }: HubSidebarProps) {
                   <span className="flex-1">{hub.name}</span>
                   {/* Count */}
                   <span
-                    className="text-[11px] px-2 py-0.5 rounded-full"
+                    className="text-[11px] rounded-full"
                     style={{
-                      color: 'var(--text-muted)',
-                      backgroundColor: 'var(--bg-page)',
+                      padding: isActive ? '3px 10px' : '2px 8px',
+                      color: isActive ? '#FFFFFF' : 'var(--text-muted)',
+                      backgroundColor: isActive ? '#1A1A1A' : 'var(--bg-page)',
+                      fontWeight: isActive ? 600 : 400,
+                      fontSize: isActive ? '12px' : '11px',
                     }}
                   >
                     {hub.count}

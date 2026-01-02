@@ -16,6 +16,7 @@ export async function GET() {
         lightColor: boards.lightColor,
         accentColor: boards.accentColor,
         sortOrder: boards.sortOrder,
+        showRecentlyAdded: boards.showRecentlyAdded,
       })
       .from(boards)
       .orderBy(boards.sortOrder);
@@ -65,7 +66,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { slug, name, icon, color, lightColor, accentColor, sortOrder } = body;
+    const { slug, name, icon, color, lightColor, accentColor, sortOrder, showRecentlyAdded } = body;
 
     if (!slug || !name || !color || !lightColor || !accentColor) {
       return NextResponse.json(
@@ -84,6 +85,7 @@ export async function POST(request: Request) {
         lightColor,
         accentColor,
         sortOrder: sortOrder || 0,
+        showRecentlyAdded: showRecentlyAdded || false,
       })
       .returning();
 

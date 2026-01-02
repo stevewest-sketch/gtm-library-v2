@@ -66,10 +66,10 @@ export default function AnalyticsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
             Analytics
           </h1>
-          <p style={{ fontSize: '14px', color: '#4B5563' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
             Track content performance and user engagement across your library.
           </p>
         </div>
@@ -78,10 +78,10 @@ export default function AnalyticsPage() {
           onChange={(e) => setTimeRange(e.target.value)}
           style={{
             padding: '10px 36px 10px 14px',
-            border: '1px solid #E5E7EB',
+            border: '1px solid var(--card-border)',
             borderRadius: '8px',
             fontSize: '14px',
-            background: 'white',
+            background: 'var(--card-bg)',
             cursor: 'pointer',
             appearance: 'none',
             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
@@ -99,12 +99,12 @@ export default function AnalyticsPage() {
       {error && (
         <div
           style={{
-            background: '#FEF2F2',
-            border: '1px solid #FECACA',
+            background: 'rgba(239, 68, 68, 0.15)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
             borderRadius: '8px',
             padding: '16px',
             marginBottom: '24px',
-            color: '#B91C1C',
+            color: '#EF4444',
             fontSize: '14px',
           }}
         >
@@ -154,8 +154,8 @@ export default function AnalyticsPage() {
         {/* Top Assets */}
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -164,10 +164,10 @@ export default function AnalyticsPage() {
             className="flex items-center justify-between"
             style={{
               padding: '16px 20px',
-              borderBottom: '1px solid #E5E7EB',
+              borderBottom: '1px solid var(--card-border)',
             }}
           >
-            <h2 style={{ fontSize: '15px', fontWeight: 600, color: '#111827' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>
               Top Performing Assets
             </h2>
             <Link href="/admin/manage" style={{ fontSize: '13px', color: '#8C69F0', textDecoration: 'none' }}>
@@ -176,11 +176,11 @@ export default function AnalyticsPage() {
           </div>
           <div>
             {loading ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+              <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                 Loading...
               </div>
             ) : topAssets.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+              <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                 No data available yet
               </div>
             ) : (
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
                     className="flex items-center"
                     style={{
                       padding: '14px 20px',
-                      borderBottom: index < topAssets.length - 1 ? '1px solid #F3F4F6' : 'none',
+                      borderBottom: index < topAssets.length - 1 ? '1px solid var(--card-border)' : 'none',
                       gap: '16px',
                       textDecoration: 'none',
                       color: 'inherit',
@@ -203,14 +203,14 @@ export default function AnalyticsPage() {
                       style={{
                         width: '24px',
                         height: '24px',
-                        background: '#F3F4F6',
+                        background: 'var(--bg-elevated)',
                         borderRadius: '6px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '12px',
                         fontWeight: 600,
-                        color: '#6B7280',
+                        color: 'var(--text-muted)',
                       }}
                     >
                       {index + 1}
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
                         style={{
                           fontSize: '14px',
                           fontWeight: 500,
-                          color: '#111827',
+                          color: 'var(--text-primary)',
                           marginBottom: '2px',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -245,16 +245,16 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="flex items-center" style={{ gap: '16px' }}>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {asset.views.toLocaleString()}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#9CA3AF' }}>views</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>views</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {asset.shares.toLocaleString()}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#9CA3AF' }}>shares</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>shares</div>
                       </div>
                     </div>
                   </Link>
@@ -267,8 +267,8 @@ export default function AnalyticsPage() {
         {/* Hub Usage */}
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -277,10 +277,10 @@ export default function AnalyticsPage() {
             className="flex items-center justify-between"
             style={{
               padding: '16px 20px',
-              borderBottom: '1px solid #E5E7EB',
+              borderBottom: '1px solid var(--card-border)',
             }}
           >
-            <h2 style={{ fontSize: '15px', fontWeight: 600, color: '#111827' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>
               Views by Hub
             </h2>
             <Link href="/admin/manage/boards" style={{ fontSize: '13px', color: '#8C69F0', textDecoration: 'none' }}>
@@ -289,11 +289,11 @@ export default function AnalyticsPage() {
           </div>
           <div style={{ padding: '20px' }}>
             {loading ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+              <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                 Loading...
               </div>
             ) : viewsByHub.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+              <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                 No data available yet
               </div>
             ) : (
@@ -321,21 +321,21 @@ export default function AnalyticsPage() {
                           style={{
                             fontSize: '14px',
                             fontWeight: 500,
-                            color: '#111827',
+                            color: 'var(--text-primary)',
                             textTransform: 'capitalize',
                           }}
                         >
                           {hub.hub}
                         </span>
                       </div>
-                      <span style={{ fontSize: '13px', color: '#6B7280' }}>
+                      <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                         {hub.views.toLocaleString()} views
                       </span>
                     </div>
                     <div
                       style={{
                         height: '8px',
-                        background: '#F3F4F6',
+                        background: 'var(--bg-elevated)',
                         borderRadius: '4px',
                         overflow: 'hidden',
                       }}
@@ -350,7 +350,7 @@ export default function AnalyticsPage() {
                         }}
                       />
                     </div>
-                    <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
                       {hub.assets} assets
                     </div>
                   </div>
@@ -368,26 +368,26 @@ function StatCard({ label, value, loading }: { label: string; value: string; loa
   return (
     <div
       style={{
-        background: 'white',
-        border: '1px solid #E5E7EB',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--card-border)',
         borderRadius: '12px',
         padding: '20px',
       }}
     >
-      <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '8px' }}>
+      <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
         {label}
       </div>
       {loading ? (
         <div
           style={{
             height: '36px',
-            background: '#F3F4F6',
+            background: 'var(--bg-elevated)',
             borderRadius: '6px',
             animation: 'pulse 1.5s ease-in-out infinite',
           }}
         />
       ) : (
-        <span style={{ fontSize: '28px', fontWeight: 700, color: '#111827' }}>
+        <span style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text-primary)' }}>
           {value}
         </span>
       )}

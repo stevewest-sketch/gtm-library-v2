@@ -105,6 +105,7 @@ export const boards = pgTable('boards', {
   accentColor: text('accent_color').notNull(),
   defaultView: text('default_view').default('grid'), // 'grid' | 'stack'
   sortOrder: integer('sort_order').default(0),
+  showRecentlyAdded: boolean('show_recently_added').default(false), // Show Recently Added carousel
 
   // Hero section configuration
   heroStats: jsonb('hero_stats').$type<HubStat[]>(), // Stats shown in hub hero section

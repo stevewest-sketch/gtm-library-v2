@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Library Complete Design System v4</title>
+    <style>
+        /* ==========================================
+           GTM LIBRARY DESIGN SYSTEM v4
+           COMPLETE VISUAL REFERENCE
+           ========================================== */
+
+        :root {
+            /* Core Dark Mode */
+            --bg-base: #0D0D12;
+            --bg-surface: #16161D;
+            --bg-elevated: #1E1E28;
+            --bg-hover: #252530;
+            --bg-input: #1A1A24;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-content-bright: #B794FF;
+            --hub-content-bg: rgba(140, 105, 240, 0.15);
+            --hub-content-border: rgba(140, 105, 240, 0.25);
+            
+            --hub-enablement: #22C55E;
+            --hub-enablement-bright: #4ADE80;
+            --hub-enablement-bg: rgba(34, 197, 94, 0.15);
+            --hub-enablement-border: rgba(34, 197, 94, 0.25);
+            
+            --hub-coe: #F59E0B;
+            --hub-coe-bright: #FBBF24;
+            --hub-coe-bg: rgba(245, 158, 11, 0.15);
+            --hub-coe-border: rgba(245, 158, 11, 0.25);
+
+            /* NEON Badge Colors */
+            --badge-red-bg: rgba(255, 80, 80, 0.18);
+            --badge-red-text: #FF5555;
+            --badge-red-border: rgba(255, 80, 80, 0.30);
+            
+            --badge-orange-bg: rgba(255, 160, 0, 0.18);
+            --badge-orange-text: #FFA500;
+            --badge-orange-border: rgba(255, 160, 0, 0.30);
+            
+            --badge-yellow-bg: rgba(255, 230, 0, 0.18);
+            --badge-yellow-text: #FFE600;
+            --badge-yellow-border: rgba(255, 230, 0, 0.30);
+            
+            --badge-green-bg: rgba(0, 255, 135, 0.18);
+            --badge-green-text: #00FF87;
+            --badge-green-border: rgba(0, 255, 135, 0.30);
+            
+            --badge-blue-bg: rgba(0, 170, 255, 0.18);
+            --badge-blue-text: #00AAFF;
+            --badge-blue-border: rgba(0, 170, 255, 0.30);
+            
+            --badge-purple-bg: rgba(180, 100, 255, 0.18);
+            --badge-purple-text: #B464FF;
+            --badge-purple-border: rgba(180, 100, 255, 0.30);
+            
+            --badge-pink-bg: rgba(255, 80, 180, 0.18);
+            --badge-pink-text: #FF50B4;
+            --badge-pink-border: rgba(255, 80, 180, 0.30);
+            
+            --badge-teal-bg: rgba(0, 255, 220, 0.18);
+            --badge-teal-text: #00FFDC;
+            --badge-teal-border: rgba(0, 255, 220, 0.30);
+            
+            --badge-violet-bg: rgba(160, 80, 255, 0.18);
+            --badge-violet-text: #A050FF;
+            --badge-violet-border: rgba(160, 80, 255, 0.30);
+
+            /* Status */
+            --badge-new-bg: rgba(0, 255, 135, 0.20);
+            --badge-new-text: #00FF87;
+            --badge-new-border: rgba(0, 255, 135, 0.40);
+            
+            --badge-featured-bg: rgba(255, 160, 0, 0.20);
+            --badge-featured-text: #FFA500;
+            --badge-featured-border: rgba(255, 160, 0, 0.40);
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+            --border-hover: rgba(255, 255, 255, 0.15);
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 40px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        /* Header */
+        .header {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #FF5555, #FFA500, #FFE600, #00FF87, #00AAFF, #B464FF, #FF50B4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: var(--badge-green-bg);
+            color: var(--badge-green-text);
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 12px;
+        }
+
+        /* Sections */
+        .section {
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .section h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        /* Badge base */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* NEON Badge Classes */
+        .badge-red { background: var(--badge-red-bg); color: var(--badge-red-text); border-color: var(--badge-red-border); }
+        .badge-orange { background: var(--badge-orange-bg); color: var(--badge-orange-text); border-color: var(--badge-orange-border); }
+        .badge-yellow { background: var(--badge-yellow-bg); color: var(--badge-yellow-text); border-color: var(--badge-yellow-border); }
+        .badge-green { background: var(--badge-green-bg); color: var(--badge-green-text); border-color: var(--badge-green-border); }
+        .badge-blue { background: var(--badge-blue-bg); color: var(--badge-blue-text); border-color: var(--badge-blue-border); }
+        .badge-purple { background: var(--badge-purple-bg); color: var(--badge-purple-text); border-color: var(--badge-purple-border); }
+        .badge-pink { background: var(--badge-pink-bg); color: var(--badge-pink-text); border-color: var(--badge-pink-border); }
+        .badge-teal { background: var(--badge-teal-bg); color: var(--badge-teal-text); border-color: var(--badge-teal-border); }
+        .badge-violet { background: var(--badge-violet-bg); color: var(--badge-violet-text); border-color: var(--badge-violet-border); }
+
+        /* Hub badges */
+        .badge-hub-content { background: var(--hub-content-bg); color: var(--hub-content-bright); border-color: var(--hub-content-border); }
+        .badge-hub-enablement { background: var(--hub-enablement-bg); color: var(--hub-enablement-bright); border-color: var(--hub-enablement-border); }
+        .badge-hub-coe { background: var(--hub-coe-bg); color: var(--hub-coe-bright); border-color: var(--hub-coe-border); }
+
+        /* Status badges */
+        .badge-new { background: var(--badge-new-bg); color: var(--badge-new-text); border-color: var(--badge-new-border); }
+        .badge-featured { background: var(--badge-featured-bg); color: var(--badge-featured-text); border-color: var(--badge-featured-border); }
+
+        /* Color Table */
+        .color-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .color-table th, .color-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .color-table th {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            background: var(--bg-elevated);
+        }
+
+        .color-table code {
+            background: var(--bg-base);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Monaco', monospace;
+        }
+
+        .swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 12px;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .asset-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all 0.2s ease;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .asset-card.content:hover { border-color: var(--hub-content); }
+        .asset-card.enablement:hover { border-color: var(--hub-enablement); }
+        .asset-card.coe:hover { border-color: var(--hub-coe); }
+
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .card-badges-left { display: flex; gap: 6px; flex-wrap: wrap; }
+        .card-badges-right { display: flex; gap: 6px; }
+        .card-badges-left .badge, .card-badges-right .badge { margin: 0; }
+
+        .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+        .card-desc { font-size: 13px; color: var(--text-secondary); flex-grow: 1; }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 12px;
+        }
+
+        .card-date { color: var(--text-muted); }
+        .card-cta { font-weight: 600; }
+        .card-cta.content { color: var(--hub-content-bright); }
+        .card-cta.enablement { color: var(--hub-enablement-bright); }
+        .card-cta.coe { color: var(--hub-coe-bright); }
+
+        /* Hub Cards */
+        .hub-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+
+        .hub-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+
+        .hub-card.content::before { background: var(--hub-content); }
+        .hub-card.enablement::before { background: var(--hub-enablement); }
+        .hub-card.coe::before { background: var(--hub-coe); }
+
+        .hub-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        .hub-card.content:hover { border-color: var(--hub-content); }
+        .hub-card.enablement:hover { border-color: var(--hub-enablement); }
+        .hub-card.coe:hover { border-color: var(--hub-coe); }
+
+        .hub-card-icon { font-size: 28px; margin-bottom: 12px; }
+        .hub-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .hub-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+        .hub-card-link { font-size: 13px; font-weight: 600; }
+        .hub-card.content .hub-card-link { color: var(--hub-content-bright); }
+        .hub-card.enablement .hub-card-link { color: var(--hub-enablement-bright); }
+        .hub-card.coe .hub-card-link { color: var(--hub-coe-bright); }
+
+        /* Admin Components */
+        .admin-nav {
+            display: flex;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            padding: 6px;
+            gap: 4px;
+            margin-top: 16px;
+        }
+
+        .admin-nav-item {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .admin-nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .admin-nav-item.active { background: var(--hub-content); color: white; }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 16px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-default);
+        }
+
+        .admin-table thead { background: #1A1A24; }
+        .admin-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .admin-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .admin-table tr:hover td { background: var(--bg-elevated); }
+
+        .table-action {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        .table-action.edit { background: var(--badge-blue-bg); color: var(--badge-blue-text); }
+        .table-action.delete { background: var(--badge-red-bg); color: var(--badge-red-text); }
+
+        /* Forms */
+        .form-row { display: flex; gap: 16px; margin-top: 16px; }
+        .form-group { flex: 1; }
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hub-content);
+            box-shadow: 0 0 0 3px var(--hub-content-bg);
+        }
+
+        .btn {
+            display: inline-flex;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-top: 16px;
+        }
+        .btn-primary { background: var(--hub-content); color: white; }
+        .btn-secondary { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border-default); }
+
+        /* Key Changes Box */
+        .key-changes {
+            background: linear-gradient(135deg, rgba(0, 255, 135, 0.1), rgba(180, 100, 255, 0.1));
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .key-changes h3 {
+            color: var(--badge-green-text);
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .key-changes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .key-changes li {
+            padding: 6px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .key-changes li::before {
+            content: "✓ ";
+            color: var(--badge-green-text);
+        }
+
+        .highlight { color: var(--badge-green-text); font-weight: 600; }
+        .highlight-pink { color: var(--badge-pink-text); font-weight: 600; }
+        .highlight-violet { color: var(--badge-violet-text); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>GTM Library Design System <span class="version-badge">v4 NEON</span></h1>
+            <p class="subtitle">Complete visual reference for implementation — All types have bright colors, no gray badges</p>
+        </header>
+
+        <!-- Key Changes -->
+        <div class="key-changes">
+            <h3>✨ Key Changes in v4</h3>
+            <ul>
+                <li>All type badge colors are now <span class="highlight">NEON bright</span> — maximum saturation</li>
+                <li><span class="highlight">NO gray types</span> — every type has a vibrant color</li>
+                <li>Purple typography is <span class="highlight">brighter</span> (#B464FF vs old #A78BFA)</li>
+                <li><span class="highlight">Playbook</span> moved to GREEN (training category)</li>
+                <li><span class="highlight-pink">Article</span> moved to PINK (messaging category)</li>
+                <li><span class="highlight-violet">Internal</span> moved to VIOLET (new special category)</li>
+                <li>Admin nav renamed: "Boards" → "Hubs"</li>
+            </ul>
+        </div>
+
+        <!-- Section 1: NEON Colors -->
+        <div class="section">
+            <h2>1. NEON Type Badge Colors</h2>
+            <p class="section-desc">9 color families with maximum brightness. No gray — unknown types fall back to violet.</p>
+
+            <table class="color-table">
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Hex</th>
+                        <th>Preview</th>
+                        <th>Types</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="swatch" style="background: #FF5555; color: #FF5555;"></span> Neon Red</td>
+                        <td><code>#FF5555</code></td>
+                        <td><span class="badge badge-red">Battlecard</span></td>
+                        <td>competitive, battlecard, certification, competitors</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #FFA500; color: #FFA500;"></span> Neon Orange</td>
+                        <td><code>#FFA500</code></td>
+                        <td><span class="badge badge-orange">Calculator</span></td>
+                        <td>calculator, one-pager, implementation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #FFE600; color: #FFE600;"></span> Neon Yellow</td>
+                        <td><code>#FFE600</code></td>
+                        <td><span class="badge badge-yellow">Template</span></td>
+                        <td>template, case-study, proof-point, benchmark</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #00FF87; color: #00FF87;"></span> Neon Green</td>
+                        <td><code>#00FF87</code></td>
+                        <td><span class="badge badge-green">Training</span></td>
+                        <td>training, course, <strong>playbook</strong>, customer-example</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #00AAFF; color: #00AAFF;"></span> Neon Blue</td>
+                        <td><code>#00AAFF</code></td>
+                        <td><span class="badge badge-blue">Demo</span></td>
+                        <td>demo, report, dashboard, guide</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #B464FF; color: #B464FF;"></span> Neon Purple</td>
+                        <td><code>#B464FF</code></td>
+                        <td><span class="badge badge-purple">Deck</span></td>
+                        <td>deck, keynote, slides, gladly</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #FF50B4; color: #FF50B4;"></span> Neon Pink</td>
+                        <td><code>#FF50B4</code></td>
+                        <td><span class="badge badge-pink">Messaging</span></td>
+                        <td>messaging, sequence, <strong>article</strong>, press, promo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #00FFDC; color: #00FFDC;"></span> Neon Teal</td>
+                        <td><code>#00FFDC</code></td>
+                        <td><span class="badge badge-teal">Tool</span></td>
+                        <td>tool, document, guides, journeys</td>
+                    </tr>
+                    <tr>
+                        <td><span class="swatch" style="background: #A050FF; color: #A050FF;"></span> Neon Violet</td>
+                        <td><code>#A050FF</code></td>
+                        <td><span class="badge badge-violet">Internal</span></td>
+                        <td><strong>internal</strong>, web-link (+ fallback)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section 2: All Type Badges -->
+        <div class="section">
+            <h2>2. Complete Type Badge Library</h2>
+            <p class="section-desc">All types organized by color family.</p>
+
+            <h3>🔴 Red — Competitive</h3>
+            <div>
+                <span class="badge badge-red">Battlecard</span>
+                <span class="badge badge-red">Competitive</span>
+                <span class="badge badge-red">Certification</span>
+                <span class="badge badge-red">Value Realization</span>
+                <span class="badge badge-red">Zendesk</span>
+                <span class="badge badge-red">Intercom</span>
+                <span class="badge badge-red">Salesforce</span>
+                <span class="badge badge-red">Partner</span>
+            </div>
+
+            <h3>🟠 Orange — Calculators</h3>
+            <div>
+                <span class="badge badge-orange">Calculator</span>
+                <span class="badge badge-orange">One-Pager</span>
+                <span class="badge badge-orange">Impl</span>
+            </div>
+
+            <h3>🟡 Yellow — Templates & Proof</h3>
+            <div>
+                <span class="badge badge-yellow">Template</span>
+                <span class="badge badge-yellow">Case Study</span>
+                <span class="badge badge-yellow">Proof Point</span>
+                <span class="badge badge-yellow">Meeting Asset</span>
+                <span class="badge badge-yellow">Benchmark</span>
+                <span class="badge badge-yellow">Customer Quote</span>
+            </div>
+
+            <h3>🟢 Green — Training (includes Playbook)</h3>
+            <div>
+                <span class="badge badge-green">GTM Training</span>
+                <span class="badge badge-green">Product Training</span>
+                <span class="badge badge-green">Technical Training</span>
+                <span class="badge badge-green">Course</span>
+                <span class="badge badge-green">Playbook</span>
+                <span class="badge badge-green">Live Replay</span>
+                <span class="badge badge-green">On Demand</span>
+                <span class="badge badge-green">Customer Example</span>
+                <span class="badge badge-green">CSM</span>
+            </div>
+
+            <h3>🔵 Blue — Demo & Reports</h3>
+            <div>
+                <span class="badge badge-blue">Demo</span>
+                <span class="badge badge-blue">Demo Video</span>
+                <span class="badge badge-blue">Report</span>
+                <span class="badge badge-blue">Dashboard</span>
+                <span class="badge badge-blue">Guide</span>
+                <span class="badge badge-blue">Best Practice</span>
+                <span class="badge badge-blue">Voice</span>
+                <span class="badge badge-blue">Copilot</span>
+            </div>
+
+            <h3>🟣 Purple — Decks</h3>
+            <div>
+                <span class="badge badge-purple">Deck</span>
+                <span class="badge badge-purple">Keynote</span>
+                <span class="badge badge-purple">Slides</span>
+                <span class="badge badge-purple">Gladly</span>
+                <span class="badge badge-purple">Sales</span>
+                <span class="badge badge-purple">AE</span>
+            </div>
+
+            <h3>🩷 Pink — Messaging (includes Article)</h3>
+            <div>
+                <span class="badge badge-pink">Messaging</span>
+                <span class="badge badge-pink">Sequence</span>
+                <span class="badge badge-pink">Article</span>
+                <span class="badge badge-pink">Press</span>
+                <span class="badge badge-pink">Promo</span>
+                <span class="badge badge-pink">Mktg</span>
+            </div>
+
+            <h3>🩵 Teal — Tools</h3>
+            <div>
+                <span class="badge badge-teal">GTM Tool</span>
+                <span class="badge badge-teal">Tool</span>
+                <span class="badge badge-teal">Document</span>
+                <span class="badge badge-teal">Guides</span>
+                <span class="badge badge-teal">Journeys</span>
+                <span class="badge badge-teal">SC</span>
+                <span class="badge badge-teal">PS</span>
+            </div>
+
+            <h3>💜 Violet — Internal (NEW)</h3>
+            <div>
+                <span class="badge badge-violet">Internal</span>
+                <span class="badge badge-violet">Web Link</span>
+            </div>
+        </div>
+
+        <!-- Section 3: Status & Format Badges -->
+        <div class="section">
+            <h2>3. Status & Format Badges</h2>
+            
+            <h3>Status Badges (Top Right of Card)</h3>
+            <div>
+                <span class="badge badge-new">New</span>
+                <span class="badge badge-featured">Featured</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                NEW = Auto if createdAt within 14 days | FEATURED = Manual isFeatured flag
+            </p>
+
+            <h3>Format Badges (Hub-Colored)</h3>
+            <div style="display: flex; gap: 32px;">
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Content Hub:</p>
+                    <span class="badge badge-hub-content">Slides</span>
+                    <span class="badge badge-hub-content">PDF</span>
+                    <span class="badge badge-hub-content">Video</span>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Enablement Hub:</p>
+                    <span class="badge badge-hub-enablement">Live Replay</span>
+                    <span class="badge badge-hub-enablement">Course</span>
+                    <span class="badge badge-hub-enablement">On Demand</span>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">CoE Hub:</p>
+                    <span class="badge badge-hub-coe">Document</span>
+                    <span class="badge badge-hub-coe">PDF</span>
+                    <span class="badge badge-hub-coe">Article</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Hub Cards -->
+        <div class="section">
+            <h2>4. Hub Cards (Homepage)</h2>
+            <p class="section-desc">Three primary hubs with colored top bars and hover borders.</p>
+
+            <div class="hub-cards">
+                <div class="hub-card content">
+                    <div class="hub-card-icon">📝</div>
+                    <h4>Content Library</h4>
+                    <p>Sales decks, battlecards, one-pagers, templates</p>
+                    <span class="hub-card-link">Browse Content →</span>
+                </div>
+                <div class="hub-card enablement">
+                    <div class="hub-card-icon">🎓</div>
+                    <h4>Enablement Hub</h4>
+                    <p>Training, courses, live replays, playbooks</p>
+                    <span class="hub-card-link">Start Learning →</span>
+                </div>
+                <div class="hub-card coe">
+                    <div class="hub-card-icon">🎯</div>
+                    <h4>Center of Excellence</h4>
+                    <p>Best practices, proof points, case studies</p>
+                    <span class="hub-card-link">Explore CoE →</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Asset Cards -->
+        <div class="section">
+            <h2>5. Asset Cards</h2>
+            <p class="section-desc">Card layout with type badge (left), format badge (hub-colored), status badge (right), and hub-colored CTA.</p>
+
+            <div class="card-grid">
+                <div class="asset-card content">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-red">Battlecard</span>
+                            <span class="badge badge-hub-content">PDF</span>
+                        </div>
+                        <div class="card-badges-right">
+                            <span class="badge badge-featured">Featured</span>
+                        </div>
+                    </div>
+                    <h3 class="card-title">Zendesk Sidekick Battle Card</h3>
+                    <p class="card-desc">Competitive positioning vs Zendesk AI</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta content">View →</span>
+                    </div>
+                </div>
+
+                <div class="asset-card enablement">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">Playbook</span>
+                            <span class="badge badge-hub-enablement">Document</span>
+                        </div>
+                        <div class="card-badges-right">
+                            <span class="badge badge-new">New</span>
+                        </div>
+                    </div>
+                    <h3 class="card-title">Discovery Call Playbook</h3>
+                    <p class="card-desc">Step-by-step guide for discovery</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 31, 2025</span>
+                        <span class="card-cta enablement">View →</span>
+                    </div>
+                </div>
+
+                <div class="asset-card content">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-pink">Article</span>
+                            <span class="badge badge-hub-content">Web Link</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">CX Trends 2025 Blog</h3>
+                    <p class="card-desc">Industry analysis and positioning</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 15, 2025</span>
+                        <span class="card-cta content">Read →</span>
+                    </div>
+                </div>
+
+                <div class="asset-card coe">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-violet">Internal</span>
+                            <span class="badge badge-hub-coe">Document</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">Q4 Strategy Brief</h3>
+                    <p class="card-desc">Internal GTM strategy document</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 1, 2025</span>
+                        <span class="card-cta coe">View →</span>
+                    </div>
+                </div>
+
+                <div class="asset-card enablement">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">GTM Training</span>
+                            <span class="badge badge-hub-enablement">Live Replay</span>
+                        </div>
+                        <div class="card-badges-right">
+                            <span class="badge badge-new">New</span>
+                        </div>
+                    </div>
+                    <h3 class="card-title">Q4 All Hands Kick Off</h3>
+                    <p class="card-desc">GTM strategy and execution plan</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 31, 2025</span>
+                        <span class="card-cta enablement">Watch →</span>
+                    </div>
+                </div>
+
+                <div class="asset-card coe">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-yellow">Proof Point</span>
+                            <span class="badge badge-hub-coe">Document</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">87% AI Resolution Rate</h3>
+                    <p class="card-desc">Rothy's customer success metric</p>
+                    <div class="card-footer">
+                        <span class="card-date">Nov 2025</span>
+                        <span class="card-cta coe">View →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Admin Components -->
+        <div class="section">
+            <h2>6. Admin Components</h2>
+            <p class="section-desc">Dark mode admin interface with updated navigation (Boards → Hubs).</p>
+
+            <h3>Admin Navigation</h3>
+            <nav class="admin-nav">
+                <span class="admin-nav-item active">Assets</span>
+                <span class="admin-nav-item">Import</span>
+                <span class="admin-nav-item">Tags</span>
+                <span class="admin-nav-item">Hubs</span>
+                <span class="admin-nav-item">Taxonomy</span>
+                <span class="admin-nav-item">Analytics</span>
+            </nav>
+
+            <h3>Admin Table</h3>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Hub</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>First Meeting Deck 2.0</td>
+                        <td><span class="badge badge-yellow">Template</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td><span class="badge badge-featured">Featured</span></td>
+                        <td>
+                            <button class="table-action edit">Edit</button>
+                            <button class="table-action delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Discovery Call Playbook</td>
+                        <td><span class="badge badge-green">Playbook</span></td>
+                        <td><span class="badge badge-hub-enablement">Enablement</span></td>
+                        <td><span class="badge badge-new">New</span></td>
+                        <td>
+                            <button class="table-action edit">Edit</button>
+                            <button class="table-action delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CX Trends Article</td>
+                        <td><span class="badge badge-pink">Article</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td>—</td>
+                        <td>
+                            <button class="table-action edit">Edit</button>
+                            <button class="table-action delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Q4 Strategy Brief</td>
+                        <td><span class="badge badge-violet">Internal</span></td>
+                        <td><span class="badge badge-hub-coe">CoE</span></td>
+                        <td>—</td>
+                        <td>
+                            <button class="table-action edit">Edit</button>
+                            <button class="table-action delete">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Form Elements</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Asset Title</label>
+                    <input type="text" class="form-input" placeholder="Enter title...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hub</label>
+                    <select class="form-input">
+                        <option>Select hub...</option>
+                        <option>Content</option>
+                        <option>Enablement</option>
+                        <option>CoE</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary">Save Asset</button>
+                <button class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -744,12 +744,12 @@ function ManageAssetsContent() {
       >
         {/* Search */}
         <div
-          className="flex items-center"
+          className="flex items-center search-input"
           style={{
             gap: '10px',
             padding: '10px 14px',
-            background: 'white',
-            border: '1px solid var(--card-border)',
+            background: 'var(--bg-surface, white)',
+            border: '1px solid var(--border-default, var(--card-border))',
             borderRadius: '8px',
             flex: 1,
             minWidth: '240px',
@@ -777,6 +777,8 @@ function ManageAssetsContent() {
               outline: 'none',
               fontSize: '14px',
               fontFamily: 'inherit',
+              background: 'transparent',
+              color: 'var(--text-primary)',
             }}
           />
         </div>
@@ -785,14 +787,15 @@ function ManageAssetsContent() {
         <select
           value={hubFilter}
           onChange={(e) => setHubFilter(e.target.value)}
+          className="form-select"
           style={{
             padding: '10px 36px 10px 14px',
-            border: '1px solid var(--card-border)',
+            border: '1px solid var(--border-default, var(--card-border))',
             borderRadius: '8px',
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--bg-surface, white) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -815,7 +818,7 @@ function ManageAssetsContent() {
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -840,7 +843,7 @@ function ManageAssetsContent() {
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -865,7 +868,7 @@ function ManageAssetsContent() {
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -890,7 +893,7 @@ function ManageAssetsContent() {
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -969,7 +972,7 @@ function ManageAssetsContent() {
               onClick={handleCancelChanges}
               style={{
                 padding: '10px 18px',
-                background: 'white',
+                background: 'var(--card-bg)',
                 border: '1px solid var(--card-border)',
                 borderRadius: '8px',
                 color: 'var(--text-secondary)',
@@ -985,7 +988,7 @@ function ManageAssetsContent() {
               disabled={pendingChangeCount === 0 || savingChanges}
               style={{
                 padding: '10px 18px',
-                background: pendingChangeCount > 0 ? '#10B981' : '#9CA3AF',
+                background: pendingChangeCount > 0 ? '#10B981' : 'var(--text-muted)',
                 border: 'none',
                 borderRadius: '8px',
                 color: 'white',
@@ -1005,7 +1008,7 @@ function ManageAssetsContent() {
             style={{
               gap: '8px',
               padding: '10px 18px',
-              background: 'white',
+              background: 'var(--card-bg)',
               border: '1px solid var(--card-border)',
               borderRadius: '8px',
               color: 'var(--text-primary)',
@@ -1328,7 +1331,7 @@ function ManageAssetsContent() {
       {/* Table */}
       <div
         style={{
-          background: 'white',
+          background: 'var(--card-bg)',
           border: '1px solid var(--card-border)',
           borderRadius: '12px',
           overflow: 'hidden',
@@ -1340,13 +1343,13 @@ function ManageAssetsContent() {
           style={{
             gridTemplateColumns: '44px 1fr 80px 100px 80px 120px 70px 80px 60px 48px',
             padding: '14px 20px',
-            background: '#F9FAFB',
+            background: 'var(--bg-elevated)',
             borderBottom: '1px solid var(--card-border)',
             fontSize: '11px',
             fontWeight: 600,
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            color: '#6B7280',
+            color: 'var(--text-muted)',
           }}
         >
           <div className="flex items-center">
@@ -1393,7 +1396,7 @@ function ManageAssetsContent() {
                 style={{
                   gridTemplateColumns: '44px 1fr 80px 100px 80px 120px 70px 80px 60px 48px',
                   padding: '14px 20px',
-                  borderBottom: '1px solid #F3F4F6',
+                  borderBottom: '1px solid var(--bg-elevated)',
                   background: isSelected ? 'var(--content-light)' : 'transparent',
                   transition: 'background 0.15s ease',
                 }}
@@ -1573,7 +1576,7 @@ function ManageAssetsContent() {
                       style={{
                         gap: '4px',
                         padding: '4px 8px',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                         border: '1px solid var(--card-border)',
                         borderRadius: '4px',
                         fontSize: '11px',
@@ -1587,7 +1590,7 @@ function ManageAssetsContent() {
                             style={{
                               fontSize: '10px',
                               padding: '1px 4px',
-                              background: '#F3F4F6',
+                              background: 'var(--bg-elevated)',
                               borderRadius: '3px',
                               maxWidth: '60px',
                               overflow: 'hidden',
@@ -1616,7 +1619,7 @@ function ManageAssetsContent() {
                           style={{
                             fontSize: '10px',
                             padding: '2px 6px',
-                            background: '#F3F4F6',
+                            background: 'var(--bg-elevated)',
                             borderRadius: '3px',
                             color: 'var(--text-secondary)',
                             overflow: 'hidden',
@@ -1663,7 +1666,7 @@ function ManageAssetsContent() {
                         alignItems: 'center',
                         gap: '4px',
                         padding: '4px 8px',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                         border: '1px solid var(--card-border)',
                         borderRadius: '4px',
                         fontSize: '11px',
@@ -1730,7 +1733,7 @@ function ManageAssetsContent() {
                         position: 'absolute',
                         right: 0,
                         top: '100%',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                         border: '1px solid var(--card-border)',
                         borderRadius: '8px',
                         boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
@@ -1823,7 +1826,7 @@ function ManageAssetsContent() {
                         </svg>
                         Archive
                       </button>
-                      <div style={{ height: '1px', background: '#F3F4F6', margin: '4px 0' }} />
+                      <div style={{ height: '1px', background: 'var(--bg-elevated)', margin: '4px 0' }} />
                       <button
                         onClick={() => handleDeleteSingleAsset(asset)}
                         className="flex items-center w-full"
@@ -1866,7 +1869,7 @@ function ManageAssetsContent() {
             style={{
               padding: '16px 20px',
               borderTop: '1px solid var(--card-border)',
-              background: '#FAFAFA',
+              background: 'var(--bg-elevated)',
             }}
           >
             <div className="flex items-center" style={{ gap: '16px' }}>
@@ -1886,7 +1889,7 @@ function ManageAssetsContent() {
                   fontSize: '12px',
                   fontFamily: 'inherit',
                   background:
-                    "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 8px center",
+                    "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 8px center",
                   cursor: 'pointer',
                   appearance: 'none',
                   color: 'var(--text-secondary)',
@@ -1907,7 +1910,7 @@ function ManageAssetsContent() {
                   padding: '8px 14px',
                   border: '1px solid var(--card-border)',
                   borderRadius: '6px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '13px',
                   fontFamily: 'inherit',
                   color: 'var(--text-secondary)',
@@ -1970,7 +1973,7 @@ function ManageAssetsContent() {
                   padding: '8px 14px',
                   border: '1px solid var(--card-border)',
                   borderRadius: '6px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '13px',
                   fontFamily: 'inherit',
                   color: 'var(--text-secondary)',
@@ -2001,7 +2004,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '420px',
@@ -2009,17 +2012,17 @@ function ManageAssetsContent() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid #E5E7EB' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '4px' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                 Add to Board
               </h3>
-              <p style={{ fontSize: '13px', color: '#6B7280' }}>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                 Select boards for {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
               </p>
             </div>
             <div style={{ padding: '16px 24px', maxHeight: '300px', overflowY: 'auto' }}>
               {boards.length === 0 ? (
-                <p style={{ color: '#6B7280', fontSize: '14px' }}>No boards available</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>No boards available</p>
               ) : (
                 boards.map((board) => (
                   <label
@@ -2029,7 +2032,7 @@ function ManageAssetsContent() {
                       gap: '12px',
                       padding: '10px 0',
                       cursor: 'pointer',
-                      borderBottom: '1px solid #F3F4F6',
+                      borderBottom: '1px solid var(--bg-elevated)',
                     }}
                   >
                     <input
@@ -2056,24 +2059,24 @@ function ManageAssetsContent() {
                         background: board.color,
                       }}
                     />
-                    <span style={{ fontSize: '14px', color: '#111827' }}>{board.name}</span>
+                    <span style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{board.name}</span>
                   </label>
                 ))
               )}
             </div>
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowBoardModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >
@@ -2086,9 +2089,9 @@ function ManageAssetsContent() {
                   padding: '10px 18px',
                   border: 'none',
                   borderRadius: '8px',
-                  background: selectedBoardIds.size > 0 ? '#8C69F0' : '#E5E7EB',
+                  background: selectedBoardIds.size > 0 ? '#8C69F0' : 'var(--card-border)',
                   fontSize: '14px',
-                  color: selectedBoardIds.size > 0 ? 'white' : '#9CA3AF',
+                  color: selectedBoardIds.size > 0 ? 'white' : 'var(--text-muted)',
                   cursor: selectedBoardIds.size > 0 ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -2115,7 +2118,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '420px',
@@ -2123,17 +2126,17 @@ function ManageAssetsContent() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid #E5E7EB' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '4px' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                 Remove from Board
               </h3>
-              <p style={{ fontSize: '13px', color: '#6B7280' }}>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                 Select boards to remove {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''} from
               </p>
             </div>
             <div style={{ padding: '16px 24px', maxHeight: '300px', overflowY: 'auto' }}>
               {selectedAssetsBoards.length === 0 ? (
-                <p style={{ color: '#6B7280', fontSize: '14px' }}>Selected assets are not in any boards</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Selected assets are not in any boards</p>
               ) : (
                 boards
                   .filter(board => selectedAssetsBoards.includes(board.name))
@@ -2145,7 +2148,7 @@ function ManageAssetsContent() {
                         gap: '12px',
                         padding: '10px 0',
                         cursor: 'pointer',
-                        borderBottom: '1px solid #F3F4F6',
+                        borderBottom: '1px solid var(--bg-elevated)',
                       }}
                     >
                       <input
@@ -2172,24 +2175,24 @@ function ManageAssetsContent() {
                           background: board.color,
                         }}
                       />
-                      <span style={{ fontSize: '14px', color: '#111827' }}>{board.name}</span>
+                      <span style={{ fontSize: '14px', color: 'var(--text-primary)' }}>{board.name}</span>
                     </label>
                   ))
               )}
             </div>
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowRemoveBoardModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >
@@ -2202,9 +2205,9 @@ function ManageAssetsContent() {
                   padding: '10px 18px',
                   border: 'none',
                   borderRadius: '8px',
-                  background: selectedBoardIds.size > 0 ? '#EF4444' : '#E5E7EB',
+                  background: selectedBoardIds.size > 0 ? '#EF4444' : 'var(--card-border)',
                   fontSize: '14px',
-                  color: selectedBoardIds.size > 0 ? 'white' : '#9CA3AF',
+                  color: selectedBoardIds.size > 0 ? 'white' : 'var(--text-muted)',
                   cursor: selectedBoardIds.size > 0 ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -2231,7 +2234,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '480px',
@@ -2240,11 +2243,11 @@ function ManageAssetsContent() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid #E5E7EB' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '4px' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--card-border)' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                 Bulk {tagModalMode === 'add' ? 'Add' : 'Remove'} Tags
               </h3>
-              <p style={{ fontSize: '13px', color: '#6B7280' }}>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                 {tagModalMode === 'add' ? 'Add tags to' : 'Remove tags from'} {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
               </p>
             </div>
@@ -2254,7 +2257,7 @@ function ManageAssetsContent() {
               <div
                 className="flex"
                 style={{
-                  background: '#F3F4F6',
+                  background: 'var(--bg-elevated)',
                   borderRadius: '8px',
                   padding: '4px',
                   gap: '4px',
@@ -2336,7 +2339,7 @@ function ManageAssetsContent() {
                   style={{
                     width: '100%',
                     padding: '10px 14px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                     outline: 'none',
@@ -2356,7 +2359,7 @@ function ManageAssetsContent() {
                 }}
               >
                 {filteredModalTags.length === 0 ? (
-                  <p style={{ color: '#6B7280', fontSize: '14px', padding: '8px 0' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14px', padding: '8px 0' }}>
                     {tagModalMode === 'remove' ? 'No tags found on selected assets' : 'No tags available'}
                   </p>
                 ) : (
@@ -2378,7 +2381,7 @@ function ManageAssetsContent() {
                         padding: '8px 14px',
                         border: selectedTagNames.has(tagName)
                           ? `2px solid ${tagModalMode === 'add' ? '#10B981' : '#EF4444'}`
-                          : '1px solid #E5E7EB',
+                          : '1px solid var(--card-border)',
                         borderRadius: '6px',
                         background: selectedTagNames.has(tagName)
                           ? tagModalMode === 'add' ? '#D1FAE5' : '#FEE2E2'
@@ -2386,7 +2389,7 @@ function ManageAssetsContent() {
                         fontSize: '13px',
                         color: selectedTagNames.has(tagName)
                           ? tagModalMode === 'add' ? '#047857' : '#DC2626'
-                          : '#374151',
+                          : 'var(--text-primary)',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -2462,17 +2465,17 @@ function ManageAssetsContent() {
             {/* Footer */}
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowTagModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >
@@ -2487,9 +2490,9 @@ function ManageAssetsContent() {
                   borderRadius: '8px',
                   background: (selectedTagNames.size > 0 || (tagModalMode === 'add' && newTagName.trim()))
                     ? tagModalMode === 'add' ? '#10B981' : '#EF4444'
-                    : '#E5E7EB',
+                    : 'var(--card-border)',
                   fontSize: '14px',
-                  color: (selectedTagNames.size > 0 || (tagModalMode === 'add' && newTagName.trim())) ? 'white' : '#9CA3AF',
+                  color: (selectedTagNames.size > 0 || (tagModalMode === 'add' && newTagName.trim())) ? 'white' : 'var(--text-muted)',
                   cursor: (selectedTagNames.size > 0 || (tagModalMode === 'add' && newTagName.trim())) ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -2518,7 +2521,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '400px',
@@ -2552,10 +2555,10 @@ function ManageAssetsContent() {
                   <line x1="9" y1="15" x2="15" y2="15" />
                 </svg>
               </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Set Type for {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
               </h3>
-              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.5, marginBottom: '16px' }}>
+              <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
                 Select a type to apply to all selected assets.
               </p>
               <select
@@ -2564,11 +2567,11 @@ function ManageAssetsContent() {
                 style={{
                   width: '100%',
                   padding: '12px 14px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontFamily: 'inherit',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   cursor: 'pointer',
                 }}
               >
@@ -2582,17 +2585,17 @@ function ManageAssetsContent() {
             </div>
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowTypeModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >
@@ -2605,9 +2608,9 @@ function ManageAssetsContent() {
                   padding: '10px 18px',
                   border: 'none',
                   borderRadius: '8px',
-                  background: selectedBulkType ? '#8B5CF6' : '#E5E7EB',
+                  background: selectedBulkType ? '#8B5CF6' : 'var(--card-border)',
                   fontSize: '14px',
-                  color: selectedBulkType ? 'white' : '#9CA3AF',
+                  color: selectedBulkType ? 'white' : 'var(--text-muted)',
                   cursor: selectedBulkType ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -2634,7 +2637,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '400px',
@@ -2667,10 +2670,10 @@ function ManageAssetsContent() {
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
               </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Set Format for {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}
               </h3>
-              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.5, marginBottom: '16px' }}>
+              <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '16px' }}>
                 Select a format to apply to all selected assets.
               </p>
               <select
@@ -2679,11 +2682,11 @@ function ManageAssetsContent() {
                 style={{
                   width: '100%',
                   padding: '12px 14px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontFamily: 'inherit',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   cursor: 'pointer',
                 }}
               >
@@ -2697,17 +2700,17 @@ function ManageAssetsContent() {
             </div>
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowFormatModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >
@@ -2720,9 +2723,9 @@ function ManageAssetsContent() {
                   padding: '10px 18px',
                   border: 'none',
                   borderRadius: '8px',
-                  background: selectedBulkFormat ? '#3B82F6' : '#E5E7EB',
+                  background: selectedBulkFormat ? '#3B82F6' : 'var(--card-border)',
                   fontSize: '14px',
-                  color: selectedBulkFormat ? 'white' : '#9CA3AF',
+                  color: selectedBulkFormat ? 'white' : 'var(--text-muted)',
                   cursor: selectedBulkFormat ? 'pointer' : 'not-allowed',
                 }}
               >
@@ -2749,7 +2752,7 @@ function ManageAssetsContent() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '12px',
               width: '100%',
               maxWidth: '400px',
@@ -2782,26 +2785,26 @@ function ManageAssetsContent() {
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                 </svg>
               </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Delete {selectedIds.size} asset{selectedIds.size > 1 ? 's' : ''}?
               </h3>
-              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 This action cannot be undone. The selected assets will be permanently removed from the library.
               </p>
             </div>
             <div
               className="flex justify-end"
-              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid #E5E7EB' }}
+              style={{ gap: '12px', padding: '16px 24px', borderTop: '1px solid var(--card-border)' }}
             >
               <button
                 onClick={() => setShowDeleteModal(false)}
                 style={{
                   padding: '10px 18px',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >

@@ -229,11 +229,12 @@ export default function ImportPage() {
           style={{
             gap: '8px',
             padding: '8px 14px',
-            color: '#4B5563',
+            color: 'var(--text-secondary)',
             textDecoration: 'none',
             fontSize: '13px',
             borderRadius: '6px',
-            border: '1px solid #E5E7EB',
+            border: '1px solid var(--card-border)',
+            background: 'var(--card-bg)',
           }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -242,10 +243,10 @@ export default function ImportPage() {
           Back
         </Link>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
             Import / Export
           </h1>
-          <p style={{ fontSize: '14px', color: '#4B5563' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
             Bulk import and export assets, tags, and boards via CSV.
           </p>
         </div>
@@ -264,8 +265,8 @@ export default function ImportPage() {
               fontSize: '14px',
               fontWeight: 500,
               cursor: 'pointer',
-              background: activeTab === tab ? '#8C69F0' : '#F3F4F6',
-              color: activeTab === tab ? 'white' : '#4B5563',
+              background: activeTab === tab ? '#8C69F0' : 'var(--bg-elevated)',
+              color: activeTab === tab ? 'white' : 'var(--text-secondary)',
               transition: 'all 0.2s ease',
             }}
           >
@@ -277,8 +278,8 @@ export default function ImportPage() {
       {/* Export Section */}
       <div
         style={{
-          background: '#F0FDF4',
-          border: '1px solid #86EFAC',
+          background: 'rgba(16, 185, 129, 0.1)',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
           borderRadius: '12px',
           padding: '20px',
           marginBottom: '24px',
@@ -288,10 +289,10 @@ export default function ImportPage() {
         }}
       >
         <div>
-          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#166534', marginBottom: '4px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#10B981', marginBottom: '4px' }}>
             Export Current {config.label}
           </h3>
-          <p style={{ fontSize: '13px', color: '#4B5563' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
             Download all {activeTab} as a CSV file to edit and re-import.
           </p>
         </div>
@@ -325,34 +326,35 @@ export default function ImportPage() {
       {/* CSV Format Info */}
       <div
         style={{
-          background: '#EEF2FF',
-          border: '1px solid #C7D2FE',
+          background: 'rgba(99, 102, 241, 0.1)',
+          border: '1px solid rgba(99, 102, 241, 0.3)',
           borderRadius: '12px',
           padding: '20px',
           marginBottom: '24px',
         }}
       >
-        <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#4338CA', marginBottom: '12px' }}>
+        <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#818CF8', marginBottom: '12px' }}>
           CSV Format for {config.label}
         </h3>
-        <p style={{ fontSize: '13px', color: '#4B5563', marginBottom: '12px' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
           {config.description}
         </p>
         <div
           style={{
-            background: 'white',
+            background: 'var(--card-bg)',
             borderRadius: '8px',
             padding: '12px 16px',
             fontFamily: 'monospace',
             fontSize: '12px',
-            color: '#374151',
+            color: 'var(--text-primary)',
             overflowX: 'auto',
+            border: '1px solid var(--card-border)',
           }}
         >
           {config.columns}
         </div>
         <div
-          style={{ marginTop: '12px', fontSize: '12px', color: '#6B7280' }}
+          style={{ marginTop: '12px', fontSize: '12px', color: 'var(--text-muted)' }}
           dangerouslySetInnerHTML={{ __html: config.notes }}
         />
       </div>
@@ -361,8 +363,8 @@ export default function ImportPage() {
       {!results && (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             padding: '24px',
             marginBottom: '24px',
@@ -374,13 +376,13 @@ export default function ImportPage() {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             style={{
-              border: '2px dashed #E5E7EB',
+              border: '2px dashed var(--card-border)',
               borderRadius: '12px',
               padding: '48px 24px',
               textAlign: 'center',
               cursor: 'pointer',
-              background: file ? '#F0FDF4' : '#FAFAFA',
-              borderColor: file ? '#10B981' : '#E5E7EB',
+              background: file ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-elevated)',
+              borderColor: file ? '#10B981' : 'var(--card-border)',
               transition: 'all 0.2s ease',
             }}
           >
@@ -397,21 +399,22 @@ export default function ImportPage() {
                   style={{
                     width: '56px',
                     height: '56px',
-                    background: '#D1FAE5',
+                    background: 'rgba(16, 185, 129, 0.2)',
                     borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 16px',
                     fontSize: '24px',
+                    color: '#10B981',
                   }}
                 >
                   ✓
                 </div>
-                <div style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   {file.name}
                 </div>
-                <div style={{ fontSize: '13px', color: '#6B7280' }}>
+                <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                   {(file.size / 1024).toFixed(1)} KB • Click to change
                 </div>
               </>
@@ -421,24 +424,25 @@ export default function ImportPage() {
                   style={{
                     width: '56px',
                     height: '56px',
-                    background: '#F3F4F6',
+                    background: 'var(--bg-elevated)',
                     borderRadius: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 16px',
+                    border: '1px solid var(--card-border)',
                   }}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 </div>
-                <div style={{ fontSize: '16px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>
+                <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   Drop your {config.label.toLowerCase()} CSV file here
                 </div>
-                <div style={{ fontSize: '13px', color: '#6B7280' }}>
+                <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                   or click to browse
                 </div>
               </>
@@ -446,8 +450,8 @@ export default function ImportPage() {
           </div>
 
           {/* Options */}
-          <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #F3F4F6' }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>
+          <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid var(--card-border)' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' }}>
               When a {activeTab === 'assets' ? 'asset' : activeTab.slice(0, -1)} already exists (matching slug):
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -459,7 +463,7 @@ export default function ImportPage() {
                   onChange={() => setDuplicateAction('update')}
                   style={{ width: '18px', height: '18px', accentColor: '#8C69F0' }}
                 />
-                <span style={{ fontSize: '14px', color: '#374151' }}>
+                <span style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
                   <strong>Update existing</strong> - Replace all fields with CSV values
                 </span>
               </label>
@@ -471,7 +475,7 @@ export default function ImportPage() {
                   onChange={() => setDuplicateAction('skip')}
                   style={{ width: '18px', height: '18px', accentColor: '#8C69F0' }}
                 />
-                <span style={{ fontSize: '14px', color: '#374151' }}>
+                <span style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
                   <strong>Skip</strong> - Keep existing unchanged
                 </span>
               </label>
@@ -483,7 +487,7 @@ export default function ImportPage() {
                   onChange={() => setDuplicateAction('create')}
                   style={{ width: '18px', height: '18px', accentColor: '#8C69F0' }}
                 />
-                <span style={{ fontSize: '14px', color: '#374151' }}>
+                <span style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
                   <strong>Create new</strong> - Add with modified slug (e.g., my-item-1)
                 </span>
               </label>
@@ -496,14 +500,14 @@ export default function ImportPage() {
               style={{
                 marginTop: '20px',
                 paddingTop: '20px',
-                borderTop: '1px solid #F3F4F6',
+                borderTop: '1px solid var(--card-border)',
               }}
             >
               <div
                 style={{
                   padding: '16px 20px',
-                  background: enableAI ? 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)' : '#FAFAFA',
-                  border: enableAI ? '1px solid #C7D2FE' : '1px solid #E5E7EB',
+                  background: enableAI ? 'rgba(99, 102, 241, 0.15)' : 'var(--bg-elevated)',
+                  border: enableAI ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid var(--card-border)',
                   borderRadius: '10px',
                   transition: 'all 0.2s ease',
                 }}
@@ -517,7 +521,7 @@ export default function ImportPage() {
                   />
                   <div style={{ flex: 1 }}>
                     <div className="flex items-center" style={{ gap: '8px' }}>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: enableAI ? '#4338CA' : '#374151' }}>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: enableAI ? '#818CF8' : 'var(--text-primary)' }}>
                         ✨ AI Content Generation
                       </span>
                       <span
@@ -526,14 +530,14 @@ export default function ImportPage() {
                           fontWeight: 500,
                           padding: '2px 6px',
                           borderRadius: '4px',
-                          background: enableAI ? '#8B5CF6' : '#9CA3AF',
+                          background: enableAI ? '#8B5CF6' : 'var(--text-muted)',
                           color: 'white',
                         }}
                       >
                         BETA
                       </span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
                       Crawl URLs and auto-generate descriptions, takeaways, and tips using AI
                     </div>
                   </div>
@@ -543,10 +547,11 @@ export default function ImportPage() {
                     style={{
                       marginTop: '12px',
                       padding: '12px',
-                      background: 'rgba(255, 255, 255, 0.7)',
+                      background: 'var(--card-bg)',
                       borderRadius: '8px',
                       fontSize: '12px',
-                      color: '#4B5563',
+                      color: 'var(--text-secondary)',
+                      border: '1px solid var(--card-border)',
                     }}
                   >
                     <strong>How it works:</strong> For each row with a URL, the AI will:
@@ -556,7 +561,7 @@ export default function ImportPage() {
                       <li>Generate takeaways and tips for training content</li>
                       <li>Extract additional metadata where possible</li>
                     </ul>
-                    <div style={{ marginTop: '8px', color: '#B45309', fontWeight: 500 }}>
+                    <div style={{ marginTop: '8px', color: '#F59E0B', fontWeight: 500 }}>
                       Note: AI processing adds ~5-10 seconds per row. Large imports may take several minutes.
                     </div>
                   </div>
@@ -573,10 +578,10 @@ export default function ImportPage() {
               style={{
                 width: '100%',
                 padding: '14px 24px',
-                background: file && !isImporting ? '#8C69F0' : '#E5E7EB',
-                border: 'none',
+                background: file && !isImporting ? '#8C69F0' : 'var(--bg-elevated)',
+                border: file && !isImporting ? 'none' : '1px solid var(--card-border)',
                 borderRadius: '8px',
-                color: file && !isImporting ? 'white' : '#9CA3AF',
+                color: file && !isImporting ? 'white' : 'var(--text-muted)',
                 fontSize: '15px',
                 fontWeight: 600,
                 cursor: file && !isImporting ? 'pointer' : 'not-allowed',
@@ -592,7 +597,7 @@ export default function ImportPage() {
               <div
                 style={{
                   height: '8px',
-                  background: '#F3F4F6',
+                  background: 'var(--bg-elevated)',
                   borderRadius: '4px',
                   overflow: 'hidden',
                 }}
@@ -607,7 +612,7 @@ export default function ImportPage() {
                   }}
                 />
               </div>
-              <div style={{ fontSize: '13px', color: '#6B7280', marginTop: '8px', textAlign: 'center' }}>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '8px', textAlign: 'center' }}>
                 {progress < 50 ? 'Uploading and parsing file...' :
                  progress < 85 ? 'Importing records... This may take a minute for large files.' :
                  'Finalizing import...'}
@@ -621,8 +626,8 @@ export default function ImportPage() {
       {results && (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -631,8 +636,8 @@ export default function ImportPage() {
           <div
             style={{
               padding: '20px 24px',
-              background: results.success ? '#F0FDF4' : '#FEF2F2',
-              borderBottom: '1px solid #E5E7EB',
+              background: results.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+              borderBottom: '1px solid var(--card-border)',
             }}
           >
             <div className="flex items-center justify-between">
@@ -641,14 +646,14 @@ export default function ImportPage() {
                   style={{
                     fontSize: '18px',
                     fontWeight: 600,
-                    color: results.success ? '#047857' : '#B91C1C',
+                    color: results.success ? '#10B981' : '#EF4444',
                     marginBottom: '8px',
                   }}
                 >
                   {results.success ? 'Import Complete!' : 'Import Failed'}
                 </h3>
                 {results.summary && (
-                  <div className="flex" style={{ gap: '20px', fontSize: '14px', color: '#4B5563' }}>
+                  <div className="flex" style={{ gap: '20px', fontSize: '14px', color: 'var(--text-secondary)' }}>
                     <span><strong>{results.summary.created}</strong> created</span>
                     <span><strong>{results.summary.updated}</strong> updated</span>
                     <span><strong>{results.summary.skipped}</strong> skipped</span>
@@ -656,7 +661,7 @@ export default function ImportPage() {
                   </div>
                 )}
                 {results.error && (
-                  <p style={{ fontSize: '14px', color: '#B91C1C' }}>
+                  <p style={{ fontSize: '14px', color: '#EF4444' }}>
                     {results.error}: {results.details}
                   </p>
                 )}
@@ -667,11 +672,11 @@ export default function ImportPage() {
                     onClick={downloadResults}
                     style={{
                       padding: '10px 16px',
-                      background: 'white',
-                      border: '1px solid #E5E7EB',
+                      background: 'var(--card-bg)',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
                       fontSize: '13px',
-                      color: '#4B5563',
+                      color: 'var(--text-secondary)',
                       cursor: 'pointer',
                     }}
                   >
@@ -705,28 +710,28 @@ export default function ImportPage() {
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ background: '#FAFAFA' }}>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
+                  <tr style={{ background: 'var(--bg-elevated)' }}>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>
                       Row
                     </th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>
                       {activeTab === 'assets' ? 'Title' : 'Name'}
                     </th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>
                       Status
                     </th>
-                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>
+                    <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>
                       Details
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.results.slice(0, 50).map((result, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid #F3F4F6' }}>
-                      <td style={{ padding: '12px 16px', fontSize: '13px', color: '#6B7280' }}>
+                    <tr key={idx} style={{ borderBottom: '1px solid var(--card-border)' }}>
+                      <td style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         {result.row}
                       </td>
-                      <td style={{ padding: '12px 16px', fontSize: '13px', color: '#111827' }}>
+                      <td style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--text-primary)' }}>
                         {result.title || result.name || '-'}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
@@ -737,19 +742,19 @@ export default function ImportPage() {
                             padding: '4px 8px',
                             borderRadius: '4px',
                             background: result.created
-                              ? '#D1FAE5'
+                              ? 'rgba(16, 185, 129, 0.2)'
                               : result.updated
-                              ? '#DBEAFE'
+                              ? 'rgba(59, 130, 246, 0.2)'
                               : result.error && result.success
-                              ? '#FEF3C7'
-                              : '#FEE2E2',
+                              ? 'rgba(245, 158, 11, 0.2)'
+                              : 'rgba(239, 68, 68, 0.2)',
                             color: result.created
-                              ? '#047857'
+                              ? '#10B981'
                               : result.updated
-                              ? '#1D4ED8'
+                              ? '#3B82F6'
                               : result.error && result.success
-                              ? '#B45309'
-                              : '#B91C1C',
+                              ? '#F59E0B'
+                              : '#EF4444',
                           }}
                         >
                           {result.created
@@ -761,7 +766,7 @@ export default function ImportPage() {
                             : 'Error'}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 16px', fontSize: '12px', color: '#9CA3AF' }}>
+                      <td style={{ padding: '12px 16px', fontSize: '12px', color: 'var(--text-muted)' }}>
                         {result.error || result.slug}
                       </td>
                     </tr>
@@ -769,7 +774,7 @@ export default function ImportPage() {
                 </tbody>
               </table>
               {(results.results.length > 50 || (results.totalResults && results.totalResults > results.results.length)) && (
-                <div style={{ padding: '16px', textAlign: 'center', fontSize: '13px', color: '#6B7280' }}>
+                <div style={{ padding: '16px', textAlign: 'center', fontSize: '13px', color: 'var(--text-muted)' }}>
                   Showing {Math.min(50, results.results.length)} of {results.totalResults || results.results.length} results.
                   {results.summary && results.summary.errors > 0 && ' Errors are shown first.'}
                 </div>

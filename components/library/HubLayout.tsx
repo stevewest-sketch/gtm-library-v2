@@ -110,7 +110,6 @@ export function HubLayout({
           style={{
             marginLeft: showSidebar ? 'var(--sidebar-width)' : 0,
             paddingTop: '64px', // Header height
-            display: 'flex',
             minHeight: '100vh',
           }}
         >
@@ -129,9 +128,9 @@ export function HubLayout({
           {/* Main Content */}
           <main
             style={{
-              flex: 1,
               padding: '20px 28px',
               minHeight: 'calc(100vh - 64px)',
+              overflowX: 'hidden', // Prevent carousel from breaking page width (use overflowX to not break sticky)
             }}
           >
             {children}

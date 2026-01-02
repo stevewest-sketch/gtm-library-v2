@@ -18,6 +18,7 @@ interface HubData {
   color: string;
   lightColor: string | null;
   accentColor: string | null;
+  showRecentlyAdded: boolean | null;
 }
 
 interface TagData {
@@ -133,8 +134,8 @@ export default async function HubPage({ params }: HubPageProps) {
     primaryLink: asset.primaryLink || undefined,
   }));
 
-  // Show "Recently Added" section for enablement hub
-  const showRecentlyAdded = hubId === 'enablement';
+  // Show "Recently Added" section based on hub setting
+  const showRecentlyAdded = hub.showRecentlyAdded ?? false;
 
   return (
     <HubLayout

@@ -124,7 +124,7 @@ export function AssetCard({
       {/* Card Header - Badges Row */}
       <div className="card-header" style={{ flexShrink: 0 }}>
         <div className="card-badges">
-          {/* Type Badge */}
+          {/* Type Badge - colored background with border */}
           <span
             className="card-badge type"
             data-type={type?.toLowerCase().replace(/\s+/g, '-') || 'resource'}
@@ -132,14 +132,14 @@ export function AssetCard({
             {typeBadge?.label || 'Resource'}
           </span>
 
-          {/* Format Badge */}
-          <span className="card-badge format">
+          {/* Format Text - monospace, no background, hub-colored */}
+          <span className={`format-text hub-${hub.toLowerCase()}`}>
             {formatConfig.label}
           </span>
 
-          {/* Status Badges inline */}
-          {isNew && <span className="card-badge new">New</span>}
-          {featured && <span className="card-badge featured">Featured</span>}
+          {/* Status Indicators - pulsing dot with text */}
+          {isNew && <span className="status-indicator new">New</span>}
+          {featured && <span className="status-indicator featured">Featured</span>}
         </div>
       </div>
 
@@ -217,7 +217,7 @@ export function CompactCard({
         <span className="card-badge type" data-type={type?.toLowerCase().replace(/\s+/g, '-') || 'resource'}>
           {typeBadge?.label || 'Resource'}
         </span>
-        <span className="card-badge format">{formatConfig.label}</span>
+        <span className={`format-text hub-${hub.toLowerCase()}`}>{formatConfig.label}</span>
       </div>
 
       {/* Center: Title + Description */}
@@ -337,11 +337,11 @@ export function HeroCard({
           >
             {typeBadge?.label || 'Resource'}
           </span>
-          <span className="card-badge format" style={{ fontSize: '11px', padding: '4px 10px' }}>
+          <span className={`format-text hub-${hub.toLowerCase()}`} style={{ fontSize: '11px' }}>
             {formatConfig.label}
           </span>
         </div>
-        <span className="card-badge featured" style={{ flexShrink: 0 }}>Featured</span>
+        <span className="status-indicator featured" style={{ flexShrink: 0 }}>Featured</span>
       </div>
 
       {/* Card Body */}

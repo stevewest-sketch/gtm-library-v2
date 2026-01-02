@@ -53,6 +53,7 @@ interface Board {
   icon: string;
   description: string;
   defaultView: 'grid' | 'stack';
+  showRecentlyAdded: boolean;
   assetCount: number;
   tags: BoardTag[];
 }
@@ -185,7 +186,7 @@ function SortableBoardCard({
       ref={setNodeRef}
       style={{
         ...style,
-        background: 'white',
+        background: 'var(--card-bg)',
         border: isDragging ? '2px solid #8C69F0' : '1px solid #E5E7EB',
         borderRadius: '12px',
         overflow: 'hidden',
@@ -240,7 +241,7 @@ function SortableBoardCard({
 
       {/* Board Body */}
       <div style={{ padding: '16px 20px' }}>
-        <p style={{ fontSize: '13px', color: '#4B5563', lineHeight: 1.5, marginBottom: '12px' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '12px' }}>
           {board.description || 'No description'}
         </p>
 
@@ -253,16 +254,16 @@ function SortableBoardCard({
                 style={{
                   fontSize: '11px',
                   padding: '3px 8px',
-                  background: '#F3F4F6',
+                  background: 'var(--bg-elevated)',
                   borderRadius: '4px',
-                  color: '#6B7280',
+                  color: 'var(--text-muted)',
                 }}
               >
                 {tag.displayName || tag.name}
               </span>
             ))}
             {board.tags.length > 4 && (
-              <span style={{ fontSize: '11px', color: '#9CA3AF' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                 +{board.tags.length - 4} more
               </span>
             )}
@@ -271,11 +272,11 @@ function SortableBoardCard({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span style={{ fontSize: '13px', color: '#9CA3AF' }}>
+            <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
               {board.assetCount || 0} assets
             </span>
             {board.defaultView && (
-              <span style={{ fontSize: '11px', color: '#9CA3AF', background: '#F3F4F6', padding: '2px 6px', borderRadius: '4px' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: '4px' }}>
                 {board.defaultView === 'grid' ? '▦ Grid' : '☰ Stack'}
               </span>
             )}
@@ -318,6 +319,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
       icon: '📋',
       description: '',
       defaultView: 'grid',
+      showRecentlyAdded: false,
       assetCount: 0,
       tags: [],
     }
@@ -349,6 +351,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
         icon: '📋',
         description: '',
         defaultView: 'grid',
+        showRecentlyAdded: false,
         assetCount: 0,
         tags: [],
       });
@@ -486,7 +489,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                 height: '32px',
                 border: 'none',
                 background: 'transparent',
-                color: '#9CA3AF',
+                color: 'var(--text-muted)',
                 borderRadius: '6px',
                 cursor: 'pointer',
               }}
@@ -502,7 +505,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
           <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
             {/* Name */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Board Name
               </label>
               <input
@@ -522,7 +525,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
 
             {/* Description */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Description
               </label>
               <textarea
@@ -545,7 +548,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
             <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px', marginBottom: '20px' }}>
               {/* Icon */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   Icon
                 </label>
                 <input
@@ -566,7 +569,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
 
               {/* Color */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                   Color
                 </label>
                 <div className="flex flex-wrap" style={{ gap: '8px' }}>
@@ -592,7 +595,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
 
             {/* Default View */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Default View
               </label>
               <div className="flex" style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', width: 'fit-content' }}>
@@ -642,22 +645,50 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
               </div>
             </div>
 
+            {/* Show Recently Added Toggle */}
+            <div style={{ marginBottom: '20px' }}>
+              <label
+                className="flex items-center gap-3 cursor-pointer"
+                style={{ padding: '12px', background: 'var(--bg-elevated)', borderRadius: '8px' }}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.showRecentlyAdded}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, showRecentlyAdded: e.target.checked }))}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    accentColor: '#8C69F0',
+                    cursor: 'pointer',
+                  }}
+                />
+                <div>
+                  <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>
+                    Show Recently Added Carousel
+                  </span>
+                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Display a carousel of assets added or updated in the last 14 days
+                  </p>
+                </div>
+              </label>
+            </div>
+
             {/* Tags with Drag & Drop */}
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 Board Tags
-                <span style={{ fontWeight: 400, color: '#9CA3AF', marginLeft: '8px' }}>
+                <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: '8px' }}>
                   (Tags that appear as sections on this board)
                 </span>
               </label>
 
-              <div style={{ background: '#F9FAFB', borderRadius: '12px', padding: '16px' }}>
+              <div style={{ background: 'var(--bg-elevated)', borderRadius: '12px', padding: '16px' }}>
                 {/* Header */}
                 <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#4B5563' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                     {formData.tags.length} tags
                   </span>
-                  <span style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                     ⋮⋮ Drag to reorder
                   </span>
                 </div>
@@ -674,7 +705,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                   >
                     <div className="flex flex-col gap-1" style={{ minHeight: '60px' }}>
                       {formData.tags.length === 0 ? (
-                        <div style={{ padding: '20px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px' }}>
+                        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
                           No tags added yet. Add tags below.
                         </div>
                       ) : (
@@ -720,7 +751,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                         border: '1px solid #E5E7EB',
                         borderRadius: '8px',
                         fontSize: '13px',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                       }}
                     />
                     <button
@@ -748,7 +779,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                         left: 0,
                         right: 64,
                         marginTop: '4px',
-                        background: 'white',
+                        background: 'var(--card-bg)',
                         border: '1px solid #E5E7EB',
                         borderRadius: '8px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -770,7 +801,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                             textAlign: 'left',
                             cursor: 'pointer',
                             fontSize: '13px',
-                            color: '#374151',
+                            color: 'var(--text-primary)',
                             borderBottom: '1px solid #F3F4F6',
                           }}
                           onMouseEnter={(e) => {
@@ -808,7 +839,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
             style={{
               padding: '16px 24px',
               borderTop: '1px solid #E5E7EB',
-              background: '#F9FAFB',
+              background: 'var(--bg-elevated)',
             }}
           >
             {!isNew && board ? (
@@ -840,7 +871,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                 onClick={onClose}
                 style={{
                   padding: '10px 20px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   border: '1px solid #E5E7EB',
                   borderRadius: '8px',
                   fontSize: '14px',
@@ -872,20 +903,20 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
         <div
           style={{
             width: '320px',
-            background: '#F9FAFB',
+            background: 'var(--bg-elevated)',
             borderRadius: '0 16px 16px 0',
             padding: '24px',
             borderLeft: '1px solid #E5E7EB',
           }}
         >
-          <div style={{ fontSize: '12px', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '16px' }}>
+          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '16px' }}>
             Preview
           </div>
 
           {/* Board Card Preview */}
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               border: '1px solid #E5E7EB',
               borderRadius: '12px',
               overflow: 'hidden',
@@ -902,7 +933,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                 style={{
                   width: '28px',
                   height: '28px',
-                  background: 'white',
+                  background: 'var(--card-bg)',
                   borderRadius: '6px',
                   display: 'flex',
                   alignItems: 'center',
@@ -919,7 +950,7 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
             <div style={{ padding: '12px 16px' }}>
               <div className="flex flex-wrap" style={{ gap: '6px' }}>
                 {formData.tags.length === 0 ? (
-                  <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
                     Tags will appear here
                   </span>
                 ) : (
@@ -928,10 +959,10 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
                       key={tag.id}
                       style={{
                         padding: '4px 10px',
-                        background: '#F9FAFB',
+                        background: 'var(--bg-elevated)',
                         borderRadius: '12px',
                         fontSize: '12px',
-                        color: '#4B5563',
+                        color: 'var(--text-secondary)',
                       }}
                     >
                       {tag.displayName || tag.name}
@@ -947,15 +978,15 @@ function EditBoardModal({ board, isOpen, onClose, onSave, onDelete, isNew, allTa
             style={{
               marginTop: '16px',
               padding: '12px',
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '8px',
               border: '1px solid #E5E7EB',
             }}
           >
-            <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>
               Default View
             </div>
-            <div className="flex items-center gap-2" style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
+            <div className="flex items-center gap-2" style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>
               {formData.defaultView === 'grid' ? (
                 <>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1093,6 +1124,7 @@ export default function BoardsManagePage() {
           lightColor: updatedBoard.lightColor,
           accentColor: updatedBoard.accentColor,
           defaultView: updatedBoard.defaultView,
+          showRecentlyAdded: updatedBoard.showRecentlyAdded,
         }),
       });
 
@@ -1221,7 +1253,7 @@ export default function BoardsManagePage() {
   if (loading) {
     return (
       <div style={{ padding: '28px 32px' }}>
-        <div style={{ textAlign: 'center', padding: '60px', color: '#9CA3AF' }}>
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
           Loading boards...
         </div>
       </div>
@@ -1233,11 +1265,11 @@ export default function BoardsManagePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
-            Manage Boards
+          <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
+            Manage Hubs
           </h1>
-          <p style={{ fontSize: '14px', color: '#4B5563' }}>
-            Create and organize boards to categorize your content library.
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+            Create and organize hubs to categorize your content library.
           </p>
         </div>
         <button
@@ -1270,7 +1302,7 @@ export default function BoardsManagePage() {
           style={{
             gap: '10px',
             padding: '10px 14px',
-            background: 'white',
+            background: 'var(--card-bg)',
             border: '1px solid #E5E7EB',
             borderRadius: '8px',
             maxWidth: '320px',
@@ -1316,7 +1348,7 @@ export default function BoardsManagePage() {
 
       {/* Drag hint */}
       {!searchQuery && (
-        <div style={{ marginBottom: '16px', fontSize: '12px', color: '#9CA3AF' }}>
+        <div style={{ marginBottom: '16px', fontSize: '12px', color: 'var(--text-muted)' }}>
           ⋮⋮ Drag boards to reorder them in the library navigation
         </div>
       )}
@@ -1352,7 +1384,7 @@ export default function BoardsManagePage() {
               className="flex flex-col items-center justify-center"
               style={{
                 minHeight: '180px',
-                background: '#F9FAFB',
+                background: 'var(--bg-elevated)',
                 border: '2px dashed #E5E7EB',
                 borderRadius: '12px',
                 cursor: 'pointer',
@@ -1364,9 +1396,9 @@ export default function BoardsManagePage() {
                 style={{
                   width: '48px',
                   height: '48px',
-                  background: '#E5E7EB',
+                  background: 'var(--bg-elevated)',
                   borderRadius: '12px',
-                  color: '#9CA3AF',
+                  color: 'var(--text-muted)',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1374,7 +1406,7 @@ export default function BoardsManagePage() {
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
               </div>
-              <span style={{ fontSize: '14px', fontWeight: 500, color: '#6B7280' }}>
+              <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)' }}>
                 Create New Board
               </span>
             </button>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Hub - Admin Mock</title>
+    <style>
+        /* ==========================================
+           GTM LIBRARY DESIGN SYSTEM v4 - NEON
+           ADMIN PAGES MOCK
+           ========================================== */
+
+        :root {
+            /* Core Dark Mode */
+            --bg-base: #0D0D12;
+            --bg-surface: #16161D;
+            --bg-elevated: #1E1E28;
+            --bg-hover: #252530;
+            --bg-input: #1A1A24;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+            --text-placeholder: #4A4A5A;
+
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-content-bright: #B794FF;
+            --hub-content-bg: rgba(140, 105, 240, 0.15);
+            
+            --hub-enablement: #22C55E;
+            --hub-enablement-bright: #4ADE80;
+            --hub-enablement-bg: rgba(34, 197, 94, 0.15);
+            
+            --hub-coe: #F59E0B;
+            --hub-coe-bright: #FBBF24;
+            --hub-coe-bg: rgba(245, 158, 11, 0.15);
+
+            /* NEON Badge Colors */
+            --badge-red-bg: rgba(255, 80, 80, 0.18);
+            --badge-red-text: #FF5555;
+            --badge-red-border: rgba(255, 80, 80, 0.30);
+            
+            --badge-orange-bg: rgba(255, 160, 0, 0.18);
+            --badge-orange-text: #FFA500;
+            --badge-orange-border: rgba(255, 160, 0, 0.30);
+            
+            --badge-yellow-bg: rgba(255, 230, 0, 0.18);
+            --badge-yellow-text: #FFE600;
+            --badge-yellow-border: rgba(255, 230, 0, 0.30);
+            
+            --badge-green-bg: rgba(0, 255, 135, 0.18);
+            --badge-green-text: #00FF87;
+            --badge-green-border: rgba(0, 255, 135, 0.30);
+            
+            --badge-blue-bg: rgba(0, 170, 255, 0.18);
+            --badge-blue-text: #00AAFF;
+            --badge-blue-border: rgba(0, 170, 255, 0.30);
+            
+            --badge-purple-bg: rgba(180, 100, 255, 0.18);
+            --badge-purple-text: #B464FF;
+            --badge-purple-border: rgba(180, 100, 255, 0.30);
+            
+            --badge-pink-bg: rgba(255, 80, 180, 0.18);
+            --badge-pink-text: #FF50B4;
+            --badge-pink-border: rgba(255, 80, 180, 0.30);
+            
+            --badge-teal-bg: rgba(0, 255, 220, 0.18);
+            --badge-teal-text: #00FFDC;
+            --badge-teal-border: rgba(0, 255, 220, 0.30);
+            
+            --badge-violet-bg: rgba(160, 80, 255, 0.18);
+            --badge-violet-text: #A050FF;
+            --badge-violet-border: rgba(160, 80, 255, 0.30);
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+            --border-hover: rgba(255, 255, 255, 0.15);
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Admin Layout */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .admin-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--hub-content), var(--hub-enablement));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .admin-badge {
+            background: var(--badge-violet-bg);
+            color: var(--badge-violet-text);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--hub-content);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--hub-content-bright);
+        }
+
+        .btn-secondary {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-default);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        /* Admin Navigation */
+        .admin-nav {
+            display: flex;
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 6px;
+            gap: 4px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .admin-nav-item {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .admin-nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .admin-nav-item.active {
+            background: var(--hub-content);
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+        }
+
+        .stat-card-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .stat-card-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .stat-card-change.positive { color: var(--badge-green-text); }
+        .stat-card-change.negative { color: var(--badge-red-text); }
+
+        /* Admin Table */
+        .admin-section {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .admin-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .admin-section-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .admin-section-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: var(--text-primary);
+            width: 240px;
+        }
+
+        .search-input::placeholder { color: var(--text-placeholder); }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--hub-content);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .admin-table thead {
+            background: #1A1A24;
+        }
+
+        .admin-table th {
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .admin-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .admin-table tr:hover td {
+            background: var(--bg-elevated);
+        }
+
+        .admin-table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .admin-table tr:nth-child(even):hover td {
+            background: var(--bg-elevated);
+        }
+
+        .asset-name {
+            font-weight: 500;
+        }
+
+        .asset-name-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Badge Classes */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .badge-red { background: var(--badge-red-bg); color: var(--badge-red-text); border-color: var(--badge-red-border); }
+        .badge-orange { background: var(--badge-orange-bg); color: var(--badge-orange-text); border-color: var(--badge-orange-border); }
+        .badge-yellow { background: var(--badge-yellow-bg); color: var(--badge-yellow-text); border-color: var(--badge-yellow-border); }
+        .badge-green { background: var(--badge-green-bg); color: var(--badge-green-text); border-color: var(--badge-green-border); }
+        .badge-blue { background: var(--badge-blue-bg); color: var(--badge-blue-text); border-color: var(--badge-blue-border); }
+        .badge-purple { background: var(--badge-purple-bg); color: var(--badge-purple-text); border-color: var(--badge-purple-border); }
+        .badge-pink { background: var(--badge-pink-bg); color: var(--badge-pink-text); border-color: var(--badge-pink-border); }
+        .badge-teal { background: var(--badge-teal-bg); color: var(--badge-teal-text); border-color: var(--badge-teal-border); }
+        .badge-violet { background: var(--badge-violet-bg); color: var(--badge-violet-text); border-color: var(--badge-violet-border); }
+
+        /* Hub badges */
+        .badge-hub-content { background: var(--hub-content-bg); color: var(--hub-content-bright); }
+        .badge-hub-enablement { background: var(--hub-enablement-bg); color: var(--hub-enablement-bright); }
+        .badge-hub-coe { background: var(--hub-coe-bg); color: var(--hub-coe-bright); }
+
+        /* Table Actions */
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .table-action {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+        }
+
+        .table-action.edit {
+            background: var(--badge-blue-bg);
+            color: var(--badge-blue-text);
+        }
+
+        .table-action.edit:hover {
+            background: rgba(0, 170, 255, 0.30);
+        }
+
+        .table-action.delete {
+            background: var(--badge-red-bg);
+            color: var(--badge-red-text);
+        }
+
+        .table-action.delete:hover {
+            background: rgba(255, 80, 80, 0.30);
+        }
+
+        /* Pagination */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-elevated);
+        }
+
+        .table-info {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination-btn {
+            padding: 6px 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .pagination-btn.active {
+            background: var(--hub-content);
+            border-color: var(--hub-content);
+            color: white;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .form-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.15s ease;
+        }
+
+        .form-input::placeholder { color: var(--text-placeholder); }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hub-content);
+            box-shadow: 0 0 0 3px var(--hub-content-bg);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236B6B7B' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-checkbox-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--hub-content);
+        }
+
+        .form-checkbox span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* Tabs for different admin views */
+        .tab-indicator {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .tab-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding-bottom: 12px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .tab-label:hover {
+            color: var(--text-secondary);
+        }
+
+        .tab-label.active {
+            color: var(--hub-content-bright);
+            border-bottom-color: var(--hub-content);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <div class="admin-logo">
+                    <div class="logo-icon">G+</div>
+                    <span>GTM Hub</span>
+                </div>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div class="admin-header-right">
+                <button class="btn btn-secondary">← Back to Hub</button>
+                <button class="btn btn-primary">+ Add Asset</button>
+            </div>
+        </header>
+
+        <!-- Admin Navigation -->
+        <nav class="admin-nav">
+            <a href="#" class="admin-nav-item active">Assets</a>
+            <a href="#" class="admin-nav-item">Import</a>
+            <a href="#" class="admin-nav-item">Tags</a>
+            <a href="#" class="admin-nav-item">Hubs</a>
+            <a href="#" class="admin-nav-item">Taxonomy</a>
+            <a href="#" class="admin-nav-item">Analytics</a>
+        </nav>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-label">Total Assets</div>
+                <div class="stat-card-value">437</div>
+                <div class="stat-card-change positive">+12 this week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Active Hubs</div>
+                <div class="stat-card-value">11</div>
+                <div class="stat-card-change">3 primary hubs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Tags</div>
+                <div class="stat-card-value">362</div>
+                <div class="stat-card-change positive">Synced</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Views This Week</div>
+                <div class="stat-card-value">1,247</div>
+                <div class="stat-card-change positive">+18%</div>
+            </div>
+        </div>
+
+        <!-- Assets Table -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">All Assets</h2>
+                <div class="admin-section-actions">
+                    <input type="text" class="search-input" placeholder="Search assets...">
+                    <button class="btn btn-secondary">Filter</button>
+                    <button class="btn btn-secondary">Export</button>
+                </div>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Format</th>
+                        <th>Hub</th>
+                        <th>Status</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="asset-name">First Meeting Deck 2.0</div>
+                            <div class="asset-name-sub">Ready-to-use first meeting deck</div>
+                        </td>
+                        <td><span class="badge badge-yellow">Template</span></td>
+                        <td><span class="badge badge-hub-content">Slides</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td><span class="badge badge-orange">Featured</span></td>
+                        <td>Dec 28, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">Q4 All Hands Kick Off</div>
+                            <div class="asset-name-sub">GTM strategy and execution</div>
+                        </td>
+                        <td><span class="badge badge-green">GTM Training</span></td>
+                        <td><span class="badge badge-hub-enablement">Live Replay</span></td>
+                        <td><span class="badge badge-hub-enablement">Enablement</span></td>
+                        <td><span class="badge badge-green">New</span></td>
+                        <td>Dec 31, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">Zendesk Sidekick Battle Card</div>
+                            <div class="asset-name-sub">Competitive positioning</div>
+                        </td>
+                        <td><span class="badge badge-red">Battlecard</span></td>
+                        <td><span class="badge badge-hub-content">PDF</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td>—</td>
+                        <td>Dec 15, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">Discovery Call Playbook</div>
+                            <div class="asset-name-sub">Step-by-step discovery guide</div>
+                        </td>
+                        <td><span class="badge badge-green">Playbook</span></td>
+                        <td><span class="badge badge-hub-enablement">Document</span></td>
+                        <td><span class="badge badge-hub-enablement">Enablement</span></td>
+                        <td>—</td>
+                        <td>Dec 20, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">CX Trends 2025 Blog</div>
+                            <div class="asset-name-sub">Industry analysis article</div>
+                        </td>
+                        <td><span class="badge badge-pink">Article</span></td>
+                        <td><span class="badge badge-hub-content">Web Link</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td>—</td>
+                        <td>Dec 10, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">Q4 Strategy Brief</div>
+                            <div class="asset-name-sub">Internal strategy document</div>
+                        </td>
+                        <td><span class="badge badge-violet">Internal</span></td>
+                        <td><span class="badge badge-hub-coe">Document</span></td>
+                        <td><span class="badge badge-hub-coe">CoE</span></td>
+                        <td>—</td>
+                        <td>Dec 1, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">87% AI Resolution Rate</div>
+                            <div class="asset-name-sub">Rothy's customer success</div>
+                        </td>
+                        <td><span class="badge badge-yellow">Proof Point</span></td>
+                        <td><span class="badge badge-hub-coe">Document</span></td>
+                        <td><span class="badge badge-hub-coe">CoE</span></td>
+                        <td>—</td>
+                        <td>Nov 28, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="asset-name">Demo Flow Builder</div>
+                            <div class="asset-name-sub">Interactive demo tool</div>
+                        </td>
+                        <td><span class="badge badge-teal">GTM Tool</span></td>
+                        <td><span class="badge badge-hub-content">Tool</span></td>
+                        <td><span class="badge badge-hub-content">Content</span></td>
+                        <td>—</td>
+                        <td>Dec 5, 2025</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="table-action edit">Edit</button>
+                                <button class="table-action delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="table-footer">
+                <div class="table-info">Showing 1-8 of 437 assets</div>
+                <div class="pagination">
+                    <button class="pagination-btn">←</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn">...</button>
+                    <button class="pagination-btn">55</button>
+                    <button class="pagination-btn">→</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Form -->
+        <div class="form-section">
+            <h3>Add New Asset</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Asset Title</label>
+                    <input type="text" class="form-input" placeholder="Enter asset title...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL</label>
+                    <input type="text" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-input form-select">
+                        <option>Select type...</option>
+                        <option>Battlecard</option>
+                        <option>Template</option>
+                        <option>GTM Training</option>
+                        <option>Playbook</option>
+                        <option>Article</option>
+                        <option>Proof Point</option>
+                        <option>Demo</option>
+                        <option>Internal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Format</label>
+                    <select class="form-input form-select">
+                        <option>Select format...</option>
+                        <option>Slides</option>
+                        <option>PDF</option>
+                        <option>Document</option>
+                        <option>Video</option>
+                        <option>Live Replay</option>
+                        <option>Web Link</option>
+                        <option>Tool</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hub</label>
+                    <select class="form-input form-select">
+                        <option>Select hub...</option>
+                        <option>Content</option>
+                        <option>Enablement</option>
+                        <option>CoE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <div class="form-checkbox-group" style="margin-top: 8px;">
+                        <label class="form-checkbox">
+                            <input type="checkbox">
+                            <span>Featured</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input form-textarea" placeholder="Enter description..."></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Save Asset</button>
+                <button class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

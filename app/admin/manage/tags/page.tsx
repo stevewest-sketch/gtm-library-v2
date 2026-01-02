@@ -442,7 +442,7 @@ export default function TagsManagePage() {
   if (loading) {
     return (
       <div style={{ padding: '28px 32px' }}>
-        <div style={{ textAlign: 'center', padding: '60px', color: '#9CA3AF' }}>
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
           Loading tags...
         </div>
       </div>
@@ -454,10 +454,10 @@ export default function TagsManagePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
             Manage Tags
           </h1>
-          <p style={{ fontSize: '14px', color: '#4B5563' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
             Create and organize tags to categorize content within boards.
           </p>
         </div>
@@ -470,7 +470,7 @@ export default function TagsManagePage() {
           gap: '12px',
           marginBottom: '20px',
           padding: '16px 20px',
-          background: 'white',
+          background: 'var(--card-bg)',
           border: '1px solid var(--card-border)',
           borderRadius: '10px',
         }}
@@ -481,7 +481,7 @@ export default function TagsManagePage() {
           style={{
             gap: '10px',
             padding: '10px 14px',
-            background: '#F9FAFB',
+            background: 'var(--bg-elevated)',
             border: '1px solid var(--card-border)',
             borderRadius: '8px',
             minWidth: '240px',
@@ -517,7 +517,7 @@ export default function TagsManagePage() {
             fontSize: '13px',
             fontFamily: 'inherit',
             background:
-              "white url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
+              "var(--card-bg) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\") no-repeat right 12px center",
             cursor: 'pointer',
             appearance: 'none',
             color: 'var(--text-primary)',
@@ -545,7 +545,7 @@ export default function TagsManagePage() {
               onClick={handleCancelChanges}
               style={{
                 padding: '10px 18px',
-                background: 'white',
+                background: 'var(--card-bg)',
                 border: '1px solid var(--card-border)',
                 borderRadius: '8px',
                 color: 'var(--text-secondary)',
@@ -581,7 +581,7 @@ export default function TagsManagePage() {
             style={{
               gap: '8px',
               padding: '10px 18px',
-              background: 'white',
+              background: 'var(--card-bg)',
               border: '1px solid var(--card-border)',
               borderRadius: '8px',
               color: 'var(--text-primary)',
@@ -625,7 +625,7 @@ export default function TagsManagePage() {
       {/* Tags Table */}
       <div
         style={{
-          background: 'white',
+          background: 'var(--card-bg)',
           border: '1px solid var(--card-border)',
           borderRadius: '12px',
           overflow: 'hidden',
@@ -637,13 +637,13 @@ export default function TagsManagePage() {
           style={{
             gridTemplateColumns: '1fr 140px 1fr 80px 60px',
             padding: '14px 20px',
-            background: '#F9FAFB',
+            background: 'var(--bg-elevated)',
             borderBottom: '1px solid var(--card-border)',
             fontSize: '11px',
             fontWeight: 600,
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            color: '#6B7280',
+            color: 'var(--text-muted)',
           }}
         >
           <SortableHeader field="name">Tag Name</SortableHeader>
@@ -660,8 +660,8 @@ export default function TagsManagePage() {
             style={{
               gridTemplateColumns: '1fr 140px 1fr 80px 60px',
               padding: '14px 20px',
-              borderBottom: '1px solid #F3F4F6',
-              background: '#FFFBEB',
+              borderBottom: '1px solid var(--card-border)',
+              background: 'rgba(245, 158, 11, 0.1)',
             }}
           >
             <input
@@ -676,6 +676,8 @@ export default function TagsManagePage() {
                 borderRadius: '6px',
                 fontSize: '13px',
                 marginRight: '12px',
+                background: 'var(--card-bg)',
+                color: 'var(--text-primary)',
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleCreateTag();
@@ -694,14 +696,14 @@ export default function TagsManagePage() {
                 border: '1px solid var(--card-border)',
                 borderRadius: '6px',
                 fontSize: '12px',
-                background: 'white',
+                background: 'var(--card-bg)',
               }}
             >
               {CATEGORY_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
-            <div style={{ color: '#9CA3AF', fontSize: '12px', fontStyle: 'italic' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '12px', fontStyle: 'italic' }}>
               Add boards after creating
             </div>
             <div>-</div>
@@ -729,10 +731,10 @@ export default function TagsManagePage() {
                 }}
                 style={{
                   padding: '6px 10px',
-                  background: '#F3F4F6',
+                  background: 'var(--bg-elevated)',
                   border: 'none',
                   borderRadius: '4px',
-                  color: '#6B7280',
+                  color: 'var(--text-muted)',
                   fontSize: '12px',
                   cursor: 'pointer',
                 }}
@@ -760,8 +762,8 @@ export default function TagsManagePage() {
                 style={{
                   gridTemplateColumns: '1fr 140px 1fr 80px 60px',
                   padding: '14px 20px',
-                  borderBottom: '1px solid #F3F4F6',
-                  background: tagHasChanges ? '#FFFBEB' : 'transparent',
+                  borderBottom: '1px solid var(--card-border)',
+                  background: tagHasChanges ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
                   transition: 'background 0.15s ease',
                 }}
               >
@@ -779,13 +781,14 @@ export default function TagsManagePage() {
                         borderRadius: '6px',
                         fontSize: '13px',
                         fontWeight: 500,
-                        background: pendingChanges[tag.id]?.name !== undefined ? '#FFFBEB' : 'white',
+                        background: pendingChanges[tag.id]?.name !== undefined ? 'rgba(245, 158, 11, 0.1)' : 'var(--card-bg)',
+                        color: 'var(--text-primary)',
                         flex: 1,
                         maxWidth: '200px',
                       }}
                     />
                   ) : (
-                    <span style={{ fontSize: '14px', fontWeight: 500, color: '#111827' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)' }}>
                       {tag.name}
                     </span>
                   )}
@@ -801,7 +804,8 @@ export default function TagsManagePage() {
                       border: pendingChanges[tag.id]?.category !== undefined ? '2px solid #F59E0B' : '1px solid var(--card-border)',
                       borderRadius: '6px',
                       fontSize: '12px',
-                      background: pendingChanges[tag.id]?.category !== undefined ? '#FFFBEB' : 'white',
+                      background: pendingChanges[tag.id]?.category !== undefined ? 'rgba(245, 158, 11, 0.1)' : 'var(--card-bg)',
+                      color: 'var(--text-primary)',
                     }}
                   >
                     {CATEGORY_OPTIONS.map(opt => (
@@ -815,9 +819,9 @@ export default function TagsManagePage() {
                         style={{
                           fontSize: '11px',
                           padding: '4px 10px',
-                          background: '#F3F4F6',
+                          background: 'var(--bg-elevated)',
                           borderRadius: '4px',
-                          color: '#6B7280',
+                          color: 'var(--text-muted)',
                           textTransform: 'capitalize',
                         }}
                       >
@@ -844,10 +848,10 @@ export default function TagsManagePage() {
                             gap: '4px',
                             fontSize: '11px',
                             padding: '4px 8px',
-                            background: isPendingAdd ? '#D1FAE5' : '#F3F4F6',
-                            border: isPendingAdd ? '1px solid #10B981' : 'none',
+                            background: isPendingAdd ? 'rgba(16, 185, 129, 0.2)' : 'var(--bg-elevated)',
+                            border: isPendingAdd ? '1px solid #10B981' : '1px solid var(--card-border)',
                             borderRadius: '4px',
-                            color: '#4B5563',
+                            color: 'var(--text-secondary)',
                           }}
                         >
                           <span
@@ -865,7 +869,7 @@ export default function TagsManagePage() {
                               style={{
                                 background: 'none',
                                 border: 'none',
-                                color: '#9CA3AF',
+                                color: 'var(--text-muted)',
                                 cursor: 'pointer',
                                 padding: 0,
                                 marginLeft: '2px',
@@ -880,7 +884,7 @@ export default function TagsManagePage() {
                       );
                     })}
                     {tagBoards.length > 3 && (
-                      <span style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                         +{tagBoards.length - 3}
                       </span>
                     )}
@@ -894,10 +898,10 @@ export default function TagsManagePage() {
                         onClick={() => setActiveBoardPicker(activeBoardPicker === tag.id ? null : tag.id)}
                         style={{
                           padding: '4px 8px',
-                          background: '#EDE9FE',
-                          border: 'none',
+                          background: 'rgba(140, 105, 240, 0.15)',
+                          border: '1px solid rgba(140, 105, 240, 0.3)',
                           borderRadius: '4px',
-                          color: '#8C69F0',
+                          color: '#A78BFA',
                           fontSize: '11px',
                           cursor: 'pointer',
                           fontWeight: 500,
@@ -928,10 +932,10 @@ export default function TagsManagePage() {
                           top: '100%',
                           left: 0,
                           marginTop: '4px',
-                          background: 'white',
-                          border: '1px solid #E5E7EB',
+                          background: 'var(--card-bg)',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '8px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
                           width: '220px',
                           zIndex: 10,
                           overflow: 'hidden',
@@ -947,9 +951,11 @@ export default function TagsManagePage() {
                             width: '100%',
                             padding: '10px 12px',
                             border: 'none',
-                            borderBottom: '1px solid #E5E7EB',
+                            borderBottom: '1px solid var(--card-border)',
                             fontSize: '13px',
                             outline: 'none',
+                            background: 'var(--card-bg)',
+                            color: 'var(--text-primary)',
                           }}
                         />
                         <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
@@ -972,10 +978,10 @@ export default function TagsManagePage() {
                                   textAlign: 'left',
                                   cursor: 'pointer',
                                   fontSize: '13px',
-                                  color: '#374151',
+                                  color: 'var(--text-primary)',
                                 }}
                                 onMouseEnter={(e) => {
-                                  e.currentTarget.style.background = '#F9FAFB';
+                                  e.currentTarget.style.background = 'var(--bg-elevated)';
                                 }}
                                 onMouseLeave={(e) => {
                                   e.currentTarget.style.background = 'transparent';
@@ -996,7 +1002,7 @@ export default function TagsManagePage() {
                             !tagBoards.some(tb => tb.slug === b.slug) &&
                             (!boardSearchQuery || b.name.toLowerCase().includes(boardSearchQuery.toLowerCase()))
                           ).length === 0 && (
-                            <div style={{ padding: '12px', textAlign: 'center', color: '#9CA3AF', fontSize: '13px' }}>
+                            <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
                               No boards available
                             </div>
                           )}
@@ -1029,7 +1035,7 @@ export default function TagsManagePage() {
                         padding: '6px',
                         background: 'transparent',
                         border: 'none',
-                        color: '#9CA3AF',
+                        color: 'var(--text-muted)',
                         cursor: 'pointer',
                         borderRadius: '4px',
                       }}
@@ -1054,10 +1060,10 @@ export default function TagsManagePage() {
         style={{
           marginTop: '16px',
           padding: '12px 20px',
-          background: '#F9FAFB',
+          background: 'var(--bg-elevated)',
           borderRadius: '8px',
           fontSize: '13px',
-          color: '#6B7280',
+          color: 'var(--text-muted)',
         }}
       >
         <span>

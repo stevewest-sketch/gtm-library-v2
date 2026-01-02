@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Hub - Homepage Mock</title>
+    <style>
+        /* ==========================================
+           GTM LIBRARY DESIGN SYSTEM v4 - NEON
+           HOMEPAGE MOCK
+           ========================================== */
+
+        :root {
+            /* Core Dark Mode */
+            --bg-base: #0D0D12;
+            --bg-surface: #16161D;
+            --bg-elevated: #1E1E28;
+            --bg-hover: #252530;
+            --bg-input: #1A1A24;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+
+            /* Hub Colors */
+            --hub-content: #8C69F0;
+            --hub-content-bright: #B794FF;
+            --hub-content-bg: rgba(140, 105, 240, 0.15);
+            
+            --hub-enablement: #22C55E;
+            --hub-enablement-bright: #4ADE80;
+            --hub-enablement-bg: rgba(34, 197, 94, 0.15);
+            
+            --hub-coe: #F59E0B;
+            --hub-coe-bright: #FBBF24;
+            --hub-coe-bg: rgba(245, 158, 11, 0.15);
+
+            /* NEON Badge Colors */
+            --badge-red-bg: rgba(255, 80, 80, 0.18);
+            --badge-red-text: #FF5555;
+            --badge-red-border: rgba(255, 80, 80, 0.30);
+            
+            --badge-orange-bg: rgba(255, 160, 0, 0.18);
+            --badge-orange-text: #FFA500;
+            --badge-orange-border: rgba(255, 160, 0, 0.30);
+            
+            --badge-yellow-bg: rgba(255, 230, 0, 0.18);
+            --badge-yellow-text: #FFE600;
+            --badge-yellow-border: rgba(255, 230, 0, 0.30);
+            
+            --badge-green-bg: rgba(0, 255, 135, 0.18);
+            --badge-green-text: #00FF87;
+            --badge-green-border: rgba(0, 255, 135, 0.30);
+            
+            --badge-blue-bg: rgba(0, 170, 255, 0.18);
+            --badge-blue-text: #00AAFF;
+            --badge-blue-border: rgba(0, 170, 255, 0.30);
+            
+            --badge-purple-bg: rgba(180, 100, 255, 0.18);
+            --badge-purple-text: #B464FF;
+            --badge-purple-border: rgba(180, 100, 255, 0.30);
+            
+            --badge-pink-bg: rgba(255, 80, 180, 0.18);
+            --badge-pink-text: #FF50B4;
+            --badge-pink-border: rgba(255, 80, 180, 0.30);
+            
+            --badge-teal-bg: rgba(0, 255, 220, 0.18);
+            --badge-teal-text: #00FFDC;
+            --badge-teal-border: rgba(0, 255, 220, 0.30);
+            
+            --badge-violet-bg: rgba(160, 80, 255, 0.18);
+            --badge-violet-text: #A050FF;
+            --badge-violet-border: rgba(160, 80, 255, 0.30);
+
+            /* Status */
+            --badge-new-bg: rgba(0, 255, 135, 0.20);
+            --badge-new-text: #00FF87;
+            --badge-new-border: rgba(0, 255, 135, 0.40);
+            
+            --badge-featured-bg: rgba(255, 160, 0, 0.20);
+            --badge-featured-text: #FFA500;
+            --badge-featured-border: rgba(255, 160, 0, 0.40);
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-default: rgba(255, 255, 255, 0.10);
+
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--hub-content), var(--hub-enablement));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .sidebar-nav {
+            padding: 0 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--hub-content-bg);
+            color: var(--hub-content-bright);
+        }
+
+        .nav-item-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item-count {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 16px 12px 8px;
+        }
+
+        .hub-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .hub-dot.content { background: var(--hub-content); }
+        .hub-dot.enablement { background: var(--hub-enablement); }
+        .hub-dot.coe { background: var(--hub-coe); }
+        .hub-dot.product { background: var(--badge-blue-text); }
+        .hub-dot.competitive { background: var(--badge-red-text); }
+        .hub-dot.demo { background: var(--badge-teal-text); }
+        .hub-dot.sales { background: var(--badge-purple-text); }
+        .hub-dot.csm { background: var(--badge-green-text); }
+        .hub-dot.sc { background: var(--badge-orange-text); }
+        .hub-dot.bdr { background: var(--badge-pink-text); }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 24px 32px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 14px 20px;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar input:focus { outline: none; }
+
+        .search-shortcut {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            margin: 6px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--hub-content), var(--hub-enablement), var(--hub-coe));
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .hero-stat {
+            text-align: left;
+        }
+
+        .hero-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .hero-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Quick Access */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .quick-access-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .quick-access-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .quick-access-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .quick-access-card:nth-child(1) .quick-access-icon { background: var(--hub-enablement-bg); }
+        .quick-access-card:nth-child(2) .quick-access-icon { background: var(--badge-red-bg); }
+        .quick-access-card:nth-child(3) .quick-access-icon { background: var(--hub-content-bg); }
+
+        .quick-access-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .quick-access-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Browse by Hub */
+        .browse-hub-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .browse-hub-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .browse-hub-card:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border-hover);
+        }
+
+        .browse-hub-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .browse-hub-card:nth-child(1) .browse-hub-icon { background: var(--hub-content-bg); }
+        .browse-hub-card:nth-child(2) .browse-hub-icon { background: var(--hub-enablement-bg); }
+        .browse-hub-card:nth-child(3) .browse-hub-icon { background: var(--hub-coe-bg); }
+        .browse-hub-card:nth-child(4) .browse-hub-icon { background: var(--badge-yellow-bg); }
+        .browse-hub-card:nth-child(5) .browse-hub-icon { background: var(--badge-blue-bg); }
+        .browse-hub-card:nth-child(6) .browse-hub-icon { background: var(--badge-red-bg); }
+        .browse-hub-card:nth-child(7) .browse-hub-icon { background: var(--badge-teal-bg); }
+        .browse-hub-card:nth-child(8) .browse-hub-icon { background: var(--badge-purple-bg); }
+        .browse-hub-card:nth-child(9) .browse-hub-icon { background: var(--badge-green-bg); }
+        .browse-hub-card:nth-child(10) .browse-hub-icon { background: var(--badge-orange-bg); }
+        .browse-hub-card:nth-child(11) .browse-hub-icon { background: var(--badge-pink-bg); }
+
+        .browse-hub-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Recently Added */
+        .recently-added-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Asset Card */
+        .asset-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-height: 180px;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .asset-card.content:hover { border-color: var(--hub-content); }
+        .asset-card.enablement:hover { border-color: var(--hub-enablement); }
+        .asset-card.coe:hover { border-color: var(--hub-coe); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .card-badges-left { display: flex; gap: 6px; flex-wrap: wrap; }
+        .card-badges-right { display: flex; gap: 6px; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        /* NEON Badge Classes */
+        .badge-red { background: var(--badge-red-bg); color: var(--badge-red-text); border-color: var(--badge-red-border); }
+        .badge-orange { background: var(--badge-orange-bg); color: var(--badge-orange-text); border-color: var(--badge-orange-border); }
+        .badge-yellow { background: var(--badge-yellow-bg); color: var(--badge-yellow-text); border-color: var(--badge-yellow-border); }
+        .badge-green { background: var(--badge-green-bg); color: var(--badge-green-text); border-color: var(--badge-green-border); }
+        .badge-blue { background: var(--badge-blue-bg); color: var(--badge-blue-text); border-color: var(--badge-blue-border); }
+        .badge-purple { background: var(--badge-purple-bg); color: var(--badge-purple-text); border-color: var(--badge-purple-border); }
+        .badge-pink { background: var(--badge-pink-bg); color: var(--badge-pink-text); border-color: var(--badge-pink-border); }
+        .badge-teal { background: var(--badge-teal-bg); color: var(--badge-teal-text); border-color: var(--badge-teal-border); }
+        .badge-violet { background: var(--badge-violet-bg); color: var(--badge-violet-text); border-color: var(--badge-violet-border); }
+
+        /* Format badges (hub-colored) */
+        .badge-format-content { background: var(--hub-content-bg); color: var(--hub-content-bright); border-color: rgba(140, 105, 240, 0.25); }
+        .badge-format-enablement { background: var(--hub-enablement-bg); color: var(--hub-enablement-bright); border-color: rgba(34, 197, 94, 0.25); }
+        .badge-format-coe { background: var(--hub-coe-bg); color: var(--hub-coe-bright); border-color: rgba(245, 158, 11, 0.25); }
+
+        /* Status badges */
+        .badge-new { background: var(--badge-new-bg); color: var(--badge-new-text); border-color: var(--badge-new-border); }
+        .badge-featured { background: var(--badge-featured-bg); color: var(--badge-featured-text); border-color: var(--badge-featured-border); }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .card-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-cta {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .card-cta.content { color: var(--hub-content-bright); }
+        .card-cta.enablement { color: var(--hub-enablement-bright); }
+        .card-cta.coe { color: var(--hub-coe-bright); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="logo-icon">G+</div>
+                    <span>GTM Hub</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <span class="nav-item-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                
+                <div class="nav-section-title">Hubs</div>
+                
+                <a href="#" class="nav-item">
+                    <span class="hub-dot content"></span>
+                    <span>Content</span>
+                    <span class="nav-item-count">141</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot enablement"></span>
+                    <span>Enablement</span>
+                    <span class="nav-item-count">51</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot coe"></span>
+                    <span>CoE Assets</span>
+                    <span class="nav-item-count">58</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot coe"></span>
+                    <span>Proof Point Repository</span>
+                    <span class="nav-item-count">177</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot product"></span>
+                    <span>Product</span>
+                    <span class="nav-item-count">3</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot competitive"></span>
+                    <span>Competitive</span>
+                    <span class="nav-item-count">25</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot demo"></span>
+                    <span>Demo</span>
+                    <span class="nav-item-count">34</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot sales"></span>
+                    <span>Sales</span>
+                    <span class="nav-item-count">31</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot csm"></span>
+                    <span>CSM</span>
+                    <span class="nav-item-count">32</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot sc"></span>
+                    <span>SC</span>
+                    <span class="nav-item-count">1</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="hub-dot bdr"></span>
+                    <span>BDR</span>
+                    <span class="nav-item-count">0</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search boards, tags, content...">
+                        <div class="search-shortcut">⌘K</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1>Welcome to GTM Hub</h1>
+                <p>Your central hub for sales enablement, content resources, and best practices.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">11</div>
+                        <div class="hero-stat-label">Hubs</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">437</div>
+                        <div class="hero-stat-label">Resources</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">437</div>
+                        <div class="hero-stat-label">Added This Week</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Access -->
+            <h2 class="section-title">Quick Access</h2>
+            <div class="quick-access-grid">
+                <div class="quick-access-card">
+                    <div class="quick-access-icon">🎓</div>
+                    <h3>Enablement Hub</h3>
+                    <p>Training sessions, certifications, and learning paths</p>
+                </div>
+                <div class="quick-access-card">
+                    <div class="quick-access-icon">⚔️</div>
+                    <h3>Competitive Intel</h3>
+                    <p>Competitive intelligence and positioning</p>
+                </div>
+                <div class="quick-access-card">
+                    <div class="quick-access-icon">📊</div>
+                    <h3>Content Library</h3>
+                    <p>Decks, templates, and discovery guides</p>
+                </div>
+            </div>
+
+            <!-- Browse by Hub -->
+            <h2 class="section-title">Browse by Hub</h2>
+            <div class="browse-hub-grid">
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">📝</div>
+                    <span class="browse-hub-count">141 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">🎓</div>
+                    <span class="browse-hub-count">51 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">🎯</div>
+                    <span class="browse-hub-count">58 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">📈</div>
+                    <span class="browse-hub-count">177 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">📦</div>
+                    <span class="browse-hub-count">3 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">⚔️</div>
+                    <span class="browse-hub-count">25 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">🖥️</div>
+                    <span class="browse-hub-count">34 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">💼</div>
+                    <span class="browse-hub-count">31 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">🤝</div>
+                    <span class="browse-hub-count">32 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">🔧</div>
+                    <span class="browse-hub-count">1 items</span>
+                </div>
+                <div class="browse-hub-card">
+                    <div class="browse-hub-icon">📞</div>
+                    <span class="browse-hub-count">0 items</span>
+                </div>
+            </div>
+
+            <!-- Recently Added -->
+            <h2 class="section-title">Recently Added</h2>
+            <div class="recently-added-grid">
+                <!-- Card 1: Product Training -->
+                <div class="asset-card enablement">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">Product Training</span>
+                            <span class="badge badge-format-enablement">Live Replay</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">Social Comments, Product Enhancement Requests, + Competitive Partner Support</h3>
+                    <p class="card-description">Presentation on social comments, product</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta enablement">Watch →</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Promo -->
+                <div class="asset-card content">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-pink">Promo</span>
+                            <span class="badge badge-format-content">Video</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">Gladly Customer AI Launch Video</h3>
+                    <p class="card-description">Presentation on gladly customer ai</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta content">Watch →</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Customer Example -->
+                <div class="asset-card coe">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">Customer Example</span>
+                            <span class="badge badge-format-coe">Meeting Asset</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">EBR: Crate & Barrel</h3>
+                    <p class="card-description">Crate & Barrel EBR customer example</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta coe">View →</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Customer Example -->
+                <div class="asset-card coe">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">Customer Example</span>
+                            <span class="badge badge-format-coe">Meeting Asset</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">Executive Business Case: Nordstrom + Gladly</h3>
+                    <p class="card-description">Nordstrom exec meeting example</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 30, 2025</span>
+                        <span class="card-cta coe">View →</span>
+                    </div>
+                </div>
+
+                <!-- Card 5: GTM Training -->
+                <div class="asset-card enablement">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-green">GTM Training</span>
+                            <span class="badge badge-format-enablement">Course</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">DealHub Certification</h3>
+                    <p class="card-description">Best practice for dealhub certification</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta enablement">View →</span>
+                    </div>
+                </div>
+
+                <!-- Card 6: Benchmark -->
+                <div class="asset-card coe">
+                    <div class="card-header">
+                        <div class="card-badges-left">
+                            <span class="badge badge-yellow">Benchmark</span>
+                            <span class="badge badge-format-coe">Proof Point</span>
+                        </div>
+                        <div class="card-badges-right"></div>
+                    </div>
+                    <h3 class="card-title">75.2% average FCR for voice interactions.</h3>
+                    <p class="card-description">Industry First Contact Resolution benchmark data</p>
+                    <div class="card-footer">
+                        <span class="card-date">Dec 28, 2025</span>
+                        <span class="card-cta coe">View →</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

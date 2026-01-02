@@ -1,0 +1,638 @@
+/* ==========================================
+   GTM LIBRARY DESIGN SYSTEM v4
+   NEON EDITION - NO GRAY TYPES
+   ========================================== */
+
+:root {
+  /* Core Dark Mode */
+  --bg-base: #0D0D12;
+  --bg-surface: #16161D;
+  --bg-elevated: #1E1E28;
+  --bg-hover: #252530;
+  --bg-input: #1A1A24;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0B0;
+  --text-muted: #6B6B7B;
+  --text-placeholder: #4A4A5A;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-hover: rgba(255, 255, 255, 0.15);
+
+  /* ==========================================
+     HUB COLORS
+     ========================================== */
+  --hub-content: #8C69F0;
+  --hub-content-bright: #B794FF;    /* BRIGHTER purple */
+  --hub-content-bg: rgba(140, 105, 240, 0.15);
+  --hub-content-border: rgba(140, 105, 240, 0.25);
+  
+  --hub-enablement: #22C55E;
+  --hub-enablement-bright: #4ADE80;
+  --hub-enablement-bg: rgba(34, 197, 94, 0.15);
+  --hub-enablement-border: rgba(34, 197, 94, 0.25);
+  
+  --hub-coe: #F59E0B;
+  --hub-coe-bright: #FBBF24;
+  --hub-coe-bg: rgba(245, 158, 11, 0.15);
+  --hub-coe-border: rgba(245, 158, 11, 0.25);
+
+  /* ==========================================
+     NEON TYPE BADGE COLORS
+     Maximum brightness - nearly full saturation
+     ========================================== */
+  
+  /* 🔴 NEON RED */
+  --badge-red-bg: rgba(255, 80, 80, 0.18);
+  --badge-red-text: #FF5555;
+  --badge-red-border: rgba(255, 80, 80, 0.30);
+  
+  /* 🟠 NEON ORANGE */
+  --badge-orange-bg: rgba(255, 160, 0, 0.18);
+  --badge-orange-text: #FFA500;
+  --badge-orange-border: rgba(255, 160, 0, 0.30);
+  
+  /* 🟡 NEON YELLOW */
+  --badge-yellow-bg: rgba(255, 230, 0, 0.18);
+  --badge-yellow-text: #FFE600;
+  --badge-yellow-border: rgba(255, 230, 0, 0.30);
+  
+  /* 🟢 NEON GREEN */
+  --badge-green-bg: rgba(0, 255, 135, 0.18);
+  --badge-green-text: #00FF87;
+  --badge-green-border: rgba(0, 255, 135, 0.30);
+  
+  /* 🔵 NEON BLUE */
+  --badge-blue-bg: rgba(0, 170, 255, 0.18);
+  --badge-blue-text: #00AAFF;
+  --badge-blue-border: rgba(0, 170, 255, 0.30);
+  
+  /* 🟣 NEON PURPLE */
+  --badge-purple-bg: rgba(180, 100, 255, 0.18);
+  --badge-purple-text: #B464FF;
+  --badge-purple-border: rgba(180, 100, 255, 0.30);
+  
+  /* 🩷 NEON PINK */
+  --badge-pink-bg: rgba(255, 80, 180, 0.18);
+  --badge-pink-text: #FF50B4;
+  --badge-pink-border: rgba(255, 80, 180, 0.30);
+  
+  /* 🩵 NEON TEAL/CYAN */
+  --badge-teal-bg: rgba(0, 255, 220, 0.18);
+  --badge-teal-text: #00FFDC;
+  --badge-teal-border: rgba(0, 255, 220, 0.30);
+  
+  /* 💜 NEON VIOLET (for internal/special) */
+  --badge-violet-bg: rgba(160, 80, 255, 0.18);
+  --badge-violet-text: #A050FF;
+  --badge-violet-border: rgba(160, 80, 255, 0.30);
+
+  /* Status Badges - NEON */
+  --badge-new-bg: rgba(0, 255, 135, 0.20);
+  --badge-new-text: #00FF87;
+  --badge-new-border: rgba(0, 255, 135, 0.40);
+  
+  --badge-featured-bg: rgba(255, 160, 0, 0.20);
+  --badge-featured-text: #FFA500;
+  --badge-featured-border: rgba(255, 160, 0, 0.40);
+
+  /* Layout */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   BADGE BASE STYLES
+   ========================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+/* ==========================================
+   NEON TYPE BADGE COLOR CLASSES
+   ========================================== */
+.badge-red { background: var(--badge-red-bg); color: var(--badge-red-text); border-color: var(--badge-red-border); }
+.badge-orange { background: var(--badge-orange-bg); color: var(--badge-orange-text); border-color: var(--badge-orange-border); }
+.badge-yellow { background: var(--badge-yellow-bg); color: var(--badge-yellow-text); border-color: var(--badge-yellow-border); }
+.badge-green { background: var(--badge-green-bg); color: var(--badge-green-text); border-color: var(--badge-green-border); }
+.badge-blue { background: var(--badge-blue-bg); color: var(--badge-blue-text); border-color: var(--badge-blue-border); }
+.badge-purple { background: var(--badge-purple-bg); color: var(--badge-purple-text); border-color: var(--badge-purple-border); }
+.badge-pink { background: var(--badge-pink-bg); color: var(--badge-pink-text); border-color: var(--badge-pink-border); }
+.badge-teal { background: var(--badge-teal-bg); color: var(--badge-teal-text); border-color: var(--badge-teal-border); }
+.badge-violet { background: var(--badge-violet-bg); color: var(--badge-violet-text); border-color: var(--badge-violet-border); }
+
+/* Status Badges */
+.badge-new { background: var(--badge-new-bg); color: var(--badge-new-text); border-color: var(--badge-new-border); }
+.badge-featured { background: var(--badge-featured-bg); color: var(--badge-featured-text); border-color: var(--badge-featured-border); }
+
+/* Format Badges (Hub-Colored) */
+.badge-format-content { background: var(--hub-content-bg); color: var(--hub-content-bright); border-color: var(--hub-content-border); }
+.badge-format-enablement { background: var(--hub-enablement-bg); color: var(--hub-enablement-bright); border-color: var(--hub-enablement-border); }
+.badge-format-coe { background: var(--hub-coe-bg); color: var(--hub-coe-bright); border-color: var(--hub-coe-border); }
+
+/* ==========================================
+   TYPE-SPECIFIC BADGE CLASSES
+   ========================================== */
+
+/* 🔴 NEON RED - Competitive */
+.badge-battlecard, .badge-competitive, .badge-certification,
+.badge-partner-training, .badge-value-realization,
+.badge-zendesk, .badge-intercom, .badge-salesforce, .badge-gorgias,
+.badge-kustomer, .badge-ada, .badge-sierra, .badge-genesys,
+.badge-sprinklr, .badge-netomi, .badge-linc, .badge-decagon,
+.badge-partner {
+  background: var(--badge-red-bg);
+  color: var(--badge-red-text);
+  border-color: var(--badge-red-border);
+}
+
+/* 🟠 NEON ORANGE - Calculators */
+.badge-calculator, .badge-one-pager,
+.badge-impl, .badge-implementation {
+  background: var(--badge-orange-bg);
+  color: var(--badge-orange-text);
+  border-color: var(--badge-orange-border);
+}
+
+/* 🟡 NEON YELLOW - Templates & Proof */
+.badge-template, .badge-case-study, .badge-meeting-asset,
+.badge-proof-point, .badge-customer-quote, .badge-benchmark,
+.badge-industry-stat, .badge-competitor-stat {
+  background: var(--badge-yellow-bg);
+  color: var(--badge-yellow-text);
+  border-color: var(--badge-yellow-border);
+}
+
+/* 🟢 NEON GREEN - Training (includes playbook) */
+.badge-gtm-training, .badge-product-training, .badge-technical-training,
+.badge-competitive-training, .badge-revops-training,
+.badge-customer-example, .badge-customer-success-metric, .badge-course,
+.badge-playbook, .badge-live-replay, .badge-on-demand,
+.badge-csm, .badge-customer-success {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-text);
+  border-color: var(--badge-green-border);
+}
+
+/* 🔵 NEON BLUE - Demo, Reports & Guides */
+.badge-demo, .badge-demo-video, .badge-demo-asset, .badge-report,
+.badge-product-overview, .badge-dashboard, .badge-usage-metrics,
+.badge-guide, .badge-best-practice,
+.badge-internal-best-practice, .badge-customer-best-practice,
+.badge-voice, .badge-sidekick-voice, .badge-copilot, .badge-insights {
+  background: var(--badge-blue-bg);
+  color: var(--badge-blue-text);
+  border-color: var(--badge-blue-border);
+}
+
+/* 🟣 NEON PURPLE - Decks */
+.badge-deck, .badge-keynote, .badge-slides,
+.badge-gladly, .badge-gladly-team, .badge-gladly-sidekick, .badge-gladly-hero,
+.badge-sales, .badge-ae {
+  background: var(--badge-purple-bg);
+  color: var(--badge-purple-text);
+  border-color: var(--badge-purple-border);
+}
+
+/* 🩷 NEON PINK - Messaging (includes article, press) */
+.badge-messaging, .badge-sequence,
+.badge-article, .badge-press, .badge-promo,
+.badge-process-innovation,
+.badge-mktg, .badge-marketing {
+  background: var(--badge-pink-bg);
+  color: var(--badge-pink-text);
+  border-color: var(--badge-pink-border);
+}
+
+/* 🩵 NEON TEAL - Tools (includes document) */
+.badge-gtm-tool, .badge-tool, .badge-document,
+.badge-prospect-example, .badge-prototype,
+.badge-guides, .badge-journeys, .badge-app-platform, .badge-answer-threads,
+.badge-sc, .badge-ps {
+  background: var(--badge-teal-bg);
+  color: var(--badge-teal-text);
+  border-color: var(--badge-teal-border);
+}
+
+/* 💜 NEON VIOLET - Internal & Special */
+.badge-internal, .badge-web-link {
+  background: var(--badge-violet-bg);
+  color: var(--badge-violet-text);
+  border-color: var(--badge-violet-border);
+}
+
+/* ==========================================
+   ASSET CARD STYLES
+   ========================================== */
+.asset-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 180px;
+}
+
+.asset-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hub hover borders */
+.asset-card[data-hub="content"]:hover,
+.asset-card.hub-content:hover { border-color: var(--hub-content); }
+
+.asset-card[data-hub="enablement"]:hover,
+.asset-card.hub-enablement:hover { border-color: var(--hub-enablement); }
+
+.asset-card[data-hub="coe"]:hover,
+.asset-card.hub-coe:hover { border-color: var(--hub-coe); }
+
+/* Card structure */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-badges-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.card-badges-right { display: flex; gap: 6px; }
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.card-meta { font-size: 11px; color: var(--text-muted); }
+
+.card-cta { font-size: 13px; font-weight: 600; margin-left: auto; }
+
+.card-cta[data-hub="content"], .card-cta.cta-content { color: var(--hub-content-bright); }
+.card-cta[data-hub="enablement"], .card-cta.cta-enablement { color: var(--hub-enablement-bright); }
+.card-cta[data-hub="coe"], .card-cta.cta-coe { color: var(--hub-coe-bright); }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ==========================================
+   HUB CARDS (Homepage)
+   ========================================== */
+.hub-card {
+  position: relative;
+  display: block;
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--border-default);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.hub-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.hub-card.content::before { background: var(--hub-content); }
+.hub-card.enablement::before { background: var(--hub-enablement); }
+.hub-card.coe::before { background: var(--hub-coe); }
+
+.hub-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hub-card.content:hover { border-color: var(--hub-content); }
+.hub-card.enablement:hover { border-color: var(--hub-enablement); }
+.hub-card.coe:hover { border-color: var(--hub-coe); }
+
+.hub-card-icon { font-size: 32px; margin-bottom: 16px; }
+.hub-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+.hub-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+.hub-card-link { font-size: 14px; font-weight: 600; }
+
+.hub-card.content .hub-card-link { color: var(--hub-content-bright); }
+.hub-card.enablement .hub-card-link { color: var(--hub-enablement-bright); }
+.hub-card.coe .hub-card-link { color: var(--hub-coe-bright); }
+
+.hub-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ==========================================
+   HOMEPAGE HERO
+   ========================================== */
+.hero {
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+  border-radius: var(--radius-xl);
+  padding: 60px 40px;
+  text-align: center;
+  margin-bottom: 40px;
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--hub-content), var(--hub-enablement), var(--hub-coe));
+}
+
+.hero h1 { font-size: 40px; font-weight: 700; margin-bottom: 12px; }
+.hero p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 32px; }
+
+.search-bar {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--bg-input);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.search-bar input::placeholder { color: var(--text-placeholder); }
+.search-bar input:focus { outline: none; }
+
+.search-bar button {
+  padding: 16px 24px;
+  background: var(--hub-content);
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-bar button:hover { background: var(--hub-content-bright); }
+
+/* ==========================================
+   ADMIN STYLES
+   ========================================== */
+.admin-nav {
+  display: flex;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+  gap: 4px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-subtle);
+}
+
+.admin-nav-item {
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.admin-nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.admin-nav-item.active { background: var(--hub-content); color: white; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+}
+
+.admin-table thead { background: #1A1A24; }
+
+.admin-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.admin-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.admin-table tr:hover td { background: var(--bg-elevated); }
+.admin-table tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
+.admin-table tr:nth-child(even):hover td { background: var(--bg-elevated); }
+
+.table-action {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  margin-right: 8px;
+}
+
+.table-action.edit { background: var(--badge-blue-bg); color: var(--badge-blue-text); }
+.table-action.edit:hover { background: rgba(0, 170, 255, 0.30); }
+.table-action.delete { background: var(--badge-red-bg); color: var(--badge-red-text); }
+.table-action.delete:hover { background: rgba(255, 80, 80, 0.30); }
+
+/* Forms */
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.form-input::placeholder { color: var(--text-placeholder); }
+.form-input:focus {
+  outline: none;
+  border-color: var(--hub-content);
+  box-shadow: 0 0 0 3px var(--hub-content-bg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary { background: var(--hub-content); color: white; }
+.btn-primary:hover { background: var(--hub-content-bright); }
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.btn-secondary:hover { background: var(--bg-hover); }
+
+/* ==========================================
+   QUICK ACCESS CARDS (Homepage)
+   ========================================== */
+.quick-access-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.quick-access-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.quick-access-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.quick-access-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.quick-access-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   BROWSE BY HUB (Homepage)
+   ========================================== */
+.browse-hub-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s ease;
+}
+
+.browse-hub-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-hover);
+}
+
+.browse-hub-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.browse-hub-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+}

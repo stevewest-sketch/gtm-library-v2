@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { AssetCard, CompactCard, HeroCard } from './AssetCard';
 
 // Number of cards to show before "Show more" (2 rows of 4)
@@ -124,6 +124,52 @@ export function HubPageContent({
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'stack'>(defaultView);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const tagPillsRef = useRef<HTMLDivElement>(null);
+  const tagPillsContainerRef = useRef<HTMLDivElement>(null);
+  const heroHeaderRef = useRef<HTMLDivElement>(null);
+  const [tagPillsAtEnd, setTagPillsAtEnd] = useState(false);
+  const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+
+  // Track scroll to make header fixed when scrolled past its original position
+  useEffect(() => {
+    const handleScroll = () => {
+      // Header should become fixed when scrolled past 64px (global header height)
+      const shouldBeFixed = window.scrollY > 20;
+      setIsHeaderFixed(shouldBeFixed);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Check if tag pills are scrolled to end (hide scroll hint)
+  const checkTagPillsScroll = useCallback(() => {
+    const el = tagPillsRef.current;
+    if (!el) return;
+    const isAtEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 10;
+    setTagPillsAtEnd(isAtEnd);
+  }, []);
+
+  // Set up scroll listener for tag pills
+  useEffect(() => {
+    const el = tagPillsRef.current;
+    if (!el) return;
+
+    // Initial check
+    checkTagPillsScroll();
+
+    el.addEventListener('scroll', checkTagPillsScroll, { passive: true });
+    window.addEventListener('resize', checkTagPillsScroll);
+
+    return () => {
+      el.removeEventListener('scroll', checkTagPillsScroll);
+      window.removeEventListener('resize', checkTagPillsScroll);
+    };
+  }, [checkTagPillsScroll]);
 
   // Toggle section expansion
   const toggleSection = (slug: string) => {
@@ -162,15 +208,29 @@ export function HubPageContent({
     return internalSelectedTags.includes(tagSlug);
   };
 
+  // Filter assets by search query
+  const filteredAssets = useMemo(() => {
+    if (!searchQuery.trim()) return assets;
+    const query = searchQuery.toLowerCase();
+    return assets.filter(asset =>
+      asset.title.toLowerCase().includes(query) ||
+      asset.shortDescription?.toLowerCase().includes(query) ||
+      asset.type?.toLowerCase().includes(query) ||
+      asset.tags.some(tag => tag.toLowerCase().includes(query))
+    );
+  }, [assets, searchQuery]);
+
   // Group assets by their tags that match board tags (matching by both slug and name)
+  // Uses filteredAssets when search is active
   const assetsByTag = useMemo(() => {
     const grouped: Record<string, Asset[]> = {};
+    const assetsToGroup = searchQuery.trim() ? filteredAssets : assets;
     hubTagsFromAPI?.forEach(hubTag => {
       grouped[hubTag.slug] = [];
     });
-    assets.forEach(asset => {
+    assetsToGroup.forEach(asset => {
       asset.tags.forEach(assetTag => {
-        const matchingBoardTag = hubTagsFromAPI?.find(bt => 
+        const matchingBoardTag = hubTagsFromAPI?.find(bt =>
           assetTagMatchesBoardTag(assetTag, bt)
         );
         if (matchingBoardTag && grouped[matchingBoardTag.slug]) {
@@ -181,7 +241,7 @@ export function HubPageContent({
       });
     });
     return grouped;
-  }, [assets, hubTagsFromAPI]);
+  }, [assets, filteredAssets, searchQuery, hubTagsFromAPI]);
 
   // Sort assets
   const sortAssets = (assetsToSort: Asset[]): Asset[] => {
@@ -195,241 +255,518 @@ export function HubPageContent({
     });
   };
 
+  // Get recently added assets (last 14 days), max 8
+  const recentlyAddedAssets = useMemo(() => {
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
+    return assets
+      .filter(asset => {
+        if (!asset.publishDate) return false;
+        const publishDate = new Date(asset.publishDate);
+        return publishDate >= fourteenDaysAgo;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.publishDate || 0);
+        const dateB = new Date(b.publishDate || 0);
+        return dateB.getTime() - dateA.getTime();
+      })
+      .slice(0, 8);
+  }, [assets]);
+
+  // Carousel scroll handlers
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 296; // Card width (280) + gap (16)
+      carouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Get visible sections based on selected tags (using slugs)
   const visibleSlugs = hubTagSlugs.filter(slug => effectiveSelectedTags.includes(slug));
-  const hasAnyAssets = assets.length > 0;
+  const hasAnyAssets = filteredAssets.length > 0;
+
+  // Calculate header height for placeholder (approximate)
+  const headerHeight = 160; // Approximate height of the hub hero header
 
   return (
     <>
-      {/* Sticky Header Container */}
+      {/* Placeholder div to prevent content jump when header becomes fixed */}
+      {isHeaderFixed && (
+        <div style={{ height: `${headerHeight}px` }} />
+      )}
+
+      {/* Hub Hero Header - NEON v4 Cohesive Design */}
       <div
+        ref={heroHeaderRef}
+        className="hub-hero-header"
         style={{
-          position: 'sticky',
-          top: 0,
+          position: isHeaderFixed ? 'fixed' : 'relative',
+          top: isHeaderFixed ? '64px' : 'auto', // Stick below the fixed page header (64px height)
+          left: isHeaderFixed ? 'var(--sidebar-width, 280px)' : 'auto',
+          right: isHeaderFixed ? 0 : 'auto',
           zIndex: 40,
-          background: 'var(--bg-page)',
-          marginLeft: '-24px',
-          marginRight: '-24px',
-          paddingLeft: '24px',
-          paddingRight: '24px',
-          marginTop: '-24px',
-          paddingTop: '24px',
-          paddingBottom: '8px',
-          borderBottom: '1px solid var(--border-subtle, var(--card-border))',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+          marginLeft: isHeaderFixed ? 0 : '-28px',
+          marginRight: isHeaderFixed ? 0 : '-28px',
+          marginTop: isHeaderFixed ? 0 : '-20px',
+          background: 'var(--bg-page, #0D0D12)',
         }}
       >
-        {/* Sleek Jump Nav - Pill Buttons */}
-        {hubTagSlugs.length > 0 && (
-          <nav
-            className="nav-inner"
+        {/* Gradient accent bar */}
+        <div
+          style={{
+            height: '3px',
+            background: `linear-gradient(90deg, ${hub.color}, ${hub.color}88, transparent)`,
+          }}
+        />
+
+        {/* Main header content */}
+        <div
+          style={{
+            padding: '20px 28px 16px',
+            background: 'var(--bg-surface, #14141A)',
+            borderBottom: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.06))',
+          }}
+        >
+          {/* Top row: Hub title + Search + Controls */}
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              flexWrap: 'wrap',
-              marginBottom: '8px',
+              gap: '20px',
+              marginBottom: '16px',
             }}
           >
-            {/* All pill */}
-            <button
-              onClick={() => setInternalSelectedTags([])}
-              className="nav-pill"
+            {/* Hub Icon + Name */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: `${hub.color}20`,
+                  border: `1px solid ${hub.color}40`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                }}
+              >
+                {hub.icon}
+              </div>
+              <div>
+                <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, lineHeight: 1.2 }}>
+                  {hub.name}
+                </h1>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                  {assets.length} resources
+                </span>
+              </div>
+            </div>
+
+            {/* Search Bar - Flex grow */}
+            <div
               style={{
-                padding: '8px 16px',
-                borderRadius: 'var(--radius-md, 10px)',
-                fontSize: '13px',
-                fontWeight: 500,
-                border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.06))',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                background: internalSelectedTags.length === 0 ? hub.color : 'var(--bg-elevated, #1E1E28)',
-                color: internalSelectedTags.length === 0 ? 'white' : 'var(--text-secondary)',
-                borderColor: internalSelectedTags.length === 0 ? hub.color : 'var(--border-subtle)',
+                flex: 1,
+                maxWidth: '480px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '10px 14px',
+                background: 'var(--bg-elevated, #1A1A22)',
+                border: '1px solid var(--border-default, rgba(255, 255, 255, 0.08))',
+                borderRadius: '10px',
+                transition: 'border-color 0.15s ease',
               }}
             >
-              All
-            </button>
-
-            {/* Tag pills - clean design without counts */}
-            {hubTagsFromAPI?.map(tag => {
-              const isActive = isTagActive(tag.slug) && internalSelectedTags.length > 0;
-              return (
+              <svg
+                style={{ width: '18px', height: '18px', color: 'var(--text-muted)', flexShrink: 0 }}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder={`Search ${hub.name.toLowerCase()}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  flex: 1,
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: '14px',
+                  fontFamily: 'inherit',
+                  background: 'transparent',
+                  color: 'var(--text-primary)',
+                }}
+              />
+              {searchQuery && (
                 <button
-                  key={tag.slug}
-                  onClick={() => toggleTag(tag.slug)}
-                  className="nav-pill"
+                  onClick={() => setSearchQuery('')}
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: 'var(--radius-md, 10px)',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.06))',
+                    padding: '4px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: 'none',
+                    borderRadius: '4px',
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    background: isActive ? hub.color : 'var(--bg-elevated, #1E1E28)',
-                    color: isActive ? 'white' : 'var(--text-secondary)',
-                    borderColor: isActive ? hub.color : 'var(--border-subtle)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  {hubTagDisplayMap[tag.slug]}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
                 </button>
-              );
-            })}
-          </nav>
-        )}
+              )}
+            </div>
 
-        {/* Sort and View Controls */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '16px 0',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
-              {hub.name}
-            </h2>
-            <span
-              style={{
-                fontSize: '12px',
-                fontWeight: 600,
-                padding: '4px 10px',
-                borderRadius: '12px',
-                background: 'var(--bg-hover, rgba(255, 255, 255, 0.06))',
-                color: 'var(--text-muted)',
-              }}
-            >
-              {assets.length} items
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Sort dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--card-border)',
-                background: 'var(--card-bg)',
-                fontSize: '13px',
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-              }}
-            >
-              <option value="newest">Newest</option>
-              <option value="name">Name</option>
-            </select>
-
-            {/* View toggle */}
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                onClick={() => setViewMode('grid')}
+            {/* Sort + View Controls */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              {/* Sort dropdown */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
                 style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: viewMode === 'grid' ? 'var(--hover-bg)' : 'transparent',
+                  padding: '9px 12px',
+                  paddingRight: '32px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-default, rgba(255, 255, 255, 0.08))',
+                  background: 'var(--bg-elevated, #1A1A22)',
+                  fontSize: '13px',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
+                  appearance: 'none',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 10px center',
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                  <rect x="14" y="14" width="7" height="7" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode('stack')}
+                <option value="newest">Newest</option>
+                <option value="name">Name</option>
+              </select>
+
+              {/* View toggle - pill style */}
+              <div
                 style={{
-                  padding: '8px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: viewMode === 'stack' ? 'var(--hover-bg)' : 'transparent',
-                  cursor: 'pointer',
+                  display: 'flex',
+                  padding: '4px',
+                  background: 'var(--bg-elevated, #1A1A22)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-default, rgba(255, 255, 255, 0.08))',
                 }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-              </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: '5px',
+                    border: 'none',
+                    background: viewMode === 'grid' ? hub.color : 'transparent',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={viewMode === 'grid' ? 'white' : 'var(--text-muted)'} strokeWidth="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode('stack')}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: '5px',
+                    border: 'none',
+                    background: viewMode === 'stack' ? hub.color : 'transparent',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={viewMode === 'stack' ? 'white' : 'var(--text-muted)'} strokeWidth="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Tag Pills Navigation - Horizontal scroll with fade indicators */}
+          {hubTagSlugs.length > 0 && (
+            <div
+              ref={tagPillsContainerRef}
+              className={`tag-pills-scroll-container${tagPillsAtEnd ? ' scrolled-end' : ''}`}
+              style={{
+                position: 'relative',
+              }}
+            >
+              {/* Fade indicator - right (shows when scrollable and not at end) */}
+              <div
+                className="scroll-fade-right"
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '50px',
+                  background: 'linear-gradient(-90deg, var(--bg-page, #0D0D12) 20%, transparent)',
+                  pointerEvents: 'none',
+                  zIndex: 2,
+                  opacity: tagPillsAtEnd ? 0 : 1,
+                  transition: 'opacity 0.2s ease',
+                }}
+              />
+              <div
+                ref={tagPillsRef}
+                className="tag-pills-scroll"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  overflowX: 'auto',
+                  paddingBottom: '4px',
+                  marginBottom: '-4px',
+                  paddingRight: '40px',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
+              >
+              {/* All pill */}
+              <button
+                onClick={() => setInternalSelectedTags([])}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: internalSelectedTags.length === 0 ? hub.color : 'var(--bg-elevated, #1A1A22)',
+                  color: internalSelectedTags.length === 0 ? 'white' : 'var(--text-secondary)',
+                  boxShadow: internalSelectedTags.length === 0 ? `0 2px 8px ${hub.color}40` : 'none',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                All
+              </button>
+
+              {/* Tag pills */}
+              {hubTagsFromAPI?.map(tag => {
+                const isActive = isTagActive(tag.slug) && internalSelectedTags.length > 0;
+                const count = assetCountByTag[tag.slug] || 0;
+                return (
+                  <button
+                    key={tag.slug}
+                    onClick={() => toggleTag(tag.slug)}
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: '20px',
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      background: isActive ? hub.color : 'var(--bg-elevated, #1A1A22)',
+                      color: isActive ? 'white' : 'var(--text-secondary)',
+                      boxShadow: isActive ? `0 2px 8px ${hub.color}40` : 'none',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    {hubTagDisplayMap[tag.slug]}
+                    {count > 0 && (
+                      <span
+                        style={{
+                          fontSize: '11px',
+                          padding: '1px 6px',
+                          borderRadius: '10px',
+                          background: isActive ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                          color: isActive ? 'white' : 'var(--text-muted)',
+                        }}
+                      >
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Recently Added Section - Hero layout for newest content */}
-      {showRecentlyAdded && hasAnyAssets && internalSelectedTags.length === 0 && (
-        <section style={{ marginBottom: '40px' }}>
+      {/* Content padding after header */}
+      <div style={{ paddingTop: isHeaderFixed ? '20px' : '20px' }}></div>
+
+      {/* Recently Added Carousel - Horizontal scrolling section */}
+      {showRecentlyAdded && recentlyAddedAssets.length > 0 && internalSelectedTags.length === 0 && (
+        <section
+          className="recently-added-section"
+          style={{
+            marginBottom: '32px',
+            background: 'var(--bg-surface, #14141A)',
+            borderRadius: '16px',
+            border: `1px solid ${hub.color}25`,
+            overflow: 'hidden',
+          }}
+        >
+          {/* Section Header */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              marginBottom: '20px',
+              justifyContent: 'space-between',
+              padding: '16px 20px',
+              borderBottom: `1px solid ${hub.color}15`,
+              background: `linear-gradient(90deg, ${hub.color}10, transparent)`,
             }}
           >
-            <h2 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
-              Recently Added
-            </h2>
-            <span
-              style={{
-                fontSize: '10px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                padding: '3px 8px',
-                borderRadius: '4px',
-                background: 'rgba(34, 197, 94, 0.15)',
-                color: 'var(--success, #4ADE80)',
-              }}
-            >
-              New
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  background: `${hub.color}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={hub.color} strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div>
+                <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                  Recently Added
+                </h2>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  Last 14 days
+                </span>
+              </div>
+            </div>
+
+            {/* Carousel Navigation */}
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button
+                onClick={() => scrollCarousel('left')}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-default, rgba(255, 255, 255, 0.08))',
+                  background: 'var(--bg-elevated, #1A1A22)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease',
+                  color: 'var(--text-muted)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = hub.color;
+                  e.currentTarget.style.borderColor = hub.color;
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--bg-elevated, #1A1A22)';
+                  e.currentTarget.style.borderColor = 'var(--border-default, rgba(255, 255, 255, 0.08))';
+                  e.currentTarget.style.color = 'var(--text-muted)';
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+              <button
+                onClick={() => scrollCarousel('right')}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-default, rgba(255, 255, 255, 0.08))',
+                  background: 'var(--bg-elevated, #1A1A22)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease',
+                  color: 'var(--text-muted)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = hub.color;
+                  e.currentTarget.style.borderColor = hub.color;
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--bg-elevated, #1A1A22)';
+                  e.currentTarget.style.borderColor = 'var(--border-default, rgba(255, 255, 255, 0.08))';
+                  e.currentTarget.style.color = 'var(--text-muted)';
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          {/* Top 2 hero cards - 50/50 split */}
+          {/* Carousel Track - Properly contained */}
           <div
+            ref={carouselRef}
+            className="recently-added-carousel"
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '20px',
-              marginBottom: '20px',
+              display: 'flex',
+              gap: '16px',
+              padding: '20px',
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
             }}
           >
-            {assets.slice(0, 2).map(asset => (
-              <HeroCard
+            {recentlyAddedAssets.map(asset => (
+              <div
                 key={asset.id}
-                id={asset.id}
-                slug={asset.slug}
-                title={asset.title}
-                description={asset.description}
-                shortDescription={asset.shortDescription}
-                hub={asset.hub}
-                format={asset.format}
-                type={asset.type}
-                publishDate={asset.publishDate}
-              />
-            ))}
-          </div>
-
-          {/* Next 4 cards in standard grid */}
-          {assets.length > 2 && (
-            <div className="card-grid">
-              {assets.slice(2, 6).map(asset => (
+                style={{
+                  flex: '0 0 280px',
+                  width: '280px',
+                  scrollSnapAlign: 'start',
+                }}
+              >
                 <AssetCard
-                  key={asset.id}
                   {...asset}
                 />
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </section>
       )}
 
@@ -442,29 +779,85 @@ export function HubPageContent({
             if (tagAssets.length === 0) return null;
 
             const hasPreviousSections = visibleSlugs.slice(0, index).some(s => (assetsByTag[s] || []).length > 0);
+            const stepNumber = getWorkflowStepNumber(slug);
 
             return (
-              <section key={slug} style={{ marginBottom: '32px' }}>
+              <section key={slug} style={{ marginBottom: '48px' }}>
+                {/* Section Separator */}
                 {hasPreviousSections && (
                   <div
                     style={{
-                      borderTop: '1px solid var(--card-border)',
-                      marginBottom: '24px',
+                      height: '1px',
+                      background: 'linear-gradient(90deg, var(--border-default, rgba(255, 255, 255, 0.08)), transparent 80%)',
+                      marginBottom: '32px',
                     }}
                   />
                 )}
-                <div className="section-header">
-                  {/* Workflow step indicator */}
-                  {getWorkflowStepNumber(slug) !== null && (
-                    <span
-                      className="section-step"
-                      style={{ background: hub.color }}
+
+                {/* Enhanced Section Header */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    marginBottom: '20px',
+                    padding: '12px 16px',
+                    background: 'var(--bg-surface, #14141A)',
+                    borderRadius: '12px',
+                    border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.04))',
+                  }}
+                >
+                  {/* Workflow step indicator or colored bar */}
+                  {stepNumber !== null ? (
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        background: `${hub.color}20`,
+                        border: `1px solid ${hub.color}40`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        color: hub.color,
+                        flexShrink: 0,
+                      }}
                     >
-                      {getWorkflowStepNumber(slug)}
-                    </span>
+                      {stepNumber}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        width: '4px',
+                        height: '32px',
+                        borderRadius: '2px',
+                        background: hub.color,
+                        flexShrink: 0,
+                      }}
+                    />
                   )}
-                  <h3 className="section-title">{hubTagDisplayMap[slug]}</h3>
-                  <span className="section-count">{tagAssets.length} items</span>
+
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: '17px', fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
+                      {hubTagDisplayMap[slug]}
+                    </h3>
+                  </div>
+
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      background: 'var(--bg-elevated, rgba(255, 255, 255, 0.04))',
+                      color: 'var(--text-muted)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {tagAssets.length} items
+                  </span>
                 </div>
                 {viewMode === 'grid' ? (
                   (() => {
@@ -628,18 +1021,60 @@ export function HubPageContent({
             const hasPreviousSections = visibleSlugs.some(slug => (assetsByTag[slug] || []).length > 0);
 
             return (
-              <section style={{ marginBottom: '32px' }}>
+              <section style={{ marginBottom: '48px' }}>
+                {/* Section Separator */}
                 {hasPreviousSections && (
                   <div
                     style={{
-                      borderTop: '1px solid var(--card-border)',
-                      marginBottom: '24px',
+                      height: '1px',
+                      background: 'linear-gradient(90deg, var(--border-default, rgba(255, 255, 255, 0.08)), transparent 80%)',
+                      marginBottom: '32px',
                     }}
                   />
                 )}
-                <div className="section-header">
-                  <h3 className="section-title">Other</h3>
-                  <span className="section-count">{untaggedAssets.length} items</span>
+
+                {/* Enhanced Section Header */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    marginBottom: '20px',
+                    padding: '12px 16px',
+                    background: 'var(--bg-surface, #14141A)',
+                    borderRadius: '12px',
+                    border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.04))',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '4px',
+                      height: '32px',
+                      borderRadius: '2px',
+                      background: 'var(--text-muted)',
+                      flexShrink: 0,
+                    }}
+                  />
+
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: '17px', fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
+                      Other
+                    </h3>
+                  </div>
+
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      background: 'var(--bg-elevated, rgba(255, 255, 255, 0.04))',
+                      color: 'var(--text-muted)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {untaggedAssets.length} items
+                  </span>
                 </div>
                 {viewMode === 'grid' ? (
                   (() => {

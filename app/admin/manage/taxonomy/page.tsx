@@ -245,11 +245,12 @@ export default function TaxonomyPage() {
             style={{
               gap: '8px',
               padding: '8px 14px',
-              color: '#4B5563',
+              color: 'var(--text-secondary)',
               textDecoration: 'none',
               fontSize: '13px',
               borderRadius: '6px',
-              border: '1px solid #E5E7EB',
+              border: '1px solid var(--card-border)',
+              background: 'var(--card-bg)',
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -258,10 +259,10 @@ export default function TaxonomyPage() {
             Back
           </Link>
           <div>
-            <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>
               Taxonomy Manager
             </h1>
-            <p style={{ fontSize: '14px', color: '#4B5563' }}>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
               Manage content types and formats. Changes here immediately appear in all asset dropdowns.
             </p>
           </div>
@@ -272,11 +273,11 @@ export default function TaxonomyPage() {
             disabled={seeding}
             style={{
               padding: '10px 18px',
-              background: '#F3F4F6',
-              border: '1px solid #E5E7EB',
+              background: 'var(--bg-elevated)',
+              border: '1px solid var(--card-border)',
               borderRadius: '8px',
               fontSize: '14px',
-              color: '#4B5563',
+              color: 'var(--text-secondary)',
               cursor: seeding ? 'not-allowed' : 'pointer',
             }}
           >
@@ -311,8 +312,8 @@ export default function TaxonomyPage() {
             fontSize: '14px',
             fontWeight: 500,
             cursor: 'pointer',
-            background: activeTab === 'types' ? '#8C69F0' : '#F3F4F6',
-            color: activeTab === 'types' ? 'white' : '#4B5563',
+            background: activeTab === 'types' ? '#8C69F0' : 'var(--bg-elevated)',
+            color: activeTab === 'types' ? 'white' : 'var(--text-secondary)',
           }}
         >
           Content Types ({types.length})
@@ -326,8 +327,8 @@ export default function TaxonomyPage() {
             fontSize: '14px',
             fontWeight: 500,
             cursor: 'pointer',
-            background: activeTab === 'formats' ? '#8C69F0' : '#F3F4F6',
-            color: activeTab === 'formats' ? 'white' : '#4B5563',
+            background: activeTab === 'formats' ? '#8C69F0' : 'var(--bg-elevated)',
+            color: activeTab === 'formats' ? 'white' : 'var(--text-secondary)',
           }}
         >
           Formats ({formats.length})
@@ -336,39 +337,39 @@ export default function TaxonomyPage() {
 
       {/* Content */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px', color: '#9CA3AF' }}>Loading...</div>
+        <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Loading...</div>
       ) : activeTab === 'types' ? (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#FAFAFA', borderBottom: '1px solid #E5E7EB' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Icon</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Preview</th>
+              <tr style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--card-border)' }}>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Icon</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Preview</th>
                 <th
                   onClick={() => handleSort('name')}
-                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', userSelect: 'none' }}
                 >
                   Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
                 <th
                   onClick={() => handleSort('slug')}
-                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', userSelect: 'none' }}
                 >
                   Slug {sortField === 'slug' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Actions</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {sortedTypes.map((type) => (
-                <tr key={type.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                <tr key={type.id} style={{ borderBottom: '1px solid var(--card-border)' }}>
                   <td style={{ padding: '12px 16px', fontSize: '20px' }}>
                     {type.icon || '📄'}
                   </td>
@@ -392,18 +393,18 @@ export default function TaxonomyPage() {
                       {type.name}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: '14px', color: '#111827' }}>{type.name}</td>
-                  <td style={{ padding: '12px 16px', fontSize: '13px', color: '#6B7280', fontFamily: 'monospace' }}>{type.slug}</td>
+                  <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--text-primary)' }}>{type.name}</td>
+                  <td style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{type.slug}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <button
                       onClick={() => openEditModal(type)}
-                      style={{ padding: '6px 12px', background: '#F3F4F6', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#4B5563', cursor: 'pointer', marginRight: '8px' }}
+                      style={{ padding: '6px 12px', background: 'var(--bg-elevated)', border: '1px solid var(--card-border)', borderRadius: '6px', fontSize: '12px', color: 'var(--text-secondary)', cursor: 'pointer', marginRight: '8px' }}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(type.id)}
-                      style={{ padding: '6px 12px', background: '#FEE2E2', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#DC2626', cursor: 'pointer' }}
+                      style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', fontSize: '12px', color: '#EF4444', cursor: 'pointer' }}
                     >
                       Delete
                     </button>
@@ -412,7 +413,7 @@ export default function TaxonomyPage() {
               ))}
               {types.length === 0 && (
                 <tr>
-                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No types yet. Click "Seed Defaults" to add standard types or "Add Type" to create custom ones.
                   </td>
                 </tr>
@@ -423,34 +424,34 @@ export default function TaxonomyPage() {
       ) : (
         <div
           style={{
-            background: 'white',
-            border: '1px solid #E5E7EB',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--card-border)',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#FAFAFA', borderBottom: '1px solid #E5E7EB' }}>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Color</th>
+              <tr style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--card-border)' }}>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Color</th>
                 <th
                   onClick={() => handleSort('name')}
-                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', userSelect: 'none' }}
                 >
                   Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
                 <th
                   onClick={() => handleSort('slug')}
-                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: '#6B7280', cursor: 'pointer', userSelect: 'none' }}
+                  style={{ padding: '12px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', userSelect: 'none' }}
                 >
                   Slug {sortField === 'slug' && (sortDirection === 'asc' ? '↑' : '↓')}
                 </th>
-                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: '#6B7280' }}>Actions</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {sortedFormats.map((format) => (
-                <tr key={format.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                <tr key={format.id} style={{ borderBottom: '1px solid var(--card-border)' }}>
                   <td style={{ padding: '12px 16px' }}>
                     <div
                       style={{
@@ -461,18 +462,18 @@ export default function TaxonomyPage() {
                       }}
                     />
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: '14px', color: '#111827' }}>{format.name}</td>
-                  <td style={{ padding: '12px 16px', fontSize: '13px', color: '#6B7280', fontFamily: 'monospace' }}>{format.slug}</td>
+                  <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--text-primary)' }}>{format.name}</td>
+                  <td style={{ padding: '12px 16px', fontSize: '13px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{format.slug}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                     <button
                       onClick={() => openEditModal(format)}
-                      style={{ padding: '6px 12px', background: '#F3F4F6', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#4B5563', cursor: 'pointer', marginRight: '8px' }}
+                      style={{ padding: '6px 12px', background: 'var(--bg-elevated)', border: '1px solid var(--card-border)', borderRadius: '6px', fontSize: '12px', color: 'var(--text-secondary)', cursor: 'pointer', marginRight: '8px' }}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(format.id)}
-                      style={{ padding: '6px 12px', background: '#FEE2E2', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#DC2626', cursor: 'pointer' }}
+                      style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', fontSize: '12px', color: '#EF4444', cursor: 'pointer' }}
                     >
                       Delete
                     </button>
@@ -481,7 +482,7 @@ export default function TaxonomyPage() {
               ))}
               {formats.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: '#9CA3AF' }}>
+                  <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No formats yet. Click "Seed Defaults" to add standard formats or "Add Format" to create custom ones.
                   </td>
                 </tr>
@@ -497,7 +498,7 @@ export default function TaxonomyPage() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'rgba(0,0,0,0.6)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -507,23 +508,24 @@ export default function TaxonomyPage() {
         >
           <div
             style={{
-              background: 'white',
+              background: 'var(--card-bg)',
               borderRadius: '16px',
               padding: '24px',
               width: '480px',
               maxHeight: '90vh',
               overflow: 'auto',
+              border: '1px solid var(--card-border)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
               {editingItem ? 'Edit' : 'Add'} {activeTab === 'types' ? 'Content Type' : 'Format'}
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Name */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                   Name
                 </label>
                 <input
@@ -539,9 +541,11 @@ export default function TaxonomyPage() {
                   style={{
                     width: '100%',
                     padding: '10px 12px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text-primary)',
                   }}
                   placeholder="e.g., Product Overview"
                 />
@@ -549,7 +553,7 @@ export default function TaxonomyPage() {
 
               {/* Slug */}
               <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                   Slug
                 </label>
                 <input
@@ -559,10 +563,12 @@ export default function TaxonomyPage() {
                   style={{
                     width: '100%',
                     padding: '10px 12px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid var(--card-border)',
                     borderRadius: '8px',
                     fontSize: '14px',
                     fontFamily: 'monospace',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text-primary)',
                   }}
                   placeholder="e.g., product-overview"
                 />
@@ -572,7 +578,7 @@ export default function TaxonomyPage() {
                 <>
                   {/* Emoji Icon (Optional) */}
                   <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                       Icon (Optional)
                     </label>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
@@ -580,13 +586,13 @@ export default function TaxonomyPage() {
                         style={{
                           width: '44px',
                           height: '38px',
-                          border: '1px solid #E5E7EB',
+                          border: '1px solid var(--card-border)',
                           borderRadius: '6px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '20px',
-                          background: '#F9FAFB',
+                          background: 'var(--bg-elevated)',
                         }}
                       >
                         {formData.icon || '📄'}
@@ -595,14 +601,14 @@ export default function TaxonomyPage() {
                         type="text"
                         value={formData.icon}
                         onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                        style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px' }}
+                        style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--card-border)', borderRadius: '8px', fontSize: '14px', background: 'var(--card-bg)', color: 'var(--text-primary)' }}
                         placeholder="Enter emoji or leave blank"
                       />
                       {formData.icon && (
                         <button
                           type="button"
                           onClick={() => setFormData({ ...formData, icon: '' })}
-                          style={{ padding: '8px 12px', background: '#F3F4F6', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#6B7280', cursor: 'pointer' }}
+                          style={{ padding: '8px 12px', background: 'var(--bg-elevated)', border: '1px solid var(--card-border)', borderRadius: '6px', fontSize: '12px', color: 'var(--text-muted)', cursor: 'pointer' }}
                         >
                           Clear
                         </button>
@@ -617,9 +623,9 @@ export default function TaxonomyPage() {
                           style={{
                             width: '32px',
                             height: '32px',
-                            border: formData.icon === emoji ? '2px solid #8C69F0' : '1px solid #E5E7EB',
+                            border: formData.icon === emoji ? '2px solid #8C69F0' : '1px solid var(--card-border)',
                             borderRadius: '6px',
-                            background: formData.icon === emoji ? '#EDE9FE' : 'white',
+                            background: formData.icon === emoji ? 'rgba(140, 105, 240, 0.15)' : 'var(--card-bg)',
                             cursor: 'pointer',
                             fontSize: '16px',
                             display: 'flex',
@@ -636,7 +642,7 @@ export default function TaxonomyPage() {
                   {/* Colors */}
                   <div style={{ display: 'flex', gap: '16px' }}>
                     <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                         Background Color
                       </label>
                       <div style={{ display: 'flex', gap: '8px' }}>
@@ -644,18 +650,18 @@ export default function TaxonomyPage() {
                           type="color"
                           value={formData.bgColor}
                           onChange={(e) => setFormData({ ...formData, bgColor: e.target.value })}
-                          style={{ width: '44px', height: '38px', padding: 0, border: '1px solid #E5E7EB', borderRadius: '6px' }}
+                          style={{ width: '44px', height: '38px', padding: 0, border: '1px solid var(--card-border)', borderRadius: '6px' }}
                         />
                         <input
                           type="text"
                           value={formData.bgColor}
                           onChange={(e) => setFormData({ ...formData, bgColor: e.target.value })}
-                          style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}
+                          style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--card-border)', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace', background: 'var(--card-bg)', color: 'var(--text-primary)' }}
                         />
                       </div>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                      <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                         Text Color
                       </label>
                       <div style={{ display: 'flex', gap: '8px' }}>
@@ -663,13 +669,13 @@ export default function TaxonomyPage() {
                           type="color"
                           value={formData.textColor}
                           onChange={(e) => setFormData({ ...formData, textColor: e.target.value })}
-                          style={{ width: '44px', height: '38px', padding: 0, border: '1px solid #E5E7EB', borderRadius: '6px' }}
+                          style={{ width: '44px', height: '38px', padding: 0, border: '1px solid var(--card-border)', borderRadius: '6px' }}
                         />
                         <input
                           type="text"
                           value={formData.textColor}
                           onChange={(e) => setFormData({ ...formData, textColor: e.target.value })}
-                          style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}
+                          style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--card-border)', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace', background: 'var(--card-bg)', color: 'var(--text-primary)' }}
                         />
                       </div>
                     </div>
@@ -677,10 +683,10 @@ export default function TaxonomyPage() {
 
                   {/* Preview */}
                   <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                       Preview
                     </label>
-                    <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', background: 'var(--bg-elevated)', borderRadius: '8px', border: '1px solid var(--card-border)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <span style={{ fontSize: '24px' }}>{formData.icon || '📄'}</span>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -695,7 +701,7 @@ export default function TaxonomyPage() {
                           >
                             {formData.name || 'Type Name'}
                           </span>
-                          <span style={{ fontSize: '11px', color: '#6B7280' }}>Format</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Format</span>
                         </div>
                       </div>
                     </div>
@@ -705,7 +711,7 @@ export default function TaxonomyPage() {
                 <>
                   {/* Format Color */}
                   <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px' }}>
                       Color
                     </label>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -713,13 +719,13 @@ export default function TaxonomyPage() {
                         type="color"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        style={{ width: '44px', height: '38px', padding: 0, border: '1px solid #E5E7EB', borderRadius: '6px' }}
+                        style={{ width: '44px', height: '38px', padding: 0, border: '1px solid var(--card-border)', borderRadius: '6px' }}
                       />
                       <input
                         type="text"
                         value={formData.color}
                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                        style={{ flex: 1, padding: '10px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}
+                        style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--card-border)', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace', background: 'var(--card-bg)', color: 'var(--text-primary)' }}
                       />
                     </div>
                   </div>
@@ -733,11 +739,11 @@ export default function TaxonomyPage() {
                 onClick={() => setIsModalOpen(false)}
                 style={{
                   padding: '10px 18px',
-                  background: '#F3F4F6',
-                  border: 'none',
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--card-border)',
                   borderRadius: '8px',
                   fontSize: '14px',
-                  color: '#4B5563',
+                  color: 'var(--text-secondary)',
                   cursor: 'pointer',
                 }}
               >

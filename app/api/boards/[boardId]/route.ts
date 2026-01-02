@@ -77,6 +77,7 @@ export async function PUT(
         accentColor: body.accentColor,
         sortOrder: body.sortOrder,
         defaultView: body.defaultView,
+        showRecentlyAdded: body.showRecentlyAdded,
         updatedAt: new Date(),
       })
       .where(eq(boards.slug, boardId))

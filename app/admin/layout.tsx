@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/manage', label: 'Assets', icon: '📋', count: null },
     { href: '/admin/manage/import', label: 'Import', icon: '📥', count: null },
     { href: '/admin/manage/tags', label: 'Tags', icon: '🏷️', count: null },
-    { href: '/admin/manage/boards', label: 'Boards', icon: '📊', count: null },
+    { href: '/admin/manage/boards', label: 'Hubs', icon: '📊', count: null },
     { href: '/admin/manage/taxonomy', label: 'Taxonomy', icon: '🎨', count: null },
     { href: '/admin/manage/analytics', label: 'Analytics', icon: '📈', count: null },
   ];
@@ -126,22 +126,24 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </button>
       </header>
 
-      {/* Sidebar */}
+      {/* Sidebar - NEON v4 Dark Mode */}
       <aside
-        className="bg-white border-r fixed bottom-0 overflow-y-auto custom-scrollbar"
+        className="sidebar border-r fixed bottom-0 overflow-y-auto custom-scrollbar"
         style={{
           width: '220px',
           top: 'var(--header-height)',
           left: 0,
-          borderColor: 'var(--card-border)',
+          background: 'var(--bg-surface, white)',
+          borderColor: 'var(--border-subtle, var(--card-border))',
           padding: '16px 12px',
         }}
       >
         {/* Admin Section */}
         <div style={{ marginBottom: '24px' }}>
           <div
+            className="nav-section-title"
             style={{
-              fontSize: '10px',
+              fontSize: '11px',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
@@ -159,14 +161,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center text-[13px] no-underline transition-all"
+                  className="nav-item flex items-center text-[13px] no-underline transition-all"
                   style={{
                     gap: '10px',
-                    padding: '9px 10px',
+                    padding: '10px 12px',
                     margin: '2px 0',
-                    borderRadius: '6px',
-                    color: isActive ? 'var(--content-accent)' : 'var(--text-primary)',
-                    backgroundColor: isActive ? 'var(--content-light)' : 'transparent',
+                    borderRadius: '8px',
+                    color: isActive ? 'var(--accent-content-light, #B794FF)' : 'var(--text-secondary)',
+                    backgroundColor: isActive ? 'rgba(140, 105, 240, 0.15)' : 'transparent',
                     fontWeight: isActive ? 500 : 400,
                   }}
                 >
@@ -174,10 +176,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   <span className="flex-1">{item.label}</span>
                   {item.count && (
                     <span
-                      className="text-[11px] px-2 py-0.5 rounded-full"
+                      className="nav-item-count text-[11px] px-2 py-0.5 rounded-full"
                       style={{
                         color: 'var(--text-muted)',
-                        backgroundColor: 'var(--bg-page)',
+                        backgroundColor: 'var(--bg-hover)',
                       }}
                     >
                       {item.count}
@@ -192,8 +194,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Library Section */}
         <div>
           <div
+            className="nav-section-title"
             style={{
-              fontSize: '10px',
+              fontSize: '11px',
               fontWeight: 600,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
@@ -208,13 +211,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center text-[13px] no-underline transition-all"
+                className="nav-item flex items-center text-[13px] no-underline transition-all"
                 style={{
                   gap: '10px',
-                  padding: '9px 10px',
+                  padding: '10px 12px',
                   margin: '2px 0',
-                  borderRadius: '6px',
-                  color: 'var(--text-primary)',
+                  borderRadius: '8px',
+                  color: 'var(--text-secondary)',
                   backgroundColor: 'transparent',
                 }}
               >
