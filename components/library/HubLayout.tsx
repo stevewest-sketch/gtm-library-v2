@@ -130,7 +130,7 @@ export function HubLayout({
             style={{
               padding: '20px 28px',
               minHeight: 'calc(100vh - 64px)',
-              overflowX: 'hidden', // Prevent carousel from breaking page width (use overflowX to not break sticky)
+              // Note: Do NOT use overflow:hidden here - it breaks position:sticky
             }}
           >
             {children}

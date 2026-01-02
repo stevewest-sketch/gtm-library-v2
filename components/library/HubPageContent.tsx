@@ -130,21 +130,6 @@ export function HubPageContent({
   const tagPillsContainerRef = useRef<HTMLDivElement>(null);
   const heroHeaderRef = useRef<HTMLDivElement>(null);
   const [tagPillsAtEnd, setTagPillsAtEnd] = useState(false);
-  const [isHeaderFixed, setIsHeaderFixed] = useState(false);
-
-  // Track scroll to make header fixed when scrolled past its original position
-  useEffect(() => {
-    const handleScroll = () => {
-      // Header should become fixed when scrolled past 64px (global header height)
-      const shouldBeFixed = window.scrollY > 20;
-      setIsHeaderFixed(shouldBeFixed);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Check if tag pills are scrolled to end (hide scroll hint)
   const checkTagPillsScroll = useCallback(() => {
@@ -289,29 +274,19 @@ export function HubPageContent({
   const visibleSlugs = hubTagSlugs.filter(slug => effectiveSelectedTags.includes(slug));
   const hasAnyAssets = filteredAssets.length > 0;
 
-  // Calculate header height for placeholder (approximate)
-  const headerHeight = 160; // Approximate height of the hub hero header
-
   return (
     <>
-      {/* Placeholder div to prevent content jump when header becomes fixed */}
-      {isHeaderFixed && (
-        <div style={{ height: `${headerHeight}px` }} />
-      )}
-
-      {/* Hub Hero Header - NEON v4 Cohesive Design */}
+      {/* Hub Hero Header - Sticky below global header */}
       <div
         ref={heroHeaderRef}
         className="hub-hero-header"
         style={{
-          position: isHeaderFixed ? 'fixed' : 'relative',
-          top: isHeaderFixed ? '64px' : 'auto', // Stick below the fixed page header (64px height)
-          left: isHeaderFixed ? 'var(--sidebar-width, 280px)' : 'auto',
-          right: isHeaderFixed ? 0 : 'auto',
+          position: 'sticky',
+          top: '64px', // Stick below the fixed page header (64px height)
           zIndex: 40,
-          marginLeft: isHeaderFixed ? 0 : '-28px',
-          marginRight: isHeaderFixed ? 0 : '-28px',
-          marginTop: isHeaderFixed ? 0 : '-20px',
+          marginLeft: '-28px',
+          marginRight: '-28px',
+          marginTop: '-20px',
           background: 'var(--bg-page, #0D0D12)',
         }}
       >
@@ -620,7 +595,7 @@ export function HubPageContent({
       </div>
 
       {/* Content padding after header */}
-      <div style={{ paddingTop: isHeaderFixed ? '20px' : '20px' }}></div>
+      <div style={{ paddingTop: '20px' }}></div>
 
       {/* Recently Added Carousel - Horizontal scrolling section */}
       {showRecentlyAdded && recentlyAddedAssets.length > 0 && internalSelectedTags.length === 0 && (
