@@ -19,6 +19,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/manage/analytics', label: 'Analytics', icon: '📈', count: null },
   ];
 
+  const helpItems = [
+    { href: '/admin/user-manual', label: 'User Manual', icon: '📖' },
+  ];
+
   const libraryNavItems = [
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/library', label: 'Browse', icon: '📚' },
@@ -185,6 +189,47 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       {item.count}
                     </span>
                   )}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Help Section */}
+        <div style={{ marginBottom: '24px' }}>
+          <div
+            className="nav-section-title"
+            style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              color: 'var(--text-muted)',
+              padding: '8px 10px 6px',
+            }}
+          >
+            Help
+          </div>
+          <nav className="flex flex-col">
+            {helpItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="nav-item flex items-center text-[13px] no-underline transition-all"
+                  style={{
+                    gap: '10px',
+                    padding: '10px 12px',
+                    margin: '2px 0',
+                    borderRadius: '8px',
+                    color: isActive ? 'var(--accent-content-light, #B794FF)' : 'var(--text-secondary)',
+                    backgroundColor: isActive ? 'rgba(140, 105, 240, 0.15)' : 'transparent',
+                    fontWeight: isActive ? 500 : 400,
+                  }}
+                >
+                  <span className="w-5 text-center text-sm">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
