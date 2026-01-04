@@ -89,7 +89,8 @@ export function PageHeader() {
         display: 'flex',
         alignItems: 'center',
         padding: '0 24px',
-        background: 'linear-gradient(135deg, #111827 0%, #1F2937 100%)',
+        background: 'var(--bg-surface, #0D0D12)',
+        borderBottom: '1px solid var(--card-border, rgba(255,255,255,0.08))',
         height: '64px',
         gap: '16px',
       }}
@@ -116,7 +117,7 @@ export function PageHeader() {
         >
           G+
         </div>
-        <span style={{ color: 'white', fontSize: '16px', fontWeight: 600 }}>
+        <span style={{ color: 'var(--text-primary, white)', fontSize: '16px', fontWeight: 600 }}>
           GTM Hub
         </span>
       </Link>
@@ -139,15 +140,19 @@ export function PageHeader() {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            padding: '12px 16px',
-            background: isSearchOpen ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)',
-            border: isSearchOpen ? '1px solid rgba(255,255,255,0.25)' : '1px solid rgba(255,255,255,0.15)',
+            padding: '10px 16px',
+            background: isSearchOpen
+              ? 'var(--bg-hover, rgba(255,255,255,0.08))'
+              : 'var(--bg-elevated, rgba(255,255,255,0.04))',
+            border: isSearchOpen
+              ? '1px solid var(--card-border-active, rgba(255,255,255,0.15))'
+              : '1px solid var(--card-border, rgba(255,255,255,0.08))',
             borderRadius: '10px',
             transition: 'all 0.15s ease',
           }}
         >
           <svg
-            style={{ width: '20px', height: '20px', color: 'rgba(255,255,255,0.5)', flexShrink: 0 }}
+            style={{ width: '18px', height: '18px', color: 'var(--text-muted, rgba(255,255,255,0.5))', flexShrink: 0 }}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -170,7 +175,7 @@ export function PageHeader() {
               outline: 'none',
               background: 'transparent',
               fontSize: '14px',
-              color: 'white',
+              color: 'var(--text-primary, white)',
             }}
           />
           {isLoading ? (
@@ -178,7 +183,7 @@ export function PageHeader() {
               style={{
                 width: '16px',
                 height: '16px',
-                border: '2px solid rgba(255,255,255,0.2)',
+                border: '2px solid var(--card-border, rgba(255,255,255,0.1))',
                 borderTopColor: '#10B981',
                 borderRadius: '50%',
                 animation: 'spin 0.6s linear infinite',
@@ -189,9 +194,9 @@ export function PageHeader() {
               style={{
                 fontSize: '12px',
                 padding: '4px 8px',
-                background: 'rgba(255,255,255,0.1)',
+                background: 'var(--bg-hover, rgba(255,255,255,0.06))',
                 borderRadius: '6px',
-                color: 'rgba(255,255,255,0.5)',
+                color: 'var(--text-muted, rgba(255,255,255,0.5))',
                 fontFamily: 'inherit',
                 border: 'none',
               }}
